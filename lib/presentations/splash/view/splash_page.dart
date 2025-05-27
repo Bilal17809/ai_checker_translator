@@ -1,6 +1,10 @@
+import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'dart:async';
-import '../../home/view/home_page.dart';
+
+import 'package:get/utils.dart';
+
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -14,7 +18,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
-      // Navigator.pushNamed(context, RoutesName.homePage);
+      Get.offNamed(RoutesName.bottomnavbar);
     });
   }
 
@@ -23,7 +27,7 @@ class _SplashPageState extends State<SplashPage> {
     return const Scaffold(
       body: Center(
         child: Text(
-          'Splash Screen',
+          'Welcome Splash Screen',
           style: TextStyle(fontSize: 24),
         ),
       ),

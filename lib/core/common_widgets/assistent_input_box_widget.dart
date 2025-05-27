@@ -1,4 +1,6 @@
 // lib/widgets/assistant_input_box.dart
+import 'package:ai_checker_translator/core/common_widgets/textform_field.dart';
+import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AssistantInputBox extends StatelessWidget {
@@ -22,61 +24,66 @@ class AssistantInputBox extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-      
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-
         const SizedBox(height: 16),
-
-        /// Text Field Box
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.blue.shade200),
+            color: Colors.white,
+            border: Border.all(color: kMediumGreen1, width: 2),
             borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 2,
+                blurRadius: 8,
+                offset: const Offset(0, 6), 
+              ),
+            ],
           ),
+
+          
           child: Column(
             children: [
-              TextField(
-                controller: controller,
-                maxLines: 8,
-                maxLength: maxLength,
-                decoration: const InputDecoration(
-                  hintText: "Type here or paste your content",
-                  border: InputBorder.none,
-                  counterText: "",
-                ),
+              CustomTextFormField(
+                hintText: "Type here or paste your content",
+                maxLines: 10,
+                border: InputBorder.none,   
               ),
               const SizedBox(height: 12),
-
-              /// Bottom row with icons & counter
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  /// Dynamic icons
                   Row(
-                    children: icons
-                        .map((icon) => Padding(
-                              padding: const EdgeInsets.only(right: 16),
-                              child: Icon(icon, size: 24),
-                            ))
-                        .toList(),
+                    children:
+                        icons
+                            .map(
+                              (icon) => Padding(
+                                padding: const EdgeInsets.only(right: 16),
+                                child: Icon(
+                                  icon,
+                                  size: 24,
+                                  color: kMediumGreen2,
+                                ),
+                              ),
+                            )
+                            .toList(),
                   ),
 
-                  /// Character count and copy icon
                   Row(
                     children: [
                       Text(
                         "$currentLength/$maxLength",
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
                       ),
                       const SizedBox(width: 8),
-                      const Icon(Icons.copy, size: 20, color: Colors.blue),
+                      const Icon(Icons.copy, size: 20, color: kMediumGreen2),
                     ],
                   ),
                 ],
@@ -87,7 +94,6 @@ class AssistantInputBox extends StatelessWidget {
 
         const SizedBox(height: 10),
 
-        /// Premium text
         const Text.rich(
           TextSpan(
             text: "Daily Limits Remaining=10 ",
@@ -107,4 +113,3 @@ class AssistantInputBox extends StatelessWidget {
     );
   }
 }
-

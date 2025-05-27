@@ -1,7 +1,9 @@
+import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
-class CommonAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
+class CommonAppbarWidget extends StatelessWidget
+    implements PreferredSizeWidget {
   const CommonAppbarWidget({super.key});
 
   @override
@@ -11,9 +13,9 @@ class CommonAppbarWidget extends StatelessWidget implements PreferredSizeWidget 
   Widget build(BuildContext context) {
     return AppBar(
       actions: [
-              Image.asset(Assets.crown.path,height: 28),
-              SizedBox(width: 6),
-              Icon(Icons.more_vert, size: 28),
+        Image.asset(Assets.crown.path, height: 28),
+        SizedBox(width: 6),
+        Icon(Icons.more_vert, size: 28),
       ],
       backgroundColor: Colors.green.shade100,
       elevation: 0,
@@ -25,7 +27,7 @@ class CommonAppbarWidget extends StatelessWidget implements PreferredSizeWidget 
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: kWhite,
               borderRadius: BorderRadius.circular(6),
             ),
             child: Row(
@@ -36,10 +38,9 @@ class CommonAppbarWidget extends StatelessWidget implements PreferredSizeWidget 
               ],
             ),
           ),
-           SizedBox(width: 04),
+          SizedBox(width: 04),
           const Text("CHECKER"),
         ],
-      
       ),
     );
   }

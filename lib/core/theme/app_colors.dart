@@ -49,13 +49,42 @@ const Color dividerColor = Color(0xffEDEDED);
 
 
 // use below
-const kLightGreen1 = Color(0xFFE8F5E9);
-const kMediumGreen1 = Color(0xFF81C784);
-const kMediumGreen2 = Color(0xFF4CAF50);
-const kDarkGreen1 = Color(0xFF388E3C);
-const kDarkGreen2 = Color(0xFF1B5E20);
-const kTealGreen1 = Color(0xFF26A69A);
-const kLightGreen2 = Color(0xFFC8E6C9);
+// const kLightGreen1 = Color(0xFFE8F5E9);
+// const kMediumGreen1 = Color(0xFF81C784);
+// const kMediumGreen2 = Color.fromARGB(255, 93, 194, 96);
+// const kDarkGreen1 = Color(0xFF388E3C);
+// const kDarkGreen2 = Color(0xFF1B5E20);
+// const kTealGreen1 = Color(0xFF26A69A);
+// const kLightGreen2 = Color(0xFFC8E6C9);
+
+// Light Theme Colors
+const kLightGreen1 = Color(0xFFE8F5E9); // #E8F5E9 – very light green background
+const kMediumGreen1 = Color.fromARGB(
+  255,
+  176,
+  225,
+  179,
+); // #81C784 – soft green
+const kMediumGreen2 = Color.fromARGB(
+  255,
+  93,
+  194,
+  96,
+); // #5DC260 – vibrant green
+const kDarkGreen1 = Color(0xFF388E3C); // #388E3C – deep green for emphasis
+const kDarkGreen2 = Color(
+  0xFF1B5E20,
+); // #1B5E20 – darkest green (usable for text/icons)
+const kTealGreen1 = Color(0xFF26A69A); // #26A69A – teal accent
+
+// Dark Theme Colors
+const kDarkLightGreen = Color(0xFF1B5E20); // #1B5E20
+const kDarkMediumGreen = Color(0xFF388E3C); // #388E3C
+const kDarkMediumGreen2 = Color(0xFF2E7D32); // #2E7D32
+const kDarkerGreen1 = Color(0xFF1B5E20); // #1B5E20
+const kDarkerGreen2 = Color(0xFF0D3B14); // #0D3B14
+const kDarkTealGreen = Color(0xFF004D40); // #004D40
+
 // Gradients
 const kGradient = LinearGradient(
   begin: Alignment.topLeft,
