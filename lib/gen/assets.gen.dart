@@ -12,6 +12,23 @@ import 'package:flutter/widgets.dart';
 class Assets {
   const Assets._();
 
+  //nav_bar_images
+  static const AssetGenImage askai = AssetGenImage('assets/icons/ask ai.png');
+  static const AssetGenImage home = AssetGenImage('assets/icons/home.png');
+  static const AssetGenImage paraphraser = AssetGenImage(
+    'assets/icons/paraphraser.png',
+  );
+
+  static const AssetGenImage correction = AssetGenImage(
+    'assets/icons/translation.png',
+  );
+  static const AssetGenImage translator = AssetGenImage(
+    'assets/icons/open-book.png',
+  );
+
+  static const AssetGenImage crown = AssetGenImage('assets/icons/crown.png');
+
+   
   static const AssetGenImage ai = AssetGenImage('assets/ai.png');
   static const AssetGenImage book2 = AssetGenImage('assets/book-2.png');
   static const AssetGenImage bookSale = AssetGenImage('assets/book-sale.png');
@@ -21,9 +38,10 @@ class Assets {
       AssetGenImage('assets/dictionary.png');
   static const AssetGenImage magicBook = AssetGenImage('assets/magic-book.png');
   static const AssetGenImage translate = AssetGenImage('assets/translate.png');
-
+   
   /// List of all assets
   static List<AssetGenImage> get values =>
+
       [ai, book2, bookSale, dictionary2, dictionary, magicBook, translate];
 }
 
