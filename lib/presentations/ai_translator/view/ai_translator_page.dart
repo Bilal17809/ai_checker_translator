@@ -1,94 +1,90 @@
+import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
+import 'package:ai_checker_translator/core/common_widgets/common_widgets.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/controller/ai_translator_controller.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/model/language_model.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/widgets/Languages_show_widgets.dart';
+import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/common_widgets/drop_down.dart';
-import '../../../core/common_widgets/icon_buttons.dart';
-import '../../../core/common_widgets/logo_widget.dart';
-import '../../../core/common_widgets/round_image.dart';
-import '../../../core/common_widgets/textform_field.dart';
-import '../../../core/constant/constant.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_styles.dart';
-import '../bloc/translator_cubit.dart';
 
-class AiTranslatorPage extends StatelessWidget {
-  const AiTranslatorPage({super.key});
+class AiTranslatorPage extends StatefulWidget {
+  AiTranslatorPage({super.key});
+
+  @override
+  State<AiTranslatorPage> createState() => _AiTranslatorPageState();
+}
+
+class _AiTranslatorPageState extends State<AiTranslatorPage> {
+  final controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        leading: const BackIconButton(),
-        title: LogoWidget(title: 'AI Translator',),
+        backgroundColor: kLightGreen1,
+        title: LogoWidget(title: 'Voice Typing All Languages'),
         centerTitle: true,
       ),
-      body: SafeArea(
+      drawer: Drawer(),
+      body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal:10,vertical:kBodyHp),
-          child: Container(
-            decoration: roundedDecoration,
-            padding: const EdgeInsets.all(10),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      RoundedButton(
-                        backgroundColor: dividerColor,
-                        child: Icon(Icons.favorite_border, color: kBlue),
-                        onTap: () {
-                        },
-                      ),
-                      SizedBox(width: 10,),
-                      RoundedButton(
-                        backgroundColor: dividerColor,
-                        child: Icon(Icons.close, color: kBlue),
-                        onTap: () {
-                        },
-                      ),
-                    ],
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: Column(
+            children: [
+              LanguageWidget(),
+              SizedBox(height: 20),
+              Container(
+                height: 36,
+                decoration: BoxDecoration(
+                  color: kMediumGreen2,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
                   ),
-                  SizedBox(height: 16,),
-                  CustomTextFormField(
-                    hintText: "Write Something Here...",
-                  ),
-
-                  SizedBox(height: 16,),
-                  Row(
-                    children: [
-                      AnimatedRoundedButton(
-                        backgroundColor: dividerColor,
-                        child: Icon(Icons.keyboard_voice, color: kBlue),
-                        onTap: () {
-                        },
-                      ),
-                      SizedBox(width: 16,),
-                      AnimatedRoundedButton(
-                        backgroundColor: dividerColor,
-                        child: Icon(Icons.switch_access_shortcut_add_rounded, color: kBlue),
-                        onTap: () {
-
-                        },
-                      ),
-                      SizedBox(width: 12,),
-                      AnimatedRoundedButton(
-                        backgroundColor: dividerColor,
-                        child: Icon(Icons.keyboard_voice, color: kBlue),
-                        onTap: () {
-                          print("Search mic tapped");
-                        },
-                      )
-                    ],
-                  )
-                ],
+                ),
+                child: KeyValueText(
+                  title: "Write Message",
+                  value: "",
+                  textColor: Colors.teal,
+                  icons: [Icons.copy, Icons.close],
+                  onIconTaps: [
+                    () => print("Edit Tapped"),
+                    () => print("Delete Tapped"),
+                  ],
+                ),
               ),
-            ),
+              AssistantInputBox(
+                hintText: "Tap on Below Mic to start Typing...",
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(0),
+                  topRight: Radius.circular(0),
+                  bottomLeft: Radius.circular(16),
+                  bottomRight: Radius.circular(16),
+                ),
+                controller: controller,
+                icons: [],
+                showFooter: false,
+              ),
+              SizedBox(height: height * 0.20),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.volume_up_rounded,
+                    color: kMediumGreen2,
+                    size: 40,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
-
-
 
