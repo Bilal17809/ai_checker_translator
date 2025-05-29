@@ -1,6 +1,6 @@
 
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/controller/ai_translator_controller.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/controller/languages_controller.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/model/language_model.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';

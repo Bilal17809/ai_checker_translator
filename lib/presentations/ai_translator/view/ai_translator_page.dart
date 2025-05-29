@@ -1,9 +1,8 @@
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_widgets.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/controller/ai_translator_controller.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/model/language_model.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/controller/translator_controller.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/widgets/Languages_show_widgets.dart';
-import 'package:country_flags/country_flags.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -17,7 +16,8 @@ class AiTranslatorPage extends StatefulWidget {
 }
 
 class _AiTranslatorPageState extends State<AiTranslatorPage> {
-  final controller = TextEditingController();
+
+  final TranslatorController controlle = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class _AiTranslatorPageState extends State<AiTranslatorPage> {
                   bottomLeft: Radius.circular(16),
                   bottomRight: Radius.circular(16),
                 ),
-                controller: controller,
+                controller: controlle.textController,
                 icons: [],
                 showFooter: false,
               ),

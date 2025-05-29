@@ -37,4 +37,21 @@ class LanguageController extends GetxController {
     selectedSource.value = selectedTarget.value;
     selectedTarget.value = temp;
   }
+
+  String getLanguageCode(String countryCode) {
+  switch (countryCode) {
+    case 'US': return 'en'; // English
+    case 'PK': return 'ur'; // Urdu
+    case 'FR': return 'fr'; // French
+    case 'DE': return 'de'; // German
+    case 'CN': return 'zh'; // Chinese
+    case 'ES': return 'es'; // Spanish
+    case 'IN': return 'hi'; // Hindi
+    case 'SA': return 'ar'; // Arabic
+    case 'JP': return 'ja'; // Japanese
+    case 'IT': return 'it'; // Italian
+    default: return 'en';
+  }
+}
+
 }
