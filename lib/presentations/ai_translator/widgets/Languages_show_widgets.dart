@@ -55,36 +55,38 @@ class LanguageWidget extends StatelessWidget {
     required LanguageModel lang,
     required VoidCallback onTap,
   }) {
-    return Container(
-      height: 40,
-      width: MediaQuery.of(context).size.width * 0.32,
-      decoration: BoxDecoration(
-        color: kMediumGreen2,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 6),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          ClipOval(
-            child: CountryFlag.fromCountryCode(
-              lang.countryCode.toUpperCase(),
-              height: 24,
-              width: 24,
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 40,
+        width: MediaQuery.of(context).size.width * 0.34,
+        decoration: BoxDecoration(
+          color: kMediumGreen2,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 6),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ClipOval(
+              child: CountryFlag.fromCountryCode(
+                lang.countryCode.toUpperCase(),
+                height: 24,
+                width: 24,
+              ),
             ),
-          ),
-          Text(
-            lang.name,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
+            Text(
+              lang.name,
+              maxLines: 2,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
             ),
-          ),
-          InkWell(
-            onTap: onTap,
-            child: const Icon(Icons.arrow_drop_down, color: Colors.white)),
-        ],
+            const Icon(Icons.arrow_drop_down, color: Colors.white),
+          ],
+        ),
       ),
     );
   }

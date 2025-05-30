@@ -10,7 +10,7 @@ class AllBindins implements Bindings{
     Get.lazyPut<LanguageController>(() => LanguageController());
     Get.lazyPut<TranslatorController>(
       () => TranslatorController(),
-      // fenix: false,
+      fenix: true,
     );
   }
 }

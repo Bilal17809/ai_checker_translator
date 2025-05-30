@@ -2,6 +2,7 @@ import 'package:ai_checker_translator/core/common_widgets/textform_field.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 class AssistantInputBox extends StatefulWidget {
+  
   final int maxLength;
   final List<IconData> icons;
   final TextEditingController controller;
@@ -55,9 +56,9 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 8,
-            offset: const Offset(0, 6),
+            spreadRadius: 1,
+            blurRadius: 6,
+            offset: const Offset(0, 4),
           ),
         ],
       ),

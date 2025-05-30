@@ -44,7 +44,8 @@ dependencies:
   curved_navigation_bar: ^1.0.6
   speech_to_text: ^7.0.0
   translator: ^1.0.3+1
-  speech_to_text_google_dialog: 0.0.6 
+#  speech_to_text_google_dialog: 0.0.6
+  connectivity_plus: ^6.1.4
 
 
 dev_dependencies:
