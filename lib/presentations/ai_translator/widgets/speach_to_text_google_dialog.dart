@@ -30,7 +30,7 @@
 //             mainAxisSize: MainAxisSize.min,
 //             children: [
 //               const Text(
-//                 "Voice Translator",
+//                 "Google",
 //                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
 //               ),
 //               const SizedBox(height: 20),

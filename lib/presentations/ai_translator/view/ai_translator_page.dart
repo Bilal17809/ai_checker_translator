@@ -30,6 +30,7 @@ class _AiTranslatorPageState extends State<AiTranslatorPage> {
       ),
       drawer: Drawer(),
       body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(
@@ -37,7 +38,7 @@ class _AiTranslatorPageState extends State<AiTranslatorPage> {
               LanguageWidget(),
               SizedBox(height: 20),
               Container(
-                height: 36,
+                height: height * 0.06,
                 decoration: BoxDecoration(
                   color: kMediumGreen2,
                   borderRadius: BorderRadius.only(
@@ -68,7 +69,7 @@ class _AiTranslatorPageState extends State<AiTranslatorPage> {
                 icons: [],
                 showFooter: false,
               ),
-              SizedBox(height: height * 0.20),
+              SizedBox(height: height * 0.14),
               Align(
                 alignment: Alignment.bottomRight,
                 child: IconButton(
@@ -78,7 +79,8 @@ class _AiTranslatorPageState extends State<AiTranslatorPage> {
                     color: kMediumGreen2,
                     size: 40,
                   ),
-                ),
+                
+                )
               ),
             ],
           ),

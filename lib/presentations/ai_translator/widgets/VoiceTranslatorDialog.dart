@@ -1,127 +1,166 @@
+import 'package:ai_checker_translator/core/theme/app_colors.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/widgets/elevated_button.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controller/translator_controller.dart';
 
-// import 'package:ai_checker_translator/presentations/ai_translator/controller/languages_controller.dart';
-// import 'package:ai_checker_translator/presentations/ai_translator/controller/translator_controller.dart';
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
+class VoiceTranslatorDialog extends StatelessWidget {
+  const VoiceTranslatorDialog({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.find<TranslatorController>();
 
-// class VoiceTranslatorDialog extends StatelessWidget {
-//   const VoiceTranslatorDialog({super.key});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.startListening();
+    });
 
-//   @override
-//   Widget build(BuildContext context) {
-//     final translatorController = Get.find<TranslatorController>();
-//     final languageController = Get.find<LanguageController>();
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Obx(() {
+        final showMid = controller.showMidDialog.value;
+        final noInternet = controller.showNoInternetDialog.value;
+        final isListening = controller.isListening.value;
+        final sourceText = controller.sourceText.value;
+        final translatedText = controller.translatedText.value;
 
-  
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       translatorController.startListening();
-//     });
+        if (translatedText.isNotEmpty) {
+          Future.delayed(const Duration(milliseconds: 1000), () {
+            if (Get.isDialogOpen ?? false) {
+              controller.stopListening();
+            }
+          });
+        }
+        Widget content;
 
-//     return Dialog(
-//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-//       child: Obx(() {
-//         final isListening = translatorController.isListening.value;
-//         final sourceText = translatorController.sourceText.value;
-//         final translatedText = translatorController.translatedText.value;
-//         final sourceLang = languageController.selectedSource.value.name;
-//         // final targetLang = languageController.selectedTarget.value.name;
+        if (noInternet) {
+          content = Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.wifi_off, size: 50, color: Colors.grey),
+              const SizedBox(height: 10),
+              const Text(
+                "No Internet Connection",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: kRed),
+                onPressed: () {
+                  controller.resetVoiceTranslation();
+                  controller.startListening();
+                },
+                child: Text("try again"),
+              ),
+            ],
+          );
+        } else if (showMid) {
+          content = Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.mic_off, size: 50, color: kRed),
+              const SizedBox(height: 10),
+              const Text("No voice detected"),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  elevatedButtons(
+                    color: Colors.grey,
+                    buttonTitle: "Cancel",
+                    onTap: () {
+                      controller.stopListening();
+                      Get.back();
+                    },
+                  ),
+                  SizedBox(width: 20),
+                  elevatedButtons(
+                    buttonTitle: "Try again",
+                    color: kMediumGreen2,
+                    onTap: () {
+                      controller.startListening();
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        } else {
+          content = Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Google",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              const SizedBox(height: 10),
+              InkWell(
+                onTap: controller.startListening,
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundColor: isListening ? Colors.lightBlue : Colors.grey,
+                  child: const Icon(Icons.mic, color: Colors.white),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                isListening ? "Listening..." : "Tap to start again",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              if (sourceText.isNotEmpty && translatedText.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    sourceText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+              if (translatedText.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    sourceText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  elevatedButtons(
+                    color: Colors.grey,
+                    buttonTitle: "Cancel",
+                    onTap: () {
+                      Get.back();
+                      // controller.stopListening();
+                    },
+                  ),
+                  SizedBox(width: 20),
+                  elevatedButtons(
+                    buttonTitle: "Ok",
+                    color: Colors.lightBlue,
+                    onTap: () {
+                      Get.back(result: translatedText);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        }
 
-     
-//         if (translatedText.isNotEmpty) {
-//           Future.delayed(const Duration(milliseconds: 800), () {
-//             if (Get.isDialogOpen ?? false) {
-//               Get.back(result: translatedText);
-//               translatorController.stopListening();
-//             }
-//           });
-//         }
-
-//         return Padding(
-//           padding: const EdgeInsets.all(20),
-//           child: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               const Text(
-//                 "Google",
-//                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//               ),
-//               const SizedBox(height: 10),
-//               Stack(
-//                 alignment: Alignment.center,
-//                 children: [
-//                   if (isListening)
-//                     const SizedBox(
-//                       width: 100,
-//                       height: 100,
-//                       child: CircularProgressIndicator(
-//                         strokeWidth: 6,
-//                         color: Colors.blue,
-//                       ),
-//                     ),
-
-//                   InkWell(
-//                     onTap: () {
-//                       if (!isListening) translatorController.startListening();
-//                     },
-//                     child: CircleAvatar(
-//                       radius: 30,
-//                       backgroundColor: isListening ? Colors.blue : Colors.red,
-//                       child: const Icon(Icons.mic, size: 30, color: Colors.white),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               SizedBox(height:10),
-//               // Text("Hi Speak something..."),
-//                     Text(
-//                 isListening ? "Listening in $sourceLang..." : "Tap mic to retry.",
-//                 style: const TextStyle(fontSize: 16, color: Colors.grey),
-//               ),
-//               // const SizedBox(height: 20),
-
-//               // Live Recognized Text
-//               if (sourceText.isNotEmpty && translatedText.isEmpty)
-//                 Column(
-//                   children: [
-//                     // const Text("You said:", style: TextStyle(fontWeight: FontWeight.bold)),
-//                     const SizedBox(height: 4),
-//                     Text(sourceText, style: const TextStyle(fontSize: 20)),
-//                   ],
-//                 ),
-
-//               // Translated Result
-//               // if (translatedText.isNotEmpty)
-//               //   Column(
-//               //     children: [
-//               //       Text("$targetLang Translation:", style: const TextStyle(fontWeight: FontWeight.bold)),
-//               //       const SizedBox(height: 4),
-//               //       Text(translatedText, style: const TextStyle(fontSize: 16)),
-//               //     ],
-//               //   ),
-
-//               const SizedBox(height: 20),
-
-//               // Retry Button
-//               if (!isListening && translatedText.isEmpty)
-//                 ElevatedButton.icon(
-//                   onPressed: translatorController.startListening,
-//                   icon: const Icon(Icons.refresh),
-//                   label: const Text("Try Again"),
-//                 ),
-
-//               // Cancel Button
-//               // TextButton(
-//               //   onPressed: () {
-//               //     translatorController.stopListening();
-//               //     Get.back();
-//               //   },
-//               //   child: const Text("Cancel"),
-//               // ),
-//             ],
-//           ),
-//         );
-//       }),
-//     );
-//   }
-// }
+        return Padding(padding: const EdgeInsets.all(16.0), child: content);
+      }),
+    );
+  }
+}
