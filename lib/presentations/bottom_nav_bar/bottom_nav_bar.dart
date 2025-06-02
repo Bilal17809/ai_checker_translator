@@ -2,6 +2,7 @@ import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bottom_navbar.dart';
 import 'package:ai_checker_translator/presentations/home/view/home_page.dart';
 import 'package:flutter/material.dart';
+import '../../translations/translation_view.dart';
 
 class BottomNavExample extends StatefulWidget {
   const BottomNavExample({super.key});
@@ -17,7 +18,7 @@ class _BottomNavExampleState extends State<BottomNavExample> {
     HomePage(),
     Placeholder(),
     Placeholder(),
-    Placeholder(),
+    TranslateScreen(),
     AiTranslatorBottomNav()
   ];
 
