@@ -1,3 +1,4 @@
+import 'package:ai_checker_translator/translations/translation_view.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import '/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: AppTheme.themeData,
         initialRoute: RoutesName.splashPage,
-      getPages: Routes.routes(),
+       getPages: Routes.routes(),
     );
   }
 }
