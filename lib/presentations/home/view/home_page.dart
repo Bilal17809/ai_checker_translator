@@ -1,6 +1,9 @@
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
+import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:panara_dialogs/panara_dialogs.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -15,7 +18,30 @@ final controller = TextEditingController();
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        PanaraConfirmDialog.show(
+          context,
+          title: "Exit App",
+          message: "Do you really want to exit the app?",
+          confirmButtonText: "Exit",
+          cancelButtonText: "No",
+          onTapCancel: () {
+            Navigator.of(context).pop();
+          },
+          onTapConfirm: () {
+            Navigator.of(context).pop();
+            SystemNavigator.pop();
+          },
+          panaraDialogType: PanaraDialogType.custom,
+          color: kMediumGreen2,
+
+          barrierDismissible: false,
+        );
+      },
+      child: Scaffold(
       appBar: CommonAppbarWidget(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -30,7 +56,7 @@ class _HomePageState extends State<HomePage> {
             AssistantInputBox(
               hintText: "Type here or paste your content",
               controller: controller,
-              icons: [Icons.mic],
+                iconButtons: [],
             ),
             const SizedBox(height: 10),
             const Padding(
@@ -54,6 +80,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      )
     );
   }
 }

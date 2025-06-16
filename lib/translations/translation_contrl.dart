@@ -1,3 +1,4 @@
+import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -202,11 +203,13 @@ class TranslationController extends GetxController {
         await flutterTts.speak(translatedText.value);
         print("############# Speaking in $selectedLanguageCode: ${translatedText.value}");
       } else {
-        Get.snackbar("Error", "No text available to speak.");
+        // Utils().toastMessage("Error\nNo text available to speak.");
       }
     } catch (e) {
       print("########## Error in TTS: ${e.toString()}");
-      Get.snackbar("############# Error", "TTS failed: ${e.toString()}");
+      Utils().toastMessage(
+        "############# Error \n TTS failed: ${e.toString()}",
+      );
     }
   }
   static const MethodChannel _channel = MethodChannel('com.example.getx_practice_app/tts');
@@ -228,7 +231,7 @@ class TranslationController extends GetxController {
 
     final textToTranslate = controller.text;
     if (textToTranslate.isEmpty) {
-      Get.snackbar("Error", "Please enter text to translate.");
+      Utils().toastMessage("Please enter text to translate.");
       return;
     }
   }
@@ -268,7 +271,7 @@ class TranslationController extends GetxController {
   void copyText() {
     if (translatedText.isNotEmpty) {
       Clipboard.setData(ClipboardData(text: translatedText.value));
-      Get.snackbar("Copied", "Translated text copied to clipboard!");
+      Utils().toastMessage("Copied\nTranslated text copied to clipboard!");
     }
   }
 
@@ -296,4 +299,10 @@ class TranslationController extends GetxController {
   // double _mapDisplayValueToPitch(double displayValue) {
   //   return (displayValue - 0.1) / 0.9;
   // }
+
+  String getFlagEmoji(String countryCode) {
+    return countryCode.toUpperCase().codeUnits.map((char) {
+      return String.fromCharCode(char + 127397);
+    }).join();
+  }
 }

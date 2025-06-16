@@ -9,7 +9,9 @@ class CustomTextFormField extends StatelessWidget {
   final FocusNode? focusNode;
   final TextInputType? keyboardType;
   final bool obscureText;
+  final bool readOnly;
   final TextStyle? style;
+  final TextDirection? textDirection;
   final TextAlign textAlign;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
@@ -25,6 +27,8 @@ class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField({
     super.key,
     required this.hintText,
+    this.textDirection,
+    this.readOnly = false,
     this.controller,
     this.focusNode,
     this.keyboardType,
@@ -46,6 +50,7 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: readOnly,
       controller: controller,
       focusNode: focusNode,
       keyboardType: keyboardType,
@@ -68,6 +73,7 @@ class CustomTextFormField extends StatelessWidget {
         focusedBorder: focusedBorder ?? InputBorder.none,
         enabledBorder: enabledBorder ?? InputBorder.none,
       ),
+      
     );
   }
 }
