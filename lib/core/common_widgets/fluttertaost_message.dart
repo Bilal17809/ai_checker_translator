@@ -1,6 +1,7 @@
 
 import 'dart:ui';
 
+import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -12,7 +13,7 @@ class Utils {
      toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 5,
-        backgroundColor:  const Color.fromARGB(255, 44, 43, 43),
+      backgroundColor: kMediumGreen2,
         textColor: Colors.white,
         fontSize: 16.0 
       );

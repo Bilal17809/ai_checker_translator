@@ -1,11 +1,9 @@
-
-import 'package:ai_checker_translator/core/theme/app_colors.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/controller/languages_controller.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/model/language_model.dart';
-import 'package:country_flags/country_flags.dart';
+import 'package:ai_checker_translator/translations/translation_contrl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:country_flags/country_flags.dart';
+import 'package:ai_checker_translator/core/theme/app_colors.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/controller/translator_controller.dart';
 
 class LanguageWidget extends StatelessWidget {
   const LanguageWidget({super.key});
@@ -13,7 +11,7 @@ class LanguageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     
-    final controller = Get.find<LanguageController>();
+    final controller = Get.find<TranslationController>();
 
     return Obx(
       () => Row(
@@ -21,29 +19,42 @@ class LanguageWidget extends StatelessWidget {
         children: [
           _languageDropdown(
             context: context,
-            lang: controller.selectedSource.value,
+            selectedLang: controller.selectedLanguage1.value,
             onTap:
                 () => _showLanguagePicker(
                   context,
-                  controller.languages,
-                  controller.selectedSource.value,
-                  controller.updateSource,
+                  controller.languageCodes.keys.toList(),
+                  controller.selectedLanguage1.value,
+                  (lang) => controller.selectedLanguage1.value = lang,
+                  controller.languageFlags,
                 ),
+            countryCode:
+                controller.languageFlags[controller.selectedLanguage1.value] ??
+                'US',
           ),
           IconButton(
-            onPressed: controller.switchLanguages,
+            onPressed: () {
+              final temp = controller.selectedLanguage1.value;
+              controller.selectedLanguage1.value =
+                  controller.selectedLanguage2.value;
+              controller.selectedLanguage2.value = temp;
+            },
             icon: const Icon(Icons.swap_horiz, size: 28),
           ),
           _languageDropdown(
             context: context,
-            lang: controller.selectedTarget.value,
+            selectedLang: controller.selectedLanguage2.value,
             onTap:
                 () => _showLanguagePicker(
                   context,
-                  controller.languages,
-                  controller.selectedTarget.value,
-                  controller.updateTarget,
+                  controller.languageCodes.keys.toList(),
+                  controller.selectedLanguage2.value,
+                  (lang) => controller.selectedLanguage2.value = lang,
+                  controller.languageFlags,
                 ),
+            countryCode:
+                controller.languageFlags[controller.selectedLanguage2.value] ??
+                'ES',
           ),
         ],
       ),
@@ -52,8 +63,9 @@ class LanguageWidget extends StatelessWidget {
 
   Widget _languageDropdown({
     required BuildContext context,
-    required LanguageModel lang,
+    required String selectedLang,
     required VoidCallback onTap,
+    required String countryCode,
   }) {
     return InkWell(
       onTap: onTap,
@@ -70,18 +82,21 @@ class LanguageWidget extends StatelessWidget {
           children: [
             ClipOval(
               child: CountryFlag.fromCountryCode(
-                lang.countryCode.toUpperCase(),
+                countryCode.toUpperCase(),
                 height: 24,
                 width: 24,
               ),
             ),
-            Text(
-              lang.name,
-              maxLines: 2,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
+            Flexible(
+              child: Text(
+                selectedLang,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
               ),
             ),
             const Icon(Icons.arrow_drop_down, color: Colors.white),
@@ -93,9 +108,10 @@ class LanguageWidget extends StatelessWidget {
 
   void _showLanguagePicker(
     BuildContext context,
-    List<LanguageModel> options,
-    LanguageModel selected,
-    Function(LanguageModel) onSelected,
+    List<String> options,
+    String selected,
+    Function(String) onSelected,
+    Map<String, String> languageFlags,
   ) {
     showModalBottomSheet(
       context: context,
@@ -104,14 +120,15 @@ class LanguageWidget extends StatelessWidget {
             itemCount: options.length,
             itemBuilder: (_, index) {
               final lang = options[index];
+              final code = languageFlags[lang] ?? 'US';
               return ListTile(
                 leading: CountryFlag.fromCountryCode(
-                  lang.countryCode.toUpperCase(),
+                  code.toUpperCase(),
                   height: 24,
                   width: 36,
                 ),
-                title: Text(lang.name),
-                selected: selected.countryCode == lang.countryCode,
+                title: Text(lang),
+                selected: lang == selected,
                 onTap: () {
                   onSelected(lang);
                   Get.back();

@@ -230,7 +230,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
       child: DropdownButton<String>(
         value: currentValue,
         isExpanded: true,
-        underline: Container(),
+        underline: Container(decoration: BoxDecoration(color: Colors.green)),
         items: translationController.languageCodes.keys.map((String value) {
           final countryCode = translationController.languageFlags[value] ?? 'US';
           return DropdownMenuItem<String>(
