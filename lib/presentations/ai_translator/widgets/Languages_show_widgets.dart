@@ -34,10 +34,11 @@ class LanguageWidget extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              final temp = controller.selectedLanguage1.value;
-              controller.selectedLanguage1.value =
-                  controller.selectedLanguage2.value;
-              controller.selectedLanguage2.value = temp;
+              controller.swapLanguages();
+              // final temp = controller.selectedLanguage1.value;
+              // controller.selectedLanguage1.value =
+              //     controller.selectedLanguage2.value;
+              // controller.selectedLanguage2.value = temp;
             },
             icon: const Icon(Icons.swap_horiz, size: 28),
           ),

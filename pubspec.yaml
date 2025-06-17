@@ -48,9 +48,11 @@ dependencies:
   connectivity_plus: ^6.1.4
   panara_dialogs: ^0.1.5
   fluttertoast: ^8.2.12
-
+  shared_preferences: ^2.5.3
   flutter_tts: 4.0.1
   google_mlkit_text_recognition: ^0.14.0
+  sqflite: 
+  path: ^1.9.1
 
 
 dev_dependencies:

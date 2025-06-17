@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:ai_checker_translator/presentations/home/view/home_page.dart';
+import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';

@@ -29,7 +29,7 @@ class TranslatorButton extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(children: [
-                Icon(Icons.translate,color:kWhite,size: 18,),
+                  Icon(Icons.translate, color: kWhite, size: 18),
                   Text(
                     "Translate",
                     style: TextStyle(

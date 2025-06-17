@@ -2,6 +2,7 @@ import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_wi
 import 'package:ai_checker_translator/core/common_widgets/common_widgets.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/controller/translator_controller.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/widgets/Languages_show_widgets.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/widgets/translated_text_widget.dart';
 // import 'package:ai_checker_translator/presentations/ai_translator/widgets/icon_button.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/widgets/translator_button.dart';
 import 'package:ai_checker_translator/translations/translation_contrl.dart';
@@ -34,7 +35,7 @@ class _AiTranslatorPageState extends State<AiTranslatorPage> {
       ),
       drawer: Drawer(),
       body: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
+        // physics: NeverScrollableScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(
@@ -56,9 +57,11 @@ class _AiTranslatorPageState extends State<AiTranslatorPage> {
                   title: "Write Message",
                   value: "",
                   textColor: Colors.teal,
-                  icons: [Icons.close],
+                  icons: [Icons.copy, Icons.close],
                   onIconTaps: [
-                    () => controller.clearData(), () => ()
+                    () => controller.copyText(),
+                    () => controller.clearData(),
+                
                   ],
                 ),
               ),
@@ -107,12 +110,23 @@ Obx(() {
                 );
               }),
               SizedBox(height: 20),
+              Obx(() {
+                final input = controller.controller.text.trim();
+                final translated = controller.translatedText.value.trim();
+                if (input.isNotEmpty || translated.isNotEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: TranslatedTextWidget(),
+                  );
+                } else {
+                  return Text("No History");
+                }
+              }),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-             
 
-                
                 ],
               ),
               // SizedBox(height: height * 0.08),

@@ -56,10 +56,11 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
     super.dispose();
   }
   final TranslationController controller = Get.put(TranslationController());
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.40,
+      height: MediaQuery.of(context).size.height * 0.24,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -78,22 +79,14 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Obx(() {
-            final sourceLang = controller.selectedLanguage1.value;
-            final sourceFlagCode = controller.languageFlags[sourceLang] ?? 'US';
-            final sourceFlag = controller.getFlagEmoji(sourceFlagCode);
-            if (controller.controller.text.isNotEmpty) {
-              return Text(
-                "$sourceFlag $sourceLang",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'NotoColorEmoji',
-                ),
-              );
-            }
-            return SizedBox.shrink();
-          }),
-          CustomTextFormField(
+        
+          Expanded(
+            child: Scrollbar(
+              controller: _scrollController,
+              thumbVisibility: true,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: CustomTextFormField(
             readOnly: widget.readOnly,
             textDirection: widget.textDirection,
             textAlign: widget.textalign,
@@ -101,97 +94,35 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
             hintText: widget.hintText,
             // maxLines: 10,
             border: InputBorder.none,
-          ),
-          Divider(),
-          Obx(() {
-            if (controller.translatedText.value.isNotEmpty) {
-              final isRTL = controller.isRTLLanguage(
-                controller.selectedLanguage2.value,
-              );
-              final targetLang = controller.selectedLanguage2.value;
-              final targetFlagCode =
-                  controller.languageFlags[targetLang] ?? 'ES';
-
-              final targetFlag = controller.getFlagEmoji(targetFlagCode);
-
-              return Expanded(
-                child: SingleChildScrollView(
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "$targetFlag $targetLang",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'NotoColorEmoji',
-                          ),
-                        ),
-                        Text(
-                          controller.translatedText.value,
-                          textDirection:
-                              isRTL ? TextDirection.rtl : TextDirection.ltr,
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
-              );
-            } else {
-              return const SizedBox();
-            }
-          }),
+              ),
+            ),
+          ),
+          // Divider(),
+          
 
           if (widget.showFooter) ...[
             // const SizedBox(height: 12),
-            Spacer(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children:
-                        widget.iconButtons.map((btn) {
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 00),
-                            child: btn,
-                          );
-                        }).toList(),
-                  ),
-                  Row(
-                    children: [
-                      TranslatorButton(
-                        onTap: () {
-                          final inputText = controller.controller.text;
-                          if (inputText.isNotEmpty) {
-                            controller.translate(inputText);
-                            controller.onTranslateButtonPressed();
-                            controller.speakText();
-                            // print(controller.translatedText);
-                            // print(controller.selectedLanguage2);
-                            print("Translated");
-                          } else {
-                            // print(controller.translatedText);
-                            print("Empty input. Nothing to translate.");
-                          }
-                        },
-                      ),
-                      // Text(
-                      //   "$currentLength/${widget.maxLength}",
-                      //   style: const TextStyle(
-                      //     fontSize: 12,
-                      //     color: Colors.grey,
-                      //   ),
-                      // ),
-                      const SizedBox(width: 8),
-                      // const Icon(Icons.copy, size: 20, color: kMediumGreen2),
-                    ],
-                  ),
-                ],
-              ),
+            // Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TranslatorButton(
+                  onTap: () {
+                    final inputText = controller.controller.text;
+                    if (inputText.isNotEmpty) {
+                      controller.translate(inputText);
+                      controller.onTranslateButtonPressed();
+                      controller.speakText();
+                      print("Translated");
+                    } else {
+                      print("Empty input. Nothing to translate.");
+                    }
+                  },
+                ),
+              ],
             ),
+
           ],
         ],
       ),

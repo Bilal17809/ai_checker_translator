@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translator/translator.dart';
 
 class TranslationController extends GetxController {
@@ -18,12 +19,15 @@ class TranslationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    loadFromPrefs();
   }
+
   @override
   void onClose() {
 
     super.onClose();
   }
+
   TextEditingController controller = TextEditingController();
   final translator = GoogleTranslator();
   FlutterTts flutterTts = FlutterTts();
@@ -250,6 +254,7 @@ class TranslationController extends GetxController {
       final result = await translator.translate(text, from: sourceLang, to: targetLang);
 
       translatedText.value = result.text;
+      await saveToPrefs();
       // await speakText();
 
     } catch (e) {
@@ -282,6 +287,7 @@ class TranslationController extends GetxController {
     selectedLanguage2.value = 'French';
     clearData();
     speakText();
+    clearPrefs();
   }
 
   // double _mapSpeedToDisplayValue(double value) {
@@ -304,5 +310,44 @@ class TranslationController extends GetxController {
     return countryCode.toUpperCase().codeUnits.map((char) {
       return String.fromCharCode(char + 127397);
     }).join();
+
+    
+  }
+
+void swapLanguages() {
+    // Swap selected languages
+    final tempLang = selectedLanguage1.value;
+    selectedLanguage1.value = selectedLanguage2.value;
+    selectedLanguage2.value = tempLang;
+
+    // Swap input and translated text
+    final tempText = controller.text;
+    controller.text = translatedText.value;
+    translatedText.value = tempText;
+
+    // Translate again using new source/target
+    if (controller.text.isNotEmpty) {
+      translate(controller.text);
+    }
+  }
+
+  Future<void> saveToPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('inputText', controller.text);
+    await prefs.setString('translatedText', translatedText.value);
+  }
+
+  Future<void> loadFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    controller.text = prefs.getString('inputText') ?? '';
+    translatedText.value = prefs.getString('translatedText') ?? '';
+    print("save");
+  }
+
+  Future<void> clearPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('inputText');
+    await prefs.remove('translatedText');
   }
 }
+

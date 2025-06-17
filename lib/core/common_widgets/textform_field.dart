@@ -6,6 +6,7 @@ class CustomTextFormField extends StatelessWidget {
 
   // Optional parameters
   final TextEditingController? controller;
+
   final FocusNode? focusNode;
   final TextInputType? keyboardType;
   final bool obscureText;
@@ -21,6 +22,7 @@ class CustomTextFormField extends StatelessWidget {
   final Function(String)? onChanged;
   final Function(String?)? onSaved;
   final String? Function(String?)? validator;
+  final ScrollPhysics? scrollPhysics;
   // final int hintMaxLine;
   final int? maxLines;
   
@@ -43,6 +45,7 @@ class CustomTextFormField extends StatelessWidget {
     this.onChanged,
     this.onSaved,
     this.validator,
+    this.scrollPhysics,
     // this.hintMaxLine = 0,
     this.maxLines
   });
