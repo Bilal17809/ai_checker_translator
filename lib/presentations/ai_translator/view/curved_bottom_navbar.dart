@@ -45,7 +45,6 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
 
             // translatorController.textController.clear();
             translationController.clearData();
-            translationController.clearData();
             final selectedLanguageCode =
                 '${translationController.languageCodes[translationController.selectedLanguage1.value]}-US';
             translationController.startSpeechToText(selectedLanguageCode);

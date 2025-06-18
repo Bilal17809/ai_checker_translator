@@ -3,7 +3,9 @@ import 'package:ai_checker_translator/presentations/ai_translator/view/ai_transl
 import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bottom_navbar.dart';
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
 import 'package:ai_checker_translator/presentations/bottom_nav_bar/bottom_nav_bar.dart';
+import 'package:ai_checker_translator/presentations/home/controller/menu_controller.dart';
 import 'package:ai_checker_translator/presentations/home/view/home_view.dart';
+import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
 import 'package:ai_checker_translator/presentations/splash/view/splash_page.dart';
 import 'package:get/get.dart';
 import 'routes_name.dart';
@@ -35,7 +37,13 @@ class Routes {
     GetPage(
       name: RoutesName.askaiscreen,
       page: () => AskaiScreen(),
-      // binding: AllBindins(),
+      binding: AllBindins(),
+    ),
+
+    GetPage(
+      name: RoutesName.paraphraseview,
+      page: () => ParaphraseView(),
+      binding: AllBindins(),
     ),
   ];
 }

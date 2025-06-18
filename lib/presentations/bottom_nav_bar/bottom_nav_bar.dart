@@ -2,6 +2,7 @@ import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bottom_navbar.dart';
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
 import 'package:ai_checker_translator/presentations/home/view/home_view.dart';
+import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
 import 'package:flutter/material.dart';
 import '../../translations/translation_view.dart';
 
@@ -17,7 +18,7 @@ class _BottomNavExampleState extends State<BottomNavExample> {
 
   final List<Widget> screens = [
     AskaiScreen(),
-    Placeholder(),
+    ParaphraseView(),
     HomeView(),
     TranslateScreen(),
     AiTranslatorBottomNav()
