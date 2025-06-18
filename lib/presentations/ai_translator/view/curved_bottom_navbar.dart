@@ -1,7 +1,5 @@
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/controller/translator_controller.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translator_page.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/widgets/VoiceTranslatorDialog.dart';
 import 'package:ai_checker_translator/translations/translation_contrl.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +21,7 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
     AiTranslatorPage(), 
     Center(child: Text("Refresh Page")),
   ];
-  final controller = Get.find<TranslatorController>();
+  // final controller = Get.find<TranslatorController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,10 +40,11 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
         ],
         onTap: (index) async {
           if (index == 1) {
-            final translatorController = Get.find<TranslatorController>();
+            // final translatorController = Get.find<TranslatorController>();
             final translationController = Get.put(TranslationController());
 
-            translatorController.textController.clear();
+            // translatorController.textController.clear();
+            translationController.clearData();
             translationController.clearData();
             final selectedLanguageCode =
                 '${translationController.languageCodes[translationController.selectedLanguage1.value]}-US';
