@@ -27,7 +27,9 @@ class Assets {
   );
 
   static const AssetGenImage crown = AssetGenImage('assets/icons/crown.png');
-
+  static const AssetGenImage historyicon = AssetGenImage(
+    'assets/icons/book.png',
+  );
    
   static const AssetGenImage ai = AssetGenImage('assets/ai.png');
   static const AssetGenImage book2 = AssetGenImage('assets/book-2.png');
@@ -38,6 +40,8 @@ class Assets {
       AssetGenImage('assets/dictionary.png');
   static const AssetGenImage magicBook = AssetGenImage('assets/magic-book.png');
   static const AssetGenImage translate = AssetGenImage('assets/translate.png');
+
+
    
   /// List of all assets
   static List<AssetGenImage> get values =>

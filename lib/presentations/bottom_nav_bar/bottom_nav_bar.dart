@@ -4,6 +4,7 @@ import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart
 import 'package:ai_checker_translator/presentations/home/view/home_view.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../translations/translation_view.dart';
 
 class BottomNavExample extends StatefulWidget {
@@ -14,14 +15,14 @@ class BottomNavExample extends StatefulWidget {
 }
 
 class _BottomNavExampleState extends State<BottomNavExample> {
-  int selectedIndex = 0;
+  int selectedIndex = 2; 
 
   final List<Widget> screens = [
     AskaiScreen(),
     ParaphraseView(),
     HomeView(),
     TranslateScreen(),
-    AiTranslatorBottomNav()
+    Container(), 
   ];
 
   final List<String> images = [
@@ -41,13 +42,11 @@ class _BottomNavExampleState extends State<BottomNavExample> {
   ];
 
   @override
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     final bool isTranslatorPage = selectedIndex == 4;
 
     return Scaffold(
       body: IndexedStack(index: selectedIndex, children: screens),
-
-    
       bottomNavigationBar:
           isTranslatorPage
               ? null
@@ -74,9 +73,19 @@ Widget build(BuildContext context) {
                     final isSelected = selectedIndex == index;
                     return GestureDetector(
                       onTap: () {
+                        if (index == 4) {
+                          Get.to(() => const AiTranslatorBottomNav())!.then((
+                            _,
+                          ) {
+                            setState(() {
+                              selectedIndex = 2;
+                            });
+                          });
+                        } else {
                         setState(() {
                           selectedIndex = index;
                         });
+                        }
                       },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -105,8 +114,8 @@ Widget build(BuildContext context) {
                               labels[index],
                               overflow:
                                   isSelected
-                              ? TextOverflow.visible
-                              : TextOverflow.ellipsis,
+                                      ? TextOverflow.visible
+                                      : TextOverflow.ellipsis,
                               maxLines: 1,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -124,5 +133,4 @@ Widget build(BuildContext context) {
               ),
     );
   }
-
 }

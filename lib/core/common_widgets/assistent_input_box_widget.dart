@@ -1,15 +1,14 @@
+import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/common_widgets/textform_field.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/widgets/translator_button.dart';
 import 'package:ai_checker_translator/translations/translation_contrl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
 class AssistantInputBox extends StatefulWidget {
   final int maxLength;
-  final List<IconButton> iconButtons; // 🔄 Changed from IconData to IconButton
+  final List<IconButton> iconButtons;
   final TextEditingController controller;
   final BorderRadius borderRadius;
   final bool showFooter;
@@ -17,6 +16,10 @@ class AssistantInputBox extends StatefulWidget {
   final TextAlign textalign;
   final TextDirection textDirection;
   final bool readOnly;
+  final double? customHeight;
+  final List<Widget>? footerButtons;
+  final bool showClearIcon; // ✅ NEW
+
   const AssistantInputBox({
     super.key,
     required this.controller,
@@ -28,6 +31,9 @@ class AssistantInputBox extends StatefulWidget {
     required this.hintText,
     this.textDirection = TextDirection.rtl,
     this.textalign = TextAlign.start,
+    this.customHeight,
+    this.footerButtons,
+    this.showClearIcon = false, // ✅ NEW
   });
 
   @override
@@ -55,79 +61,80 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
     widget.controller.removeListener(_updateLength);
     super.dispose();
   }
+
   final TranslationController controller = Get.put(TranslationController());
   final ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.24,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: kMediumGreen1, width: 2),
-        borderRadius: widget.borderRadius,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 6,
-            offset: const Offset(0, 4),
+    return Stack(
+      children: [
+        Container(
+          height:
+              widget.customHeight ?? MediaQuery.of(context).size.height * 0.24,
+          padding: const EdgeInsets.symmetric(horizontal: 08, vertical: 06),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: kMediumGreen1, width: 2),
+            borderRadius: widget.borderRadius,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 1,
+                blurRadius: 4,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-        
-          Expanded(
-            child: Scrollbar(
-              controller: _scrollController,
-              thumbVisibility: true,
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                child: CustomTextFormField(
-            readOnly: widget.readOnly,
-            textDirection: widget.textDirection,
-            textAlign: widget.textalign,
-            controller: widget.controller,
-            hintText: widget.hintText,
-            // maxLines: 10,
-            border: InputBorder.none,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Scrollbar(
+                  controller: _scrollController,
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: CustomTextFormField(
+                      readOnly: widget.readOnly,
+                      textDirection: widget.textDirection,
+                      textAlign: widget.textalign,
+                      controller: widget.controller,
+                      hintText: widget.hintText,
+                      border: InputBorder.none,
+                      suffixIcon: null, 
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          // Divider(),
-          
-
-          if (widget.showFooter) ...[
-            // const SizedBox(height: 12),
-            // Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TranslatorButton(
-                  onTap: () {
-                    final inputText = controller.controller.text;
-                    if (inputText.isNotEmpty) {
-                      controller.translate(inputText);
-                      controller.onTranslateButtonPressed();
-                      controller.speakText();
-                      print("Translated");
-                    } else {
-                      print("Empty input. Nothing to translate.");
-                    }
-                  },
+              if (widget.showFooter) ...[
+                // const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (widget.footerButtons != null) ...widget.footerButtons!,
+                  ],
                 ),
               ],
-            ),
-
-          ],
-        ],
+            ],
+          ),
       ),
-  
+
+        if (widget.showClearIcon && widget.controller.text.isNotEmpty)
+          Positioned(
+            top: 12,
+            right: 8,
+            child: IconButton(
+              icon: const Icon(Icons.close, size: 18),
+              onPressed: () {
+                setState(() {
+                  widget.controller.clear();
+                });
+              },
+            ),
+          ),
+      ],
     );
-  
+
   }
 }

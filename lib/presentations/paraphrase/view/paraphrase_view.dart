@@ -2,15 +2,14 @@
 import 'package:ai_checker_translator/presentations/paraphrase/controller/Categories_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:get/instance_manager.dart';
-import 'package:http/http.dart';
+// import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+// import 'package:get/instance_manager.dart';
+// import 'package:http/http.dart';
 
 class ParaphraseView extends StatefulWidget {
- 
-  const ParaphraseView({super.key,
-      
-  });
+  final int id;
+  final String menuname;
+  const ParaphraseView({super.key, this.id = 0, this.menuname = ''});
 
   @override
   State<ParaphraseView> createState() => _ParaphraseViewState();
@@ -21,12 +20,10 @@ class _ParaphraseViewState extends State<ParaphraseView> {
   final CategoriesController categoriesController = Get.put(CategoriesController());
    @override
   Widget build(BuildContext context) {
-    final args = Get.arguments as Map<String, dynamic>;
-    final id = args['id'];
-    final menuname = args['menuname'];
+  
     return Scaffold(
       appBar: AppBar(
-        title: Text(" $id $menuname"),
+        title: Text("${widget.id} ${widget.menuname}"),
         backgroundColor: Colors.teal,
         centerTitle: true,
       ),

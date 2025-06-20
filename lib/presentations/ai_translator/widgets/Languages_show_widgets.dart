@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/controller/translator_controller.dart';
 
 class LanguageWidget extends StatelessWidget {
   const LanguageWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    
     final controller = Get.find<TranslationController>();
 
     return Obx(
@@ -20,14 +18,18 @@ class LanguageWidget extends StatelessWidget {
           _languageDropdown(
             context: context,
             selectedLang: controller.selectedLanguage1.value,
-            onTap:
-                () => _showLanguagePicker(
-                  context,
-                  controller.languageCodes.keys.toList(),
-                  controller.selectedLanguage1.value,
-                  (lang) => controller.selectedLanguage1.value = lang,
-                  controller.languageFlags,
-                ),
+            onTap: () {
+              controller.flutterTts.stop();
+              _showLanguagePicker(
+                context,
+                controller.languageCodes.keys.toList(),
+                controller.selectedLanguage1.value,
+                (lang) {
+                  controller.selectedLanguage1.value = lang;
+                },
+                controller.languageFlags,
+              );
+            },
             countryCode:
                 controller.languageFlags[controller.selectedLanguage1.value] ??
                 'US',
@@ -35,24 +37,26 @@ class LanguageWidget extends StatelessWidget {
           IconButton(
             onPressed: () {
               controller.swapLanguages();
-              // final temp = controller.selectedLanguage1.value;
-              // controller.selectedLanguage1.value =
-              //     controller.selectedLanguage2.value;
-              // controller.selectedLanguage2.value = temp;
+              controller.speakText();
+              FocusScope.of(context).unfocus();
             },
             icon: const Icon(Icons.swap_horiz, size: 28),
           ),
           _languageDropdown(
             context: context,
             selectedLang: controller.selectedLanguage2.value,
-            onTap:
-                () => _showLanguagePicker(
-                  context,
-                  controller.languageCodes.keys.toList(),
-                  controller.selectedLanguage2.value,
-                  (lang) => controller.selectedLanguage2.value = lang,
-                  controller.languageFlags,
-                ),
+            onTap: () {
+              controller.flutterTts.stop();
+              _showLanguagePicker(
+                context,
+                controller.languageCodes.keys.toList(),
+                controller.selectedLanguage2.value,
+                (lang) {
+                  controller.selectedLanguage2.value = lang;
+                },
+                controller.languageFlags,
+              );
+            },
             countryCode:
                 controller.languageFlags[controller.selectedLanguage2.value] ??
                 'ES',

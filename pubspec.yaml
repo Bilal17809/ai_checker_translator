@@ -53,6 +53,7 @@ dependencies:
   google_mlkit_text_recognition: ^0.14.0
   sqflite: 
   path: ^1.9.1
+  google_generative_ai: ^0.4.7
 
 
 dev_dependencies:

@@ -25,7 +25,7 @@ class CustomTextFormField extends StatelessWidget {
   final ScrollPhysics? scrollPhysics;
   // final int hintMaxLine;
   final int? maxLines;
-  
+  // final bool showclearicon;
   const CustomTextFormField({
     super.key,
     required this.hintText,
@@ -47,7 +47,10 @@ class CustomTextFormField extends StatelessWidget {
     this.validator,
     this.scrollPhysics,
     // this.hintMaxLine = 0,
-    this.maxLines
+    this.maxLines,
+
+    // this.showclearicon = false,
+    
   });
 
   @override
@@ -75,6 +78,7 @@ class CustomTextFormField extends StatelessWidget {
         border: border ?? InputBorder.none,
         focusedBorder: focusedBorder ?? InputBorder.none,
         enabledBorder: enabledBorder ?? InputBorder.none,
+        contentPadding: EdgeInsets.symmetric(horizontal: 18)
       ),
       
     );

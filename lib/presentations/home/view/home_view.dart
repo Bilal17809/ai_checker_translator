@@ -43,8 +43,8 @@ class _HomeViewState extends State<HomeView> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 06),
               child: InkWell(
                 onTap: () {
-                  Get.to(
-                    () => ParaphraseView(),
+                  Get.toNamed(
+                    RoutesName.paraphraseview,
                     arguments: {'id': item.id, 'menuname': item.name},
                   );
 

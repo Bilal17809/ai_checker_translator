@@ -16,10 +16,14 @@ class TranslationController extends GetxController {
   final speed = 0.5.obs;
   final isSpeechPlaying = false.obs;
 
+  final RxList<String> translationHistory = <String>[].obs;
+  static const _historyKey = 'translation_history';
+
   @override
   void onInit() {
     super.onInit();
-    loadFromPrefs();
+    loadHistory();
+    // loadFromPrefs();
   }
 
   @override
@@ -180,6 +184,7 @@ class TranslationController extends GetxController {
   Future<void> speakText() async {
     try {
       // Set the TTS engine (optional for Android)
+      await flutterTts.stop();
       await flutterTts.setEngine('com.google.android.tts');
 
       // Language map with corresponding locales
@@ -251,10 +256,15 @@ class TranslationController extends GetxController {
       final sourceLang = languageCodes[selectedLanguage1.value] ?? 'en';
       final targetLang = languageCodes[selectedLanguage2.value] ?? 'es';
 
-      final result = await translator.translate(text, from: sourceLang, to: targetLang);
-
+      final result = await translator.translate(
+        text,
+        from: sourceLang,
+        to: targetLang,
+      );
       translatedText.value = result.text;
-      await saveToPrefs();
+
+      addToHistory(text, result.text);
+      // await saveToPrefs();
       // await speakText();
 
     } catch (e) {
@@ -349,5 +359,65 @@ void swapLanguages() {
     await prefs.remove('inputText');
     await prefs.remove('translatedText');
   }
+
+
+  void addToHistory(String original, String translated) async {
+    final sourceLang = selectedLanguage1.value;
+    final targetLang = selectedLanguage2.value;
+    final sourceFlag = getFlagEmoji(languageFlags[sourceLang] ?? 'US');
+    final targetFlag = getFlagEmoji(languageFlags[targetLang] ?? 'ES');
+
+    final entry =
+        "$sourceFlag $sourceLang\n$original\n||\n$targetFlag $targetLang\n$translated";
+
+    translationHistory.insert(0, entry);
+    saveHistory();
+  }
+
+  Future<void> saveHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('translationHistory', translationHistory);
+  }
+
+  Future<void> loadHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    translationHistory.value = prefs.getStringList('translationHistory') ?? [];
+  }
+
+  void clearHistory() async {
+    translationHistory.clear();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('translationHistory');
+  }
+
+  void deleteHistoryItem(int index) async {
+    translationHistory.removeAt(index);
+    saveHistory();
+    flutterTts.stop();
+  }
+
+  Future<void> speakTranslatedTextOnly(String text) async {
+    try {
+      await flutterTts.stop();
+      await flutterTts.setPitch(pitch.value);
+      await flutterTts.setSpeechRate(speed.value);
+
+      // Use selectedLanguage2's language code
+      final langCode = languageCodes[selectedLanguage2.value] ?? 'en-US';
+      await flutterTts.setLanguage(langCode);
+
+      if (text.trim().isNotEmpty) {
+        await flutterTts.speak(text.trim());
+      } else {
+        Utils().toastMessage("No translated text available to speak.");
+      }
+    } catch (e) {
+      Utils().toastMessage("Error speaking text: ${e.toString()}");
+    }
+  }
+
+
+
+
 }
 

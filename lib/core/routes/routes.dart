@@ -42,7 +42,13 @@ class Routes {
 
     GetPage(
       name: RoutesName.paraphraseview,
-      page: () => ParaphraseView(),
+      page: () {
+        final args = Get.arguments as Map<String, dynamic>? ?? {};
+        return ParaphraseView(
+          id: args['id'] ?? 0,
+          menuname: args['menuname'] ?? '',
+        );
+      },
       binding: AllBindins(),
     ),
   ];

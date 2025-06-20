@@ -1,8 +1,12 @@
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
+// import 'package:ai_checker_translator/presentations/ai_translator/widgets/icon_button.dart';
+import 'package:ai_checker_translator/presentations/aska/view/controller/gemini_controller.dart';
+import 'package:ai_checker_translator/presentations/aska/view/widgets/text_generated_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 
 
@@ -14,10 +18,14 @@ class AskaiScreen extends StatefulWidget {
 }
 
 final texteditingcontroller = TextEditingController();
+final GeminiController controller = Get.put(GeminiController());
 
 class _AskaiScreenState extends State<AskaiScreen> {
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final bottomInset = mediaQuery.viewInsets.bottom;
+    final screenHeight = mediaQuery.size.height;
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) {
@@ -42,45 +50,117 @@ class _AskaiScreenState extends State<AskaiScreen> {
         );
       },
       child: Scaffold(
-      appBar: CommonAppbarWidget(),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        appBar: CommonAppbarWidget(),
+        body: Stack(
           children: [
-            Text(
-              "Ask AI (Writing Assistant)",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            AssistantInputBox(
-              hintText: "Type here or paste your content",
-              controller: texteditingcontroller,
-                iconButtons: [],
-            ),
-            const SizedBox(height: 10),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Text.rich(
-                TextSpan(
-                  text: "Daily Limits Remaining = 10 ",
-                  style: TextStyle(fontSize: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextSpan(
-                      text: "Go Premium",
+                    const Text(
+                      "Ask AI (Writing Assistant)",
                       style: TextStyle(
-                        color: Colors.red,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    const SizedBox(height: 20),
+                    AssistantInputBox(
+                      hintText: "Type here or paste your content",
+                      controller: controller.promptController,
+                      iconButtons: [],
+                      showClearIcon: true,
+                      footerButtons: [
+                        IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.mic, size: 20, color: kMediumGreen2),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.copy,
+                            size: 20,
+                            color: kMediumGreen2,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text.rich(
+                      TextSpan(
+                        text: "Daily Limits Remaining = 10 ",
+                        style: const TextStyle(fontSize: 12),
+                        children: [
+                          TextSpan(
+                            text: "Go Premium",
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Obx(
+                      () =>
+                          controller.isLoading.value
+                              ? const Center(
+                                child: CircularProgressIndicator(
+                                  color: kMediumGreen1,
+                                ),
+                              )
+                              : ElevatedButton(
+                                onPressed: () {
+                                  controller.generateText();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      kMediumGreen2, // ✅ Background color
+                                  foregroundColor:
+                                      Colors.white, // ✅ Text/Icon color
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      12,
+                                    ), // optional rounded corners
+                                  ),
+                                ),
+                                child: const Text('Generate Text'),
+                              )
+                    ),
+
+                    const SizedBox(height: 300),
                   ],
                 ),
+              ),
+            ),
+            Positioned(
+              bottom: bottomInset,
+              left: 0,
+              right: 0,
+              top: screenHeight * 0.50,
+              child: Obx(
+                () =>
+                    controller.responseText.isEmpty
+                        ? const SizedBox()
+                        : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: SingleChildScrollView(
+                            child: GeneratedTextWidget(
+                              text: controller.responseText.value,
+                            ),
+                          ),
+                        ),
               ),
             ),
           ],
         ),
       ),
-      )
     );
+    
   }
 }
