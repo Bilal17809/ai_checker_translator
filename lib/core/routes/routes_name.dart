@@ -7,6 +7,8 @@ class RoutesName {
   static const String aitranslationpage = '/ai_translation_page';
   static const String aiTranslatornavbar = "/ai_translator_bottom_navbar";
   static const String paraphraseview = "/paraphrase_view";
+  static const String aidictionary = "/ai_dictionary";
+  static const String quizdetailscreen = "/quiz_detail_screen";
 
   // static const String aiDictionaryPage = 'aiDictionary_page';
 }

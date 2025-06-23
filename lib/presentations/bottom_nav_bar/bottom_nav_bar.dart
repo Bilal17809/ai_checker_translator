@@ -1,4 +1,5 @@
 import 'package:ai_checker_translator/gen/assets.gen.dart';
+import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bottom_navbar.dart';
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
 import 'package:ai_checker_translator/presentations/home/view/home_view.dart';
@@ -21,7 +22,7 @@ class _BottomNavExampleState extends State<BottomNavExample> {
     AskaiScreen(),
     ParaphraseView(),
     HomeView(),
-    TranslateScreen(),
+    AiDictionaryPage(),
     Container(), 
   ];
 

@@ -1,3 +1,4 @@
+import 'package:ai_checker_translator/database/helper/html_helper.dart';
 
 class CategoriesModel {
 
@@ -17,8 +18,8 @@ required this.content
     return CategoriesModel(
       catID: map['CatID'] as int?,
       menuID: map['MenuID'] as int?,
-      catName: map['CatName'] ?? '',
-      content: map['Content'] ?? '',
+      catName: HtmlHelper.stripHtmlTags(map['CatName'] ?? 'Unknown'),
+      content: HtmlHelper.stripHtmlTags(map['Content'] ?? 'Unknown'),
     );
   }
   

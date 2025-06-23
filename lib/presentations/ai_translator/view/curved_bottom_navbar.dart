@@ -27,8 +27,9 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        FocusScope.of(context).unfocus();
+       
         Get.back();
+        FocusScope.of(context).unfocus();
         controller.controller.clear();
 
         return false;

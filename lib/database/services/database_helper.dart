@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:ai_checker_translator/database/models/categories_model.dart';
 import 'package:ai_checker_translator/database/models/menu_model.dart';
+import 'package:ai_checker_translator/database/models/quiz_details_model.dart';
+import 'package:ai_checker_translator/database/models/quizzes_model.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -62,6 +64,42 @@ Future<List<CategoriesModel>> fetchCategories() async {
     return [];
   }
 }
+
+
+Future<List<QuizzesModel>> fetcQuizzes() async {
+    try {
+      final List<Map<String, dynamic>> quizzesdata = await _db.query('Quizzes');
+      if (quizzesdata.isNotEmpty) {
+        return quizzesdata.map((e) => QuizzesModel.fromMap(e)).toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error fetching Quizzes:$e");
+      return [];
+    }
+  }
+
+  Future<List<QuizDetailsModel>> fetchQuizDetailsByQuizID(int quizID) async {
+    try {
+      final List<Map<String, dynamic>> quizzesDetailData = await _db.query(
+        'QuizDetail',
+        where: 'QuizID = ?',
+        whereArgs: [quizID],
+      );
+
+      if (quizzesDetailData.isNotEmpty) {
+        return quizzesDetailData
+            .map((e) => QuizDetailsModel.fromMap(e))
+            .toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error fetching Quiz Details for QuizID $quizID: $e");
+      return [];
+    }
+  }
 
 
 

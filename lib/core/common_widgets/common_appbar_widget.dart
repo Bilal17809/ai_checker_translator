@@ -12,8 +12,9 @@ class CommonAppbarWidget extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      centerTitle: true,
       actions: [
-        Image.asset(Assets.crown.path, height: 28),
+        // Image.asset(Assets.crown.path, height: 28),
         SizedBox(width: 6),
         Icon(Icons.more_vert, size: 28),
       ],

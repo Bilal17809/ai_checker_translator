@@ -9,6 +9,18 @@ class CategoriesController extends GetxController {
   var categoriesList = <CategoriesModel>[].obs;
   var isLoading = true.obs;
 
+  var grammardataname =
+      <String>[
+        "Noun",
+        "Verb",
+        "Subject"
+            "Pronoun",
+        "Adjective and Adverbs",
+        "Who and Whom",
+        "Which, That, and Who",
+      ].obs;
+       
+
   @override
   void onInit() {
     super.onInit();

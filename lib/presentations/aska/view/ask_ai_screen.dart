@@ -50,6 +50,7 @@ class _AskaiScreenState extends State<AskaiScreen> {
         );
       },
       child: Scaffold(
+      
         appBar: CommonAppbarWidget(),
         body: Stack(
           children: [
@@ -75,12 +76,16 @@ class _AskaiScreenState extends State<AskaiScreen> {
                       showClearIcon: true,
                       footerButtons: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            controller.startMicInput(languageISO: 'en-US');
+                          },
                           icon: Icon(Icons.mic, size: 20, color: kMediumGreen2),
                         ),
                         const Spacer(),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            controller.copyTextwithassitantbox();
+                          },
                           icon: Icon(
                             Icons.copy,
                             size: 20,
@@ -106,6 +111,7 @@ class _AskaiScreenState extends State<AskaiScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
+                   
                     Obx(
                       () =>
                           controller.isLoading.value
@@ -117,16 +123,17 @@ class _AskaiScreenState extends State<AskaiScreen> {
                               : ElevatedButton(
                                 onPressed: () {
                                   controller.generateText();
+                                  FocusScope.of(context).unfocus();
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
-                                      kMediumGreen2, // ✅ Background color
+                                      kMediumGreen2,
                                   foregroundColor:
-                                      Colors.white, // ✅ Text/Icon color
+                                      Colors.white, 
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(
                                       12,
-                                    ), // optional rounded corners
+                                    ), 
                                   ),
                                 ),
                                 child: const Text('Generate Text'),
