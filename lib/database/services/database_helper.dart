@@ -53,7 +53,11 @@ Future<List<MenuModel>> fetchMenu() async {
 
 Future<List<CategoriesModel>> fetchCategories() async {
   try {
-    final List<Map<String, dynamic>> data = await _db.query('Categories',);
+      final List<Map<String, dynamic>> data = await _db.query(
+        'Categories',
+        where: "MenuID = 5",
+        whereArgs: [],
+      );
     if (data.isNotEmpty) {
       return data.map((e) => CategoriesModel.fromMap(e)).toList();
     } else {
@@ -102,6 +106,26 @@ Future<List<QuizzesModel>> fetcQuizzes() async {
   }
 
 
+
+
+Future<List<CategoriesModel>> fetchLevelsByCategoryName(int menuId) async {
+    try {
+      final List<Map<String, dynamic>> data = await _db.query(
+        'Categories',
+        where: "MenuID = ? AND CatName LIKE ?",
+        whereArgs: [menuId],
+      );
+
+      if (data.isNotEmpty) {
+        return data.map((e) => CategoriesModel.fromMap(e)).toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error fetching levels: $e");
+      return [];
+    }
+  }
 
 
  

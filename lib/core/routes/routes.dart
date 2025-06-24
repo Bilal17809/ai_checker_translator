@@ -1,4 +1,5 @@
 import 'package:ai_checker_translator/bindings/bindings.dart';
+import 'package:ai_checker_translator/presentations/Quiz_levels/view/quiz_level_screen.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translator_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bottom_navbar.dart';
@@ -62,6 +63,12 @@ class Routes {
     GetPage(
       name: RoutesName.quizdetailscreen,
       page: () => QuizDetailScreen(quizID: Get.arguments as int),
+      binding: AllBindins(),
+    ),
+
+    GetPage(
+      name: RoutesName.quizdetailscreen,
+      page: () => QuizLevelScreen(),
       binding: AllBindins(),
     ),
   ];

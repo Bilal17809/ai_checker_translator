@@ -9,6 +9,7 @@ class RoutesName {
   static const String paraphraseview = "/paraphrase_view";
   static const String aidictionary = "/ai_dictionary";
   static const String quizdetailscreen = "/quiz_detail_screen";
+  static const String quizlevelscreen = "/quiz_level_screen";
 
   // static const String aiDictionaryPage = 'aiDictionary_page';
 }

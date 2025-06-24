@@ -1,15 +1,16 @@
-
+import 'package:ai_checker_translator/core/routes/routes_name.dart';
+import 'package:ai_checker_translator/presentations/Quiz_levels/controller/quizzeslevel_controller.dart';
+import 'package:ai_checker_translator/presentations/Quiz_levels/view/quiz_level_screen.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/controller/Categories_controller.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/widget/quizzess_grammar_widget.dart';
+import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-// import 'package:get/instance_manager.dart';
-// import 'package:http/http.dart';
 
 class ParaphraseView extends StatefulWidget {
   final int id;
   final String menuname;
+
   const ParaphraseView({super.key, this.id = 0, this.menuname = ''});
 
   @override
@@ -17,11 +18,14 @@ class ParaphraseView extends StatefulWidget {
 }
 
 class _ParaphraseViewState extends State<ParaphraseView> {
-
   final CategoriesController categoriesController = Get.put(CategoriesController());
-   @override
+  final QuizDetailController quizDetailController = Get.put(
+    QuizDetailController(),
+  );
+  final quizzeslevelController = Get.put(QuizzeslevelController());
+
+  @override
   Widget build(BuildContext context) {
-  
     return Scaffold(
       appBar: AppBar(
         title: Text("${widget.id} ${widget.menuname}"),
@@ -29,52 +33,34 @@ class _ParaphraseViewState extends State<ParaphraseView> {
         centerTitle: true,
       ),
       body: Obx(() {
-        if (categoriesController.isLoading.value) {
+        if (quizzeslevelController.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (categoriesController.categoriesList.isEmpty) {
+        if (quizzeslevelController.grammarCategories.isEmpty) {
           return const Center(child: Text("No categories found"));
         }
 
         return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          padding: const EdgeInsets.all(12),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            mainAxisSpacing: 04,
-            crossAxisSpacing: 04,
-            // childAspectRatio: 2.6,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
           ),
-          itemCount: 7,
+          itemCount: quizzeslevelController.grammarCategories.length,
           itemBuilder: (context, index) {
-            QuizzessGrammarWidget(grammarTitle: "grammarTitle", quizNumber: 0);
+            final item = quizzeslevelController.grammarCategories[index];
+            return QuizzessGrammarWidget(
+              grammarTitle: item['title'], // use map key
+              quizNumber: "Quiz: ${item['quizCount']}", // use map key
+              onTap: () {
+                // ✅ Passing Map directly as argument
+                Get.to(() => const QuizLevelScreen(), arguments: item);
+              },
+            );
           },
         );
-         
-
-        // ListView.builder(
-        //   itemCount: categoriesController.categoriesList.length,
-        //   itemBuilder: (context, index) {
-        //     final item = categoriesController.categoriesList[index];
-        //     return Card(
-        //       margin: const EdgeInsets.all(10),
-        //       elevation: 4,
-        //       child: Padding(
-        //         padding: const EdgeInsets.all(12),
-        //         child: Column(
-        //           crossAxisAlignment: CrossAxisAlignment.start,
-        //           children: [
-        //             // Text("Category ID: ${item.catID}"),
-        //             // Text("Menu ID: ${item.menuID}"),
-        //             // Text("Category Name: ${item.catName}",
-        //             //     style: const TextStyle(fontWeight: FontWeight.bold)),
-        //             // const SizedBox(height: 8),
-        //             // // Text("Content: ${item.content}"),
-        //           ],
-        //         ),
-        //       ),
-        //     );
-        //   },
-        // );
       }),
     );
   }
