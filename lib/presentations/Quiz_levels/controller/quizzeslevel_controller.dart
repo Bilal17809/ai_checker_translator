@@ -3,45 +3,84 @@ import 'package:ai_checker_translator/database/services/database_helper.dart';
 import 'package:get/get.dart';
 
 class QuizzeslevelController extends GetxController {
-  
   var categoriesList = <CategoriesModel>[].obs;
-  var grammarCategories = <Map<String, dynamic>>[].obs;
+  var filteredCategoriesList = <CategoriesModel>[].obs;
   var isLoading = false.obs;
+  var selectedCategory = ''.obs;
+
+  // ✅ New Observables
+  var totalQuizCount = 0.obs;
+  var totalQuestionCount = 0.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchGrammarCategoriesFromDB();
+    // Don’t fetch all data until a category is selected
   }
 
-  Future<void> fetchGrammarCategoriesFromDB() async {
+  /// Fetch all levels and filter them based on category name
+  Future<void> fetchLevelsByCategory(String categoryName) async {
     try {
       isLoading.value = true;
+      selectedCategory.value = categoryName;
 
       final db = DatabaseHelper();
       await db.initDatabase();
-      final fetchedList = await db.fetchLevelsByCategoryName(5); 
+
+      final fetchedList = await db.fetchLevelsByCategoryName(5);
       categoriesList.value = fetchedList;
 
-      // 🔄 Group by catName and count occurrences
-      final Map<String, int> grouped = {};
-      for (var item in fetchedList) {
-        final catName = item.catName.trim();
-        grouped[catName] = (grouped[catName] ?? 0) + 1;
+      filterLevelsByCategory(categoryName);
+
+      /// ✅ New: Count quizzes and questions after filtering
+      int quizCount = 0;
+      int questionCount = 0;
+
+      for (final category in filteredCategoriesList) {
+        final catId = category.catID;
+        if (catId != null) {
+          final quizzes = await db.fetchQuizzesByCatId(catId);
+          quizCount += quizzes.length;
+
+          for (final quiz in quizzes) {
+            final details = await db.fetchQuizDetailsByQuizID(quiz.quizID ?? 0);
+            questionCount += details.length;
+          }
+        }
       }
 
-      // 🔁 Convert grouped map to List<Map<String, dynamic>>
-      grammarCategories.value = grouped.entries.map((entry) {
-        return {
-          'title': entry.key,
-          'level': grouped.keys.toList().indexOf(entry.key) + 1, 
-          'quizCount': entry.value,
-        };
-      }).toList();
+      totalQuizCount.value = quizCount;
+      totalQuestionCount.value = questionCount;
+
     } catch (e) {
-      print("Error in fetchGrammarCategoriesFromDB: $e");
+      print("Error in fetchLevelsByCategory: $e");
+      totalQuizCount.value = 0;
+      totalQuestionCount.value = 0;
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  void filterLevelsByCategory(String categoryName) {
+    if (categoryName.isEmpty) {
+      filteredCategoriesList.value = categoriesList;
+      return;
+    }
+
+    var filtered =
+        categoriesList.where((category) {
+          String catName = (category.catName ?? '').toLowerCase().trim();
+          String searchCategory = categoryName.toLowerCase().trim();
+          return catName.startsWith(searchCategory);
+        }).toList();
+
+    filteredCategoriesList.value = filtered;
+    print('✅ Filtered ${filtered.length} levels for category: $categoryName');
+  }
+
+  Future<void> refreshData() async {
+    if (selectedCategory.value.isNotEmpty) {
+      await fetchLevelsByCategory(selectedCategory.value);
     }
   }
 }

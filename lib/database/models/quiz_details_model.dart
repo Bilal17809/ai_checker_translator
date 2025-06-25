@@ -1,4 +1,3 @@
-
 class QuizDetailsModel {
 
   final int quizDeatailID;
@@ -15,10 +14,10 @@ class QuizDetailsModel {
 
   factory QuizDetailsModel.fromMap(Map<String,dynamic>map){
     return QuizDetailsModel(
-      quizDeatailID: map["QuizDetailID"] as int,
-       quizID: map["QuizID"] as int,
-        content: map["Content"] ?? "Unknown", 
+        quizDeatailID: map["QuizDetailID"] as int,
+        quizID: map["QuizID"] as int,
+        content: map["Content"] ?? "Unknown",
         code: map["Code"]?? "Unknown"
-        );
+    );
   }
 }

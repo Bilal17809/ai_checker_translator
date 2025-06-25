@@ -129,6 +129,20 @@ Future<List<CategoriesModel>> fetchLevelsByCategoryName(int menuId) async {
     }
   }
 
+  Future<List<QuizzesModel>> fetchQuizzesByCatId(int catId) async {
+    try {
+      final List<Map<String, dynamic>> result = await _db.query(
+        'Quizzes',
+        where: 'CatID = ?', // Make sure column name is correct!
+        whereArgs: [catId],
+      );
+      return result.map((e) => QuizzesModel.fromMap(e)).toList();
+    } catch (e) {
+      print("❌ Error fetching quizzes by catId: $e");
+      return [];
+    }
+  }
+
 
 //  static final DatabaseHelper _instance = DatabaseHelper._internal();
 //   factory DatabaseHelper() => _instance;

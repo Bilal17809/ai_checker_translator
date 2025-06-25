@@ -1,15 +1,16 @@
 import 'package:ai_checker_translator/bindings/bindings.dart';
-import 'package:ai_checker_translator/presentations/Quiz_levels/view/quiz_level_screen.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translator_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bottom_navbar.dart';
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
 import 'package:ai_checker_translator/presentations/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:ai_checker_translator/presentations/home/view/home_view.dart';
+import 'package:ai_checker_translator/presentations/paraphrase/quizzes/quizzes_screen.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/view/quiz_detail_screen.dart';
 import 'package:ai_checker_translator/presentations/splash/view/splash_page.dart';
 import 'package:get/get.dart';
+import '../../presentations/Quiz_levels/view/quiz_level_screen.dart';
 import 'routes_name.dart';
 
 class Routes {
@@ -69,6 +70,12 @@ class Routes {
     GetPage(
       name: RoutesName.quizdetailscreen,
       page: () => QuizLevelScreen(),
+      binding: AllBindins(),
+    ),
+
+    GetPage(
+      name: RoutesName.quizzesscreen,
+      page: () => QuizzesScreen(),
       binding: AllBindins(),
     ),
   ];

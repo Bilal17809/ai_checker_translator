@@ -10,6 +10,6 @@ class RoutesName {
   static const String aidictionary = "/ai_dictionary";
   static const String quizdetailscreen = "/quiz_detail_screen";
   static const String quizlevelscreen = "/quiz_level_screen";
-
+  static const String quizzesscreen = "/quizzes_scren";
   // static const String aiDictionaryPage = 'aiDictionary_page';
 }

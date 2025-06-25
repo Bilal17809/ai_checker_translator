@@ -18,13 +18,13 @@ class QuizzesModel {
   });
 
   factory QuizzesModel.fromMap(Map<String, dynamic> map) {
-  return QuizzesModel(
-    quizID: map["QuizID"] as int,
-    catID: map["CatID"] as int,
-    content: HtmlHelper.stripHtmlTags(map["Content"] ?? "Unknown"),
-    answer: HtmlHelper.stripHtmlTags(map["Answer"] ?? "Unknown"),
-    explanation: HtmlHelper.stripHtmlTags(map["Explanation"] ?? "Unknown"),
-  );
-}
+    return QuizzesModel(
+      quizID: map["QuizID"] as int,
+      catID: map["CatID"] as int,
+      content: HtmlHelper.stripHtmlTags(map["Content"] ?? "Unknown"),
+      answer: HtmlHelper.stripHtmlTags(map["Answer"] ?? "Unknown"),
+      explanation: HtmlHelper.stripHtmlTags(map["Explanation"] ?? "Unknown"),
+    );
+  }
 
 }
