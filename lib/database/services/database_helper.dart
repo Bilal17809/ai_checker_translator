@@ -55,7 +55,7 @@ Future<List<CategoriesModel>> fetchCategories() async {
   try {
       final List<Map<String, dynamic>> data = await _db.query(
         'Categories',
-        where: "MenuID = 5",
+        where: "MenuID = ?",
         whereArgs: [],
       );
     if (data.isNotEmpty) {
@@ -83,6 +83,8 @@ Future<List<QuizzesModel>> fetcQuizzes() async {
       return [];
     }
   }
+
+
 
   Future<List<QuizDetailsModel>> fetchQuizDetailsByQuizID(int quizID) async {
     try {
@@ -126,13 +128,6 @@ Future<List<CategoriesModel>> fetchLevelsByCategoryName(int menuId) async {
       return [];
     }
   }
-
-
- 
-
-
-
-
 
 
 //  static final DatabaseHelper _instance = DatabaseHelper._internal();
