@@ -85,7 +85,7 @@ Future<List<QuizzesModel>> fetcQuizzes() async {
   }
 
 
-
+//fetch quizess details
   Future<List<QuizDetailsModel>> fetchQuizDetailsByQuizID(int quizID) async {
     try {
       final List<Map<String, dynamic>> quizzesDetailData = await _db.query(
@@ -109,12 +109,11 @@ Future<List<QuizzesModel>> fetcQuizzes() async {
 
 
 
-
 Future<List<CategoriesModel>> fetchLevelsByCategoryName(int menuId) async {
     try {
       final List<Map<String, dynamic>> data = await _db.query(
         'Categories',
-        where: "MenuID = ? AND CatName LIKE ?",
+        where: "MenuID = ?",
         whereArgs: [menuId],
       );
 
@@ -128,6 +127,7 @@ Future<List<CategoriesModel>> fetchLevelsByCategoryName(int menuId) async {
       return [];
     }
   }
+  
 
   Future<List<QuizzesModel>> fetchQuizzesByCatId(int catId) async {
     try {
@@ -138,7 +138,7 @@ Future<List<CategoriesModel>> fetchLevelsByCategoryName(int menuId) async {
       );
       return result.map((e) => QuizzesModel.fromMap(e)).toList();
     } catch (e) {
-      print("❌ Error fetching quizzes by catId: $e");
+      print("Error fetching quizzes by catId: $e");
       return [];
     }
   }

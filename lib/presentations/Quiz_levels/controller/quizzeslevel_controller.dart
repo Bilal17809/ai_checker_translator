@@ -75,7 +75,10 @@ class QuizzeslevelController extends GetxController {
         }).toList();
 
     filteredCategoriesList.value = filtered;
-    print('✅ Filtered ${filtered.length} levels for category: $categoryName');
+    print('📋 Total categories in categoriesList: ${categoriesList.length}');
+    for (var category in categoriesList) {
+      print('➡️ ${category.catName}');
+    }
   }
 
   Future<void> refreshData() async {

@@ -5,9 +5,10 @@ import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bo
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
 import 'package:ai_checker_translator/presentations/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:ai_checker_translator/presentations/home/view/home_view.dart';
-import 'package:ai_checker_translator/presentations/paraphrase/quizzes/quizzes_screen.dart';
+import 'package:ai_checker_translator/presentations/quizzes/quizzes_screen.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/view/quiz_detail_screen.dart';
+import 'package:ai_checker_translator/presentations/quizzes_result/quizzes_result_screen.dart';
 import 'package:ai_checker_translator/presentations/splash/view/splash_page.dart';
 import 'package:get/get.dart';
 import '../../presentations/Quiz_levels/view/quiz_level_screen.dart';
@@ -76,6 +77,12 @@ class Routes {
     GetPage(
       name: RoutesName.quizzesscreen,
       page: () => QuizzesScreen(),
+      binding: AllBindins(),
+    ),
+
+    GetPage(
+      name: RoutesName.quizzesresultscreen,
+      page: () => QuizResultScreen(),
       binding: AllBindins(),
     ),
   ];

@@ -1,27 +1,20 @@
-
 import 'package:ai_checker_translator/database/models/quiz_details_model.dart';
 import 'package:ai_checker_translator/database/models/quizzes_model.dart';
 import 'package:ai_checker_translator/database/services/database_helper.dart';
 import 'package:get/get.dart';
 
 class QuizDetailController extends GetxController {
-  
-  var details = <QuizDetailsModel>[].obs;
-  var isLoading = true.obs;
   var quizzesList = <QuizzesModel>[].obs;
+  var details = <QuizDetailsModel>[].obs;
+  var currentPage = 0.obs;
+  var isResultMode = false.obs;
 
-  Future<void> fetchDetails(int quizID) async {
-    isLoading.value = true;
-    final db = DatabaseHelper();
-    await db.initDatabase();
-    details.value = await db.fetchQuizDetailsByQuizID(quizID);
-    isLoading.value = false;
-  }
+  var isLoading = false.obs;
 
+  // ✅ Track selected answers: quizID → selected content
+  var selectedAnswers = <int, String>{}.obs;
 
-
-
-
+  /// ✅ Fetch quizzes by category ID and all related quiz options
   Future<void> fetchQuizzesByCategoryId(int catId) async {
     try {
       isLoading.value = true;
@@ -29,14 +22,89 @@ class QuizDetailController extends GetxController {
       final db = DatabaseHelper();
       await db.initDatabase();
 
-      // Fetch all quizzes with matching catId
-      final result = await db.fetchQuizzesByCatId(catId);
-      quizzesList.value = result;
-      print("Fetched ${result.length} quizzes for catId: $catId");
+      final quizzes = await db.fetchQuizzesByCatId(catId);
+      quizzesList.value = quizzes;
+      print("✅ Fetched ${quizzes.length} quizzes for catId: $catId");
+
+      final allDetails = <QuizDetailsModel>[];
+      for (final quiz in quizzes) {
+        if (quiz.quizID != null) {
+          final options = await db.fetchQuizDetailsByQuizID(quiz.quizID);
+          allDetails.addAll(options);
+        }
+      }
+
+      details.value = allDetails;
+      print("✅ Fetched ${details.length} total quiz options");
     } catch (e) {
-      print("Error fetching quizzes: $e");
+      print("❌ Error fetching quizzes or details: $e");
     } finally {
       isLoading.value = false;
     }
+  }
+
+  /// ✅ Fetch options for a specific quiz
+  Future<void> fetchDetails(int quizID) async {
+    try {
+      isLoading.value = true;
+
+      final db = DatabaseHelper();
+      await db.initDatabase();
+
+      final options = await db.fetchQuizDetailsByQuizID(quizID);
+      details.value = options;
+      print("✅ Fetched ${options.length} options for quizID: $quizID");
+
+    } catch (e) {
+      print("❌ Error fetching quiz details: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// ✅ Select an answer
+  void selectAnswer(int quizID, String content) {
+    if (!selectedAnswers.containsKey(quizID)) {
+      selectedAnswers[quizID] = content;
+    }
+  }
+
+  /// ✅ Check if user selected the correct option by matching code
+  bool isCorrectAnswer(int quizID, String selectedContent) {
+    final quiz = quizzesList.firstWhereOrNull((q) => q.quizID == quizID);
+    final selectedOption = details.firstWhereOrNull(
+      (d) => d.quizID == quizID && d.content == selectedContent,
+    );
+
+    if (quiz == null || selectedOption == null) return false;
+
+    return quiz.answer.trim().toLowerCase() ==
+        selectedOption.code.trim().toLowerCase();
+  }
+
+  /// ✅ Check if quiz is already answered
+  bool hasAnswered(int quizID) {
+    return selectedAnswers.containsKey(quizID);
+  }
+
+  //answer correction logic
+  int get correctAnswersCount {
+    return quizzesList.where((quiz) {
+      final selected = selectedAnswers[quiz.quizID];
+      return selected != null &&
+          selected.trim().toLowerCase() == quiz.answer.trim().toLowerCase();
+    }).length;
+  }
+
+  double get percentageScore {
+    if (quizzesList.isEmpty) return 0;
+    return (correctAnswersCount / quizzesList.length) * 100;
+  }
+
+  void resetQuiz() {
+    // quizzesList.clear();
+    selectedAnswers.clear();
+    currentPage.value = 0;
+    isResultMode.value = false;
   }
 }

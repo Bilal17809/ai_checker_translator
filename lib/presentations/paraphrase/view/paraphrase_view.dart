@@ -38,18 +38,18 @@ class _ParaphraseViewState extends State<ParaphraseView> {
         }
 
         return GridView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.all(16),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
-            childAspectRatio: 1.00,
+            childAspectRatio: 3 / 3,
           ),
           itemCount: categoriesController.grammarCategories.length,
           itemBuilder: (context, index) {
             final item = categoriesController.grammarCategories[index];
             final title = item.title.trim();
-
+              
             return QuizzessGrammarWidget(
               grammarTitle: title,
               quizNumber: "Quiz: ${item.quizCount}",
@@ -61,7 +61,6 @@ class _ParaphraseViewState extends State<ParaphraseView> {
                   () => const QuizLevelScreen(),
                   arguments: item,
                 ); // Passing map to next screen
-
               },
             );
           },

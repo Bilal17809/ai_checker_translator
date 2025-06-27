@@ -14,6 +14,7 @@ const Color kBlack0D = Color(0xFF0D0D0D);
 // Grays
 const Color greyColor = Color(0xff626262);
 
+const Color kMintGreen = Color(0xff18C184);
 //green
 const greenColor = Color(0xff00AB3F);
 

@@ -1,5 +1,5 @@
+import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/controller/quizzeslevel_controller.dart';
-import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/controller/Categories_controller.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/model/grammarcategory_model.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
@@ -14,7 +14,6 @@ class QuizLevelScreen extends StatefulWidget {
 }
 
 class _QuizLevelScreenState extends State<QuizLevelScreen> {
-  
   late final GrammarCategoryModel category;
   final quizzeslevelController = Get.find<QuizzeslevelController>();
   final categoriesController = Get.find<CategoriesController>();
@@ -49,9 +48,9 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                 categoryTitle,
                 style: const TextStyle(fontSize: 18, color: Colors.white),
               ),
-              const SizedBox(width: 08),
+              const SizedBox(width: 8),
               Text(
-                "0 / ${quizzeslevelController.totalQuizCount}",
+                "0/${quizzeslevelController.totalQuizCount}",
                 style: const TextStyle(fontSize: 18, color: Colors.white),
               ),
             ],
@@ -64,7 +63,6 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
           ),
         ],
       ),
-
       body: Obx(() {
         if (quizzeslevelController.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -86,72 +84,111 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
           );
         }
 
-        return ListView.builder(
+        return GridView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: quizzeslevelController.filteredCategoriesList.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 3 / 3,
+          ),
           itemBuilder: (context, index) {
             final item = quizzeslevelController.filteredCategoriesList[index];
-            final levelIndicator = _getLevelIndicator(item.catName ?? '');
+            // final levelIndicator = _getLevelIndicator(item.catName ?? '');
 
-            return Card(
-              margin: const EdgeInsets.only(bottom: 12),
-              elevation: 4,
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Colors.teal,
-                  child: Text(
-                    levelIndicator.isNotEmpty ? levelIndicator : '${index + 1}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                /// Main Container with content
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 1)],
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () async {
+                      final catId = item.catID;
+                      if (catId != null) {
+                        await controller.fetchQuizzesByCategoryId(catId);
+                        Get.toNamed(
+                          '/quizzes_scren',
+                          arguments: {
+                            'title': item.catName,
+                            'category': category.title.trim(),
+                            'catId': catId,
+                          },
+                        );
+                      }
+                    },
+                    child: Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 20), // space for badge
+                              Center(
+                                child: Text(
+                                  "${category.title} - ${item.catName ?? 'Unknown'}",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                title: Text(
-                  item.catName ?? 'Unknown',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+
+                /// Number badge (1, 2, 3...)
+                Positioned(
+                  top: -10,
+                  left: -10,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: kMediumGreen2,
+                    ),
+                    child: Text(
+                      '${index + 1}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.teal,
-                  size: 16,
-                ),
-                onTap: () {
-                  final catId = item.catID;
+              ],
+);
 
-                  if (catId != null) {
-                    controller.fetchQuizzesByCategoryId(catId);
-                  }
-
-                  Get.toNamed(
-                    '/quizzes_scren',
-                    arguments: {
-                      'title': item.catName,
-                      'category': categoryTitle,
-                      'catId': item.catID,
-                    },
-                  );
-                },
-              ),
-            );
           },
         );
       }),
     );
   }
-
-  // Optional: Get level label from name
-  String _getLevelIndicator(String catName) {
-    final name = catName.toLowerCase();
-    if (name.contains('level a')) return 'A';
-    if (name.contains('level b')) return 'B';
-    if (name.contains('level c')) return 'C';
-    if (name.contains('quiz 1')) return '1';
-    if (name.contains('quiz 2')) return '2';
-    if (name.contains('quiz 3')) return '3';
-    return '';
-  }
 }
+
+//   String _getLevelIndicator(String catName) {
+//     final name = catName.toLowerCase();
+//     if (name.contains('level a')) return 'A';
+//     if (name.contains('level b')) return 'B';
+//     if (name.contains('level c')) return 'C';
+//     if (name.contains('quiz 1')) return '1';
+//     if (name.contains('quiz 2')) return '2';
+//     if (name.contains('quiz 3')) return '3';
+//     return '';
+//   }
+// }
