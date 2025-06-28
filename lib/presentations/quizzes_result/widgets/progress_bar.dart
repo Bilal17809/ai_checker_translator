@@ -34,7 +34,7 @@ class ProgressBar extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: isCorrect ? Colors.green : Colors.red, // ✅ label color
+                    color: isCorrect ? Colors.green : Colors.red, 
               ),
             ),
         

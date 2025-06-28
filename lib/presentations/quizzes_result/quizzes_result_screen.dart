@@ -43,14 +43,16 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
               child: Container(
                 width: 300,
                 padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  // gradient: const LinearGradient(
-                  //   colors: [Color(0xFFF7F4FD), Color(0xFFE7E0F7)],
-                  //   begin: Alignment.topLeft,
-                  //   end: Alignment.bottomRight,
-                  // ),
-                ),
+               
+                // decoration: BoxDecoration(
+                //   borderRadius: BorderRadius.circular(24),
+                //   color: colors
+                //   // gradient: const LinearGradient(
+                //   //   colors: [Color(0xFFF7F4FD), Color(0xFFE7E0F7)],
+                //   //   begin: Alignment.topLeft,
+                //   //   end: Alignment.bottomRight,
+                //   // ),
+                // ),
                 child: Column(
                   children: [
                     ScoreCircle(score: args.score),

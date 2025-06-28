@@ -7,7 +7,6 @@ import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_v
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 class BottomNavExample extends StatefulWidget {
   const BottomNavExample({super.key});
 
@@ -16,14 +15,14 @@ class BottomNavExample extends StatefulWidget {
 }
 
 class _BottomNavExampleState extends State<BottomNavExample> {
-  int selectedIndex = 2; 
-  
+  int selectedIndex = 2;
+
   final List<Widget> screens = [
     AskAiScreen(),
     ParaphraseView(),
     HomeView(),
     AiDictionaryPage(),
-    Container(), 
+    Container(),
   ];
 
   final List<String> images = [
@@ -83,9 +82,9 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                             });
                           });
                         } else {
-                        setState(() {
-                          selectedIndex = index;
-                        });
+                          setState(() {
+                            selectedIndex = index;
+                          });
                         }
                       },
                       child: Column(

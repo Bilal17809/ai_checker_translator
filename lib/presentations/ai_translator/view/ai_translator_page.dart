@@ -7,7 +7,7 @@ import 'package:ai_checker_translator/presentations/ai_translator/widgets/Langua
 import 'package:ai_checker_translator/presentations/ai_translator/widgets/translation_history_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_widgets.dart';
-import 'package:ai_checker_translator/translations/translation_contrl.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
 
 class AiTranslatorPage extends StatefulWidget {
   AiTranslatorPage({super.key});
