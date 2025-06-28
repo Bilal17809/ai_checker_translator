@@ -14,6 +14,7 @@ class QuizLevelScreen extends StatefulWidget {
 }
 
 class _QuizLevelScreenState extends State<QuizLevelScreen> {
+
   late final GrammarCategoryModel category;
   final quizzeslevelController = Get.find<QuizzeslevelController>();
   final categoriesController = Get.find<CategoriesController>();
@@ -40,8 +41,7 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.teal,
-        title: Obx(
-          () => Row(
+        title: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
@@ -49,13 +49,13 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                 style: const TextStyle(fontSize: 18, color: Colors.white),
               ),
               const SizedBox(width: 8),
-              Text(
-                "0/${quizzeslevelController.totalQuizCount}",
-                style: const TextStyle(fontSize: 18, color: Colors.white),
-              ),
+            // Text(
+            //   "0/${quizzeslevelController.totalQuizCount}",
+            //   style: const TextStyle(fontSize: 18, color: Colors.white),
+            // ),
             ],
           ),
-        ),
+       
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -82,7 +82,7 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
               ],
             ),
           );
-        }
+        } 
 
         return GridView.builder(
           padding: const EdgeInsets.all(16),
@@ -110,6 +110,7 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(12),
                     onTap: () async {
+                      controller.resetQuiz();
                       final catId = item.catID;
                       if (catId != null) {
                         await controller.fetchQuizzesByCategoryId(catId);

@@ -18,11 +18,7 @@ class TranslatorButton extends StatelessWidget {
           height: height * 0.06,
           width: width * 0.26,
           decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              // Colors.lightGre,
-              Colors.green,
-              Colors.lightGreen
-            ]),
+            color: kMintGreen,
             borderRadius: BorderRadius.circular(16)
           ),
           child: Center(

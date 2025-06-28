@@ -4,17 +4,19 @@ import 'package:ai_checker_translator/database/services/database_helper.dart';
 import 'package:get/get.dart';
 
 class QuizDetailController extends GetxController {
+  
   var quizzesList = <QuizzesModel>[].obs;
   var details = <QuizDetailsModel>[].obs;
   var currentPage = 0.obs;
   var isResultMode = false.obs;
 
+
+void showResultMode() {
+    isResultMode.value = true;
+  }
+
   var isLoading = false.obs;
-
-  // ✅ Track selected answers: quizID → selected content
   var selectedAnswers = <int, String>{}.obs;
-
-  /// ✅ Fetch quizzes by category ID and all related quiz options
   Future<void> fetchQuizzesByCategoryId(int catId) async {
     try {
       isLoading.value = true;

@@ -5,7 +5,7 @@ class ProgressBar extends StatelessWidget {
   final int count;
   final int total;
   final Color color;
-  final bool isCorrect; // ✅ new
+  final bool isCorrect; 
 
   const ProgressBar({
     super.key,
@@ -13,7 +13,7 @@ class ProgressBar extends StatelessWidget {
     required this.count,
     required this.total,
     required this.color,
-    required this.isCorrect, // ✅ new
+    required this.isCorrect, 
   });
 
   @override
@@ -24,7 +24,7 @@ class ProgressBar extends StatelessWidget {
       tween: Tween(begin: 0, end: progress),
       duration: const Duration(seconds: 2),
       builder: (context, value, _) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 04),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

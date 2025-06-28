@@ -51,11 +51,11 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: kLightGreen1,
-        title: LogoWidget(title: 'Voice Typing All Languages'),
+        backgroundColor: kMintGreen,
+        title: LogoWidget(title: 'Translator'),
         centerTitle: true,
       ),
-      drawer: Drawer(),
+      // drawer: Drawer(),
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Stack(
@@ -71,7 +71,7 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
                   Container(
                     height: 36,
                     decoration: BoxDecoration(
-                      color: kMediumGreen2,
+                      color: kMintGreen,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10),

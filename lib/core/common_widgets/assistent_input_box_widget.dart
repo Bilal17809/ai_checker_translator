@@ -75,7 +75,7 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
           padding: const EdgeInsets.symmetric(horizontal: 08, vertical: 06),
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border.all(color: kMediumGreen1, width: 2),
+            border: Border.all(color: kMintGreen, width: 2),
             borderRadius: widget.borderRadius,
             boxShadow: [
               BoxShadow(

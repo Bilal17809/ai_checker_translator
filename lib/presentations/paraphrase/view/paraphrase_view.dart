@@ -1,3 +1,4 @@
+import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/controller/quizzeslevel_controller.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/view/quiz_level_screen.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/controller/Categories_controller.dart';
@@ -24,8 +25,8 @@ class _ParaphraseViewState extends State<ParaphraseView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.id} ${widget.menuname}"),
-        backgroundColor: Colors.teal,
+        title: Text("Quizzes", style: TextStyle(color: Colors.white)),
+        backgroundColor: kMintGreen,
         centerTitle: true,
       ),
       body: Obx(() {

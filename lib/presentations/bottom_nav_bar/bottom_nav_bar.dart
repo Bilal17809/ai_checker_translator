@@ -6,7 +6,7 @@ import 'package:ai_checker_translator/presentations/home/view/home_view.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../translations/translation_view.dart';
+
 
 class BottomNavExample extends StatefulWidget {
   const BottomNavExample({super.key});
@@ -17,7 +17,7 @@ class BottomNavExample extends StatefulWidget {
 
 class _BottomNavExampleState extends State<BottomNavExample> {
   int selectedIndex = 2; 
-
+  
   final List<Widget> screens = [
     AskaiScreen(),
     ParaphraseView(),
@@ -93,20 +93,20 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                         children: [
                           isSelected
                               ? ColorFiltered(
-                                colorFilter: const ColorFilter.mode(
-                                  Colors.blue,
+                                colorFilter: ColorFilter.mode(
+                                  Color(0xFF006400),
                                   BlendMode.srcIn,
                                 ),
                                 child: Image.asset(
                                   images[index],
-                                  height: 24,
-                                  width: 24,
+                                  height: isSelected ? 28 : 24,
+                                  width: isSelected ? 28 : 24,
                                 ),
                               )
                               : Image.asset(
                                 images[index],
-                                height: 24,
-                                width: 24,
+                                height: isSelected ? 28 : 24,
+                                width: isSelected ? 28 : 24,
                               ),
                           const SizedBox(height: 4),
                           SizedBox(
@@ -121,7 +121,10 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 12,
-                                color: isSelected ? Colors.blue : Colors.grey,
+                                color:
+                                    isSelected
+                                        ? Color(0xFF006400)
+                                        : Color(0xFF228B22),
                                 fontWeight: FontWeight.normal,
                               ),
                             ),

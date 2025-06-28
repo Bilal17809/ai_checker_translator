@@ -1,6 +1,5 @@
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translator_page.dart';
-import 'package:ai_checker_translator/presentations/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:ai_checker_translator/translations/translation_contrl.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -41,8 +40,8 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
           index: _page,
           height: 60,
           backgroundColor: Colors.transparent,
-          color: kMediumGreen2,
-          buttonBackgroundColor: kMediumGreen2,
+          color: kMintGreen,
+          buttonBackgroundColor: kMintGreen,
           items: const <Widget>[
             Text("Share", style: TextStyle(color: kWhite)),
             Icon(Icons.mic, size: 46, color: Colors.white),

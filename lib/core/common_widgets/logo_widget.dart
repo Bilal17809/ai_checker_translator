@@ -11,6 +11,6 @@ class LogoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(title,style: context.textTheme.titleLarge,);
+    return Text(title, style: TextStyle(color: Colors.white));
   }
 }

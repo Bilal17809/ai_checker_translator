@@ -78,7 +78,7 @@ class LanguageWidget extends StatelessWidget {
         height: 40,
         width: MediaQuery.of(context).size.width * 0.34,
         decoration: BoxDecoration(
-          color: kMediumGreen2,
+          color: kMintGreen,
           borderRadius: BorderRadius.circular(8),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 6),

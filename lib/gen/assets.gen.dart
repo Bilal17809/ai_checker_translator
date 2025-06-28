@@ -13,17 +13,19 @@ class Assets {
   const Assets._();
 
   //nav_bar_images
-  static const AssetGenImage askai = AssetGenImage('assets/icons/ask ai.png');
-  static const AssetGenImage home = AssetGenImage('assets/icons/home.png');
+  static const AssetGenImage askai = AssetGenImage(
+    'assets/icons/ask ai (2).png',
+  );
+  static const AssetGenImage home = AssetGenImage('assets/icons/home (2).png');
   static const AssetGenImage paraphraser = AssetGenImage(
-    'assets/icons/paraphraser.png',
+    'assets/icons/urdu dictionary.png',
   );
 
   static const AssetGenImage correction = AssetGenImage(
-    'assets/icons/translation.png',
+    'assets/icons/ai dictionary.png',
   );
   static const AssetGenImage translator = AssetGenImage(
-    'assets/icons/open-book.png',
+    'assets/icons/translator.png',
   );
 
   static const AssetGenImage crown = AssetGenImage('assets/icons/crown.png');

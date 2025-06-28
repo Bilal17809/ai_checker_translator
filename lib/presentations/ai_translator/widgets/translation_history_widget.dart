@@ -56,7 +56,7 @@ class TranslationHistoryWidget extends StatelessWidget {
                 margin: const EdgeInsets.only(bottom: 14),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  border: Border.all(color: kMediumGreen1, width: 2),
+                  border: Border.all(color: kMintGreen, width: 2),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
@@ -107,7 +107,7 @@ class TranslationHistoryWidget extends StatelessWidget {
                               },
                               icon: const Icon(
                                 Icons.volume_up,
-                                color: kMediumGreen2,
+                                color: kMintGreen,
                               ),
                             ),
 
@@ -117,7 +117,7 @@ class TranslationHistoryWidget extends StatelessWidget {
                               },
                               icon: const Icon(
                                 Icons.copy,
-                                color: kMediumGreen2,
+                                color: kMintGreen,
                               ),
                             ),
                             IconButton(
@@ -127,7 +127,7 @@ class TranslationHistoryWidget extends StatelessWidget {
                               },
                               icon: const Icon(
                                 Icons.delete,
-                                color: kMediumGreen2,
+                                color: kMintGreen,
                               ),
                             ),
                           ],
