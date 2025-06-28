@@ -1,6 +1,5 @@
 
-
-import 'package:ai_checker_translator/database/helper/html_helper.dart';
+import '../helper/html_helper.dart';
 
 class QuizzesModel {
   final int quizID;

@@ -1,7 +1,6 @@
-
-import 'package:ai_checker_translator/database/services/database_helper.dart';
-import 'package:ai_checker_translator/database/models/menu_model.dart';
 import 'package:get/get.dart';
+import '../../../data/models/menu_model.dart';
+import '../../../data/services/database_helper.dart';
 
 class DbController extends GetxController {
 

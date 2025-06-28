@@ -1,7 +1,7 @@
-import 'package:ai_checker_translator/database/models/quiz_details_model.dart';
-import 'package:ai_checker_translator/database/models/quizzes_model.dart';
-import 'package:ai_checker_translator/database/services/database_helper.dart';
 import 'package:get/get.dart';
+import '../../../data/models/quiz_details_model.dart';
+import '../../../data/models/quizzes_model.dart';
+import '../../../data/services/database_helper.dart';
 
 class QuizDetailController extends GetxController {
   

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_colors.dart';
 import '../theme/app_styles.dart';
 
 class BackIconButton extends StatelessWidget {
@@ -11,18 +12,24 @@ class BackIconButton extends StatelessWidget {
       onTap: () {
         Navigator.pop(context);
       },
-      child:Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-            decoration: rounderGreyBorderDecoration,
-            padding: const EdgeInsets.all(5),
-            child: Icon(Icons.arrow_back_ios)),
-      )
+      child: Container(
+        height: 32,
+        width: 32,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: kWhite,
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.arrow_circle_left_outlined,
+            color: kBlue,
+            size: 22,
+          ),
+        ),
+      ),
     );
   }
 }
-
-
 
 class NotificationIconButton extends StatelessWidget {
   final VoidCallback onTap;

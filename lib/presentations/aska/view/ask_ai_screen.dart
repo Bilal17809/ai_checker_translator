@@ -10,17 +10,17 @@ import 'package:get/get.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 
 
-class AskaiScreen extends StatefulWidget {
-  const AskaiScreen({super.key});
+class AskAiScreen extends StatefulWidget {
+  const AskAiScreen({super.key});
 
   @override
-  State<AskaiScreen> createState() => _AskaiScreenState();
+  State<AskAiScreen> createState() => _AskAiScreenState();
 }
 
 final texteditingcontroller = TextEditingController();
 final GeminiController controller = Get.put(GeminiController());
 
-class _AskaiScreenState extends State<AskaiScreen> {
+class _AskAiScreenState extends State<AskAiScreen> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);

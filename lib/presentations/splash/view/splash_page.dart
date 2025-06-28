@@ -18,7 +18,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
-      Get.offNamed(RoutesName.bottomnavbar);
+      Get.offNamed(RoutesName.bottomNevBar);
     });
   }
 

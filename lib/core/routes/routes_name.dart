@@ -1,6 +1,14 @@
+/*
+correct all these names must!
+warning should be remove from it
+*/
+
+
+
+
 class RoutesName {
   // static  dynamic splashPage;
-  static const String bottomnavbar = "/bottom_nav_bar";
+  static const String bottomNevBar = "/bottom_nav_bar";
   static const String splashPage = '/splash';
   static const String askaiscreen = "/askai_screen";
   static const String homePage = '/home_page';

@@ -1,7 +1,6 @@
-import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/common_widgets/textform_field.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/widgets/translator_button.dart';
+import 'package:ai_checker_translator/core/theme/app_styles.dart';
 import 'package:ai_checker_translator/translations/translation_contrl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -73,19 +72,23 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
           height:
               widget.customHeight ?? MediaQuery.of(context).size.height * 0.24,
           padding: const EdgeInsets.symmetric(horizontal: 08, vertical: 06),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: kMintGreen, width: 2),
-            borderRadius: widget.borderRadius,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                spreadRadius: 1,
-                blurRadius: 4,
-                offset: const Offset(0, 4),
-              ),
-            ],
+          decoration: roundedDecoration.copyWith(
+              border: Border.all(color: kMintGreen, width: 2),
+              borderRadius: widget.borderRadius,
           ),
+          // decoration: BoxDecoration(
+          //   color: Colors.white,
+          //   border: Border.all(color: kMintGreen, width: 2),
+          //   borderRadius: widget.borderRadius,
+          //   boxShadow: [
+          //     BoxShadow(
+          //       color: Colors.black.withOpacity(0.2),
+          //       spreadRadius: 1,
+          //       blurRadius: 4,
+          //       offset: const Offset(0, 4),
+          //     ),
+          //   ],
+          // ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

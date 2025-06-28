@@ -19,7 +19,7 @@ class _BottomNavExampleState extends State<BottomNavExample> {
   int selectedIndex = 2; 
   
   final List<Widget> screens = [
-    AskaiScreen(),
+    AskAiScreen(),
     ParaphraseView(),
     HomeView(),
     AiDictionaryPage(),
