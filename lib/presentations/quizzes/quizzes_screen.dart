@@ -20,6 +20,8 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final hight = MediaQuery.of(context).size.height;
+
     final args = Get.arguments ?? {};
     final String category = args['category'] ?? '';
     final String title = args['title'] ?? '';
@@ -27,121 +29,244 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
 
     final String levelLabel = _extractLevelFromTitle(title);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          levelLabel.isNotEmpty
-              ? '$category - Level $levelLabel'
-              : "$category - $title",
-          style: const TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.teal,
-      ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    return SafeArea(
+      child: Scaffold(
+        // appBar: AppBar(
+        //   title: Text(
+        //     levelLabel.isNotEmpty
+        //         ? '$category - Level $levelLabel'
+        //         : "$category - $title",
+        //     style: const TextStyle(color: Colors.white),
+        //   ),
+        //   backgroundColor: Colors.teal,
+        // ),
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        final quizzes = controller.quizzesList;
-        if (quizzes.isEmpty) {
-          return const Center(child: Text("No quizzes found"));
-        }
+          final quizzes = controller.quizzesList;
+          if (quizzes.isEmpty) {
+            return const Center(child: Text("No quizzes found"));
+          }
 
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 6,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SmoothPageIndicator(
-                      controller: _pageController,
-                      count: quizzes.length,
-                      effect: const WormEffect(
-                        dotHeight: 10,
-                        dotWidth: 18,
-                        activeDotColor: kMediumGreen2,
+          return Column(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            // mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  Container(
+                    height: hight * 0.34,
+                    decoration: const BoxDecoration(
+                      color: kMintGreen,
+                      borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(20),
+                        bottomLeft: Radius.circular(20),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Obx(() {
-                      final total = controller.quizzesList.length;
-                      final current = controller.currentPage.value + 1;
-                      return Text(
-                        "$current/$total",
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      );
-                    }),
-                  ],
-                ),
-              ),
-            ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 04),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // Centered Title
+                              const Center(
+                                child: Text(
+                                  "Noun",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
 
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (value) => controller.currentPage.value = value,
-                itemCount: quizzes.length,
-                itemBuilder: (context, index) {
-                  return QuizCard(
-                    index: index,
-                    onNext: () {
-                      if (index < controller.quizzesList.length - 1) {
-                        _pageController.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      } else {
-                        Get.offNamed(
-                          RoutesName.quizzesresultscreen,
-                          arguments: {
-                            'score': controller.percentageScore,
-                            'correct': controller.correctAnswersCount,
-                            'total': controller.quizzesList.length,
-                            'wrong':
-                                controller.quizzesList.length -
-                                controller.correctAnswersCount,
-                            'catId': catId,
-                            'category': category,
-                            'title': title,
-                          },
-                        );
-                      }
-                    },
-                    onBack: () {
-                      if (index > 0) {
-                        _pageController.previousPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                    },
-                  );
-                },
+                              // Back Button on the left
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios_new_outlined,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 120,
+                    ),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        // White card
+                        Container(
+                          width: double.infinity,
+                          height: hight * 0.36,
+                          padding: const EdgeInsets.only(
+                            top: 60,
+                            left: 16,
+                            right: 16,
+                            bottom: 16,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade400,
+                                blurRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 20,
+                              ), // reserve space for yellow circle
+                              const Text(
+                                "Questions: 9/10",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+
+                              const Text(
+                                "What is Noun?",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              // const SizedBox(height: 12),
+                              // ElevatedButton(
+                              //   onPressed: () {},
+                              //   child: const Text("Continue"),
+                              // ),
+                            ],
+                          ),
+                        ),
+
+                        // Yellow circle positioned to overlap the card
+                        Positioned(
+                          top: -50,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                // Outer white circle
+                                Container(
+                                  height: 110,
+                                  width: 110,
+                                  decoration: const BoxDecoration(
+                                    color: kWhite,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+
+                                // Circular progress indicator
+                                SizedBox(
+                                  height: 96,
+                                  width: 96,
+                                  child: CircularProgressIndicator(
+                                    value: 0.9,
+                                    strokeWidth: 8,
+                                    backgroundColor: Colors.white,
+                                    color: kMintGreen,
+                                  ),
+                                ),
+
+                                // Percentage text in center
+                                const Text(
+                                  "09", // you can replace with dynamic text
+                                  style: TextStyle(
+                                    fontSize: 40,
+                                    fontWeight: FontWeight.bold,
+                                    color: kMintGreen,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+
+                ],
               ),
-            ),
-          ],
-        );
-      }),
+
+
+
+              // Expanded(
+              //   child: PageView.builder(
+              //     controller: _pageController,
+              //     onPageChanged:
+              //         (value) => controller.currentPage.value = value,
+              //     itemCount: quizzes.length,
+              //     itemBuilder: (context, index) {
+              //       return QuizCard(
+              //         index: index,
+              //         onNext: () {
+              //           if (index < controller.quizzesList.length - 1) {
+              //             _pageController.nextPage(
+              //               duration: const Duration(milliseconds: 300),
+              //               curve: Curves.easeInOut,
+              //             );
+              //           } else {
+              //             Get.offNamed(
+              //               RoutesName.quizzesresultscreen,
+              //               arguments: {
+              //                 'score': controller.percentageScore,
+              //                 'correct': controller.correctAnswersCount,
+              //                 'total': controller.quizzesList.length,
+              //                 'wrong':
+              //                     controller.quizzesList.length -
+              //                     controller.correctAnswersCount,
+              //                 'catId': catId,
+              //                 'category': category,
+              //                 'title': title,
+              //               },
+              //             );
+              //           }
+              //         },
+              //         onBack: () {
+              //           if (index > 0) {
+              //             _pageController.previousPage(
+              //               duration: const Duration(milliseconds: 300),
+              //               curve: Curves.easeInOut,
+              //             );
+              //           }
+              //         },
+              //       );
+              //     },
+              //   ),
+              // ),
+            ],
+          );
+        }),
+      ),
     );
   }
 

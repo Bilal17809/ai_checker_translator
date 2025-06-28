@@ -2,6 +2,7 @@ import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/controller/quizzeslevel_controller.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/view/quiz_level_screen.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/controller/Categories_controller.dart';
+import 'package:ai_checker_translator/presentations/paraphrase/model/grammarcategory_model.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/widget/quizzess_grammar_widget.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,8 @@ class _ParaphraseViewState extends State<ParaphraseView> {
   final categoriesController = Get.put(CategoriesController());
   final quizDetailController = Get.put(QuizDetailController());
   final quizzeslevelController = Get.put(QuizzeslevelController());
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +63,8 @@ class _ParaphraseViewState extends State<ParaphraseView> {
                 ); // Map format
                 Get.to(
                   () => const QuizLevelScreen(),
-                  arguments: item,
+                  arguments: item
+                    
                 ); // Passing map to next screen
               },
             );

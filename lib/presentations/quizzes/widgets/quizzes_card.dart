@@ -35,10 +35,10 @@ class QuizCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// ✅ Quiz question
-              Text(
-                " ${quiz.content}",
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
+              // Text(
+              //   " ${quiz.content}",
+              //   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              // ),
               const SizedBox(height: 16),
 
               /// ✅ Options
