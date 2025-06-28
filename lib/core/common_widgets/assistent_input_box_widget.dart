@@ -2,7 +2,7 @@ import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.d
 import 'package:ai_checker_translator/core/common_widgets/textform_field.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/widgets/translator_button.dart';
-import 'package:ai_checker_translator/translations/translation_contrl.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
