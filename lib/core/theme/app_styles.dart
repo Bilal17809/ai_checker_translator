@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import '../constant/constant.dart';
 import 'app_colors.dart';
 
+/*
+Use all these for text style
+you don't need to style the text
+in Ui just call these widget in text style
+*/
+
 const TextStyle headlineMediumStyle = TextStyle(
   fontFamily: fontFamily,
   fontSize: 30,
@@ -85,6 +91,13 @@ final BoxDecoration roundedDecorationWithShadow = BoxDecoration(
     ),
   ],
 );
+
+
+/*
+use this for container decoration
+>>> if you need extra then just context. it will
+allow you all component
+*/
 final BoxDecoration roundedDecoration = BoxDecoration(
   color: Colors.white,
   borderRadius: BorderRadius.circular(10),

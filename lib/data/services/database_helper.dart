@@ -1,11 +1,12 @@
 import 'dart:io';
-import 'package:ai_checker_translator/database/models/categories_model.dart';
-import 'package:ai_checker_translator/database/models/menu_model.dart';
-import 'package:ai_checker_translator/database/models/quiz_details_model.dart';
-import 'package:ai_checker_translator/database/models/quizzes_model.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+
+import '../models/categories_model.dart';
+import '../models/menu_model.dart';
+import '../models/quiz_details_model.dart';
+import '../models/quizzes_model.dart';
 
 class DatabaseHelper {
 

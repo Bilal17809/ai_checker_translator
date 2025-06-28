@@ -1,4 +1,3 @@
-import 'package:ai_checker_translator/bindings/bindings.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translator_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bottom_navbar.dart';
@@ -12,6 +11,7 @@ import 'package:ai_checker_translator/presentations/quizzes_result/quizzes_resul
 import 'package:ai_checker_translator/presentations/splash/view/splash_page.dart';
 import 'package:get/get.dart';
 import '../../presentations/Quiz_levels/view/quiz_level_screen.dart';
+import '../bindings/bindings.dart';
 import 'routes_name.dart';
 
 class Routes {
@@ -23,7 +23,7 @@ class Routes {
       binding: AllBindins(),
     ),
     GetPage(
-      name: RoutesName.bottomnavbar,
+      name: RoutesName.bottomNevBar,
       page: () => BottomNavExample(),
       binding: AllBindins(),
     ),
@@ -40,7 +40,7 @@ class Routes {
 
     GetPage(
       name: RoutesName.askaiscreen,
-      page: () => AskaiScreen(),
+      page: () => AskAiScreen(),
       binding: AllBindins(),
     ),
 

@@ -1,7 +1,8 @@
-import 'package:ai_checker_translator/database/models/categories_model.dart';
-import 'package:ai_checker_translator/database/services/database_helper.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/model/grammarcategory_model.dart';
 import 'package:get/get.dart';
+
+import '../../../data/models/categories_model.dart';
+import '../../../data/services/database_helper.dart';
 
 class CategoriesController extends GetxController {
   var categoriesList = <CategoriesModel>[].obs;

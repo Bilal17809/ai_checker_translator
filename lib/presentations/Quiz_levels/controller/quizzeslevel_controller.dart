@@ -1,7 +1,6 @@
-import 'package:ai_checker_translator/database/models/categories_model.dart';
-import 'package:ai_checker_translator/database/services/database_helper.dart';
 import 'package:get/get.dart';
-
+import '../../../data/models/categories_model.dart';
+import '../../../data/services/database_helper.dart';
 class QuizzeslevelController extends GetxController {
   var categoriesList = <CategoriesModel>[].obs;
   var filteredCategoriesList = <CategoriesModel>[].obs;

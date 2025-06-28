@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+/*
+Use all these color if you need
+required extra define here just
+use in ui
+*/
+
 // Whites
 const Color kWhite = Color(0xFFFFFFFF);
 const Color kWhiteF7 = Color(0xFFF7F7F7);
@@ -59,7 +65,7 @@ const Color dividerColor = Color(0xffEDEDED);
 // const kLightGreen2 = Color(0xFFC8E6C9);
 
 // Light Theme Colors
-const kLightGreen1 = Color(0xFFE8F5E9); // #E8F5E9 – very light green background
+const kLightGreen1 = Color(0xFFE8F5E9);
 const kMediumGreen1 = Color.fromARGB(
   255,
   176,
@@ -72,11 +78,11 @@ const kMediumGreen2 = Color.fromARGB(
   194,
   96,
 ); // #5DC260 – vibrant green
-const kDarkGreen1 = Color(0xFF388E3C); // #388E3C – deep green for emphasis
+const kDarkGreen1 = Color(0xFF388E3C);
 const kDarkGreen2 = Color(
   0xFF1B5E20,
-); // #1B5E20 – darkest green (usable for text/icons)
-const kTealGreen1 = Color(0xFF26A69A); // #26A69A – teal accent
+);
+const kTealGreen1 = Color(0xFF26A69A);
 
 // Dark Theme Colors
 const kDarkLightGreen = Color(0xFF1B5E20); // #1B5E20

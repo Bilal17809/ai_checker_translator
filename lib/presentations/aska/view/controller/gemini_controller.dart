@@ -1,10 +1,11 @@
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
-import 'package:ai_checker_translator/services/api_key.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+
+import '../../../../core/globle_key/globle_key.dart';
 
 class GeminiController extends GetxController {
   final TextEditingController promptController = TextEditingController();
