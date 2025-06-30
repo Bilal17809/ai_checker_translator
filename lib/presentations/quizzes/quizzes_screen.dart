@@ -1,11 +1,12 @@
-import 'package:ai_checker_translator/core/routes/routes_name.dart';
+
+
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
-import 'package:ai_checker_translator/presentations/quizzes_result/quizzes_result_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:ai_checker_translator/presentations/quizzes/widgets/quizzes_card.dart';
+
+import '../quizzes_result/quizzes_result_screen.dart';
 
 class QuizzesScreen extends StatefulWidget {
   QuizzesScreen({super.key});
@@ -128,94 +129,37 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                           return QuizCard(
                             index: index,
                             onNext: () {
-                              try {
-                                print('=== OnNext Debug Start ===');
+                              final total = controller.quizzesList.length;
+                              final current = controller.currentPage.value;
 
-                                // Debug controller state
-                                print('Controller state:');
-                                print(
-                                  '  quizzesList: ${controller.quizzesList}',
+                              print("total $total");
+                              
+                              print("Current $current");
+                              
+
+                              if (current < total - 1) {
+                                // Move to next question
+                                _pageController.nextPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
                                 );
-                                print(
-                                  '  quizzesList.length: ${controller.quizzesList?.length}',
-                                );
-                                print(
-                                  '  currentPage: ${controller.currentPage}',
-                                );
-                                print(
-                                  '  currentPage.value: ${controller.currentPage?.value}',
-                                );
-                                print(
-                                  '  percentageScore: ${controller.percentageScore}',
-                                );
-                                print(
-                                  '  correctAnswersCount: ${controller.correctAnswersCount}',
-                                );
-
-                                // Safe null checks
-                                final quizzesList = controller.quizzesList;
-                                final currentPageRx = controller.currentPage;
-
-                                if (quizzesList == null) {
-                                  print('ERROR: quizzesList is null!');
-                                  Get.snackbar(
-                                    'Error',
-                                    'Quiz data is not available',
-                                  );
-                                  return;
-                                }
-
-                                if (currentPageRx == null) {
-                                  print('ERROR: currentPage is null!');
-                                  Get.snackbar(
-                                    'Error',
-                                    'Current page is not available',
-                                  );
-                                  return;
-                                }
-
-                                final total = quizzesList.length;
-                                final current = currentPageRx.value;
-
-                                print('Navigation values:');
-                                print('  total: $total');
-                                print('  current: $current');
-
-                                if (current < total - 1) {
-                                  print('Moving to next question...');
-                                  // Move to next question
-                                  _pageController.nextPage(
-                                    duration: const Duration(
-                                      milliseconds: 300,
-                                    ),
-                                    curve: Curves.easeInOut,
-                                  );
-                                }
-                                else {
-                                  final correct = controller.correctAnswersCount;
-                                  final total = controller.quizzesList.length;
-                                  final wrong = total - correct;
-                                  final score = ((correct / total) * 100).toDouble();
-
-                                  Get.off(() => QuizResultScreen(), arguments: {
-                                    'score': score,
-                                    'correct': correct,
-                                    'wrong': wrong,
-                                    'total': total,
-                                    'catId': catId ?? 0,
-                                    'title': title,
-                                    'category': category,
-                                  });
-                                }
-
-
-                              } catch (e, stackTrace) {
-                                print('CRITICAL ERROR in onNext: $e');
-                                print('Stack trace: $stackTrace');
-                                Get.snackbar('Error', 'An error occurred: $e');
                               }
-  
-                              print('=== OnNext Debug End ===');
+                              else {
+                                final correct = controller.correctAnswersCount;
+                                final total = controller.quizzesList.length;
+                                final wrong = total - correct;
+                                final score = ((correct / total) * 100).toDouble();
+
+                                Get.off(() => QuizResultScreen(), arguments: {
+                                  'score': score,
+                                  'correct': correct,
+                                  'wrong': wrong,
+                                  'total': total,
+                                  'catId': catId ?? 0,
+                                  'title': title,
+                                  'category': category,
+                                });
+                              }
                             },
                             onBack: () {
                               if (index > 0) {

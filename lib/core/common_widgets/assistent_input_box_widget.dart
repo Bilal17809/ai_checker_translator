@@ -1,9 +1,10 @@
 import 'package:ai_checker_translator/core/common_widgets/textform_field.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_styles.dart';
-import 'package:ai_checker_translator/translations/translation_contrl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../presentations/ai_translator/controller/translation_contrl.dart';
 
 class AssistantInputBox extends StatefulWidget {
   final int maxLength;
