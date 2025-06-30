@@ -1,7 +1,6 @@
-
-
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
+import 'package:ai_checker_translator/presentations/quizzes_result/quizzes_result_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -129,49 +128,94 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                           return QuizCard(
                             index: index,
                             onNext: () {
-                              final total = controller.quizzesList.length;
-                              final current = controller.currentPage.value;
+                              try {
+                                print('=== OnNext Debug Start ===');
 
-                              print("total $total");
-                              
-                              print("Current $current");
-                              
-
-                              if (current < total - 1) {
-                                // Move to next question
-                                _pageController.nextPage(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
+                                // Debug controller state
+                                print('Controller state:');
+                                print(
+                                  '  quizzesList: ${controller.quizzesList}',
                                 );
-                              } else {
-                              
-                                final score = controller.percentageScore ?? 0.0;
-                                final correct = controller.correctAnswersCount;
-                                final totalQuestions =
-                                    controller.quizzesList.length;
-                                final wrong = totalQuestions - correct;
+                                print(
+                                  '  quizzesList.length: ${controller.quizzesList?.length}',
+                                );
+                                print(
+                                  '  currentPage: ${controller.currentPage}',
+                                );
+                                print(
+                                  '  currentPage.value: ${controller.currentPage?.value}',
+                                );
+                                print(
+                                  '  percentageScore: ${controller.percentageScore}',
+                                );
+                                print(
+                                  '  correctAnswersCount: ${controller.correctAnswersCount}',
+                                );
 
-                                // print("score: $score");
-                                // print("correct for: $correct");
-                                // print("total question: $totalQuestions");
-                                // print("wrong: $wrong");
-                                // print("---------------------");
-                                // print("catId: $catId");
-                                // print("category: $category");
-    
-                                Get.toNamed(
-                                  "/quizzes_result_scren",
-                                  arguments: {
+                                // Safe null checks
+                                final quizzesList = controller.quizzesList;
+                                final currentPageRx = controller.currentPage;
+
+                                if (quizzesList == null) {
+                                  print('ERROR: quizzesList is null!');
+                                  Get.snackbar(
+                                    'Error',
+                                    'Quiz data is not available',
+                                  );
+                                  return;
+                                }
+
+                                if (currentPageRx == null) {
+                                  print('ERROR: currentPage is null!');
+                                  Get.snackbar(
+                                    'Error',
+                                    'Current page is not available',
+                                  );
+                                  return;
+                                }
+
+                                final total = quizzesList.length;
+                                final current = currentPageRx.value;
+
+                                print('Navigation values:');
+                                print('  total: $total');
+                                print('  current: $current');
+
+                                if (current < total - 1) {
+                                  print('Moving to next question...');
+                                  // Move to next question
+                                  _pageController.nextPage(
+                                    duration: const Duration(
+                                      milliseconds: 300,
+                                    ),
+                                    curve: Curves.easeInOut,
+                                  );
+                                }
+                                else {
+                                  final correct = controller.correctAnswersCount;
+                                  final total = controller.quizzesList.length;
+                                  final wrong = total - correct;
+                                  final score = ((correct / total) * 100).toDouble();
+
+                                  Get.off(() => QuizResultScreen(), arguments: {
                                     'score': score,
                                     'correct': correct,
-                                    'total': totalQuestions,
                                     'wrong': wrong,
-                                    'catId': catId ?? 'catId',
-                                    'category': category,
+                                    'total': total,
+                                    'catId': catId ?? 0,
                                     'title': title,
-                                  },
-                                );
+                                    'category': category,
+                                  });
+                                }
+
+
+                              } catch (e, stackTrace) {
+                                print('CRITICAL ERROR in onNext: $e');
+                                print('Stack trace: $stackTrace');
+                                Get.snackbar('Error', 'An error occurred: $e');
                               }
+  
+                              print('=== OnNext Debug End ===');
                             },
                             onBack: () {
                               if (index > 0) {

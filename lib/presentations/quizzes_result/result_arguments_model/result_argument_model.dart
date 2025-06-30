@@ -1,5 +1,3 @@
-
-// lib/presentations/quizzes_result/model/result_arguments.dart
 class ResultArguments {
   final double score;
   final int correct;
@@ -21,10 +19,10 @@ class ResultArguments {
 
   factory ResultArguments.fromMap(Map<String, dynamic> map) {
     return ResultArguments(
-      score: (map['score'] ?? 0.0).toDouble(),
+      score: map['score'] ?? 0.0,
       correct: map['correct'] ?? 0,
       wrong: map['wrong'] ?? 0,
-      total: map['total'] ?? 1,
+      total: map['total'] ?? 0,
       catId: map['catId'] ?? 0,
       title: map['title'] ?? '',
       category: map['category'] ?? '',
