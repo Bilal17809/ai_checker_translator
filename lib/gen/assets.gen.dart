@@ -12,6 +12,28 @@ import 'package:flutter/widgets.dart';
 class Assets {
   const Assets._();
 
+  //QUIZZ level screen icons
+  static const AssetGenImage verbsicon = AssetGenImage(
+    'assets/icons/verb (1).png',
+  );
+  static const AssetGenImage subjecticon = AssetGenImage(
+    'assets/icons/subjects.png',
+  );
+  static const AssetGenImage pronounsicon = AssetGenImage(
+    'assets/icons/pronouns.png',
+  );
+
+  static const AssetGenImage which = AssetGenImage('assets/icons/which.png');
+
+  static const AssetGenImage who = AssetGenImage('assets/icons/who.png');
+
+  static const AssetGenImage noun = AssetGenImage('assets/icons/noun.png');
+
+  static const AssetGenImage adjectives = AssetGenImage(
+    'assets/icons/adjectives.png',
+  );
+
+  //-----------------------------------------------------------
   //nav_bar_images
   static const AssetGenImage askai = AssetGenImage(
     'assets/icons/ask ai (2).png',

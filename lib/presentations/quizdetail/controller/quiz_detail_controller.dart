@@ -7,7 +7,7 @@ class QuizDetailController extends GetxController {
   
   var quizzesList = <QuizzesModel>[].obs;
   var details = <QuizDetailsModel>[].obs;
-  var currentPage = 0.obs;
+  var currentPage = 1.obs;
   var isResultMode = false.obs;
 
 

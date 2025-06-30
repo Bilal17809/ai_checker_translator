@@ -27,6 +27,7 @@ class _ParaphraseViewState extends State<ParaphraseView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kWhiteF7,
       appBar: AppBar(
         title: Text("Quizzes", style: TextStyle(color: Colors.white)),
         backgroundColor: kMintGreen,
@@ -45,8 +46,8 @@ class _ParaphraseViewState extends State<ParaphraseView> {
           padding: const EdgeInsets.all(16),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
+            mainAxisSpacing: 18,
+            crossAxisSpacing: 18,
             childAspectRatio: 3 / 3,
           ),
           itemCount: categoriesController.grammarCategories.length,
@@ -55,6 +56,7 @@ class _ParaphraseViewState extends State<ParaphraseView> {
             final title = item.title.trim();
               
             return QuizzessGrammarWidget(
+              icon: item.icons,
               grammarTitle: title,
               quizNumber: "Quiz: ${item.quizCount}",
               onTap: () {

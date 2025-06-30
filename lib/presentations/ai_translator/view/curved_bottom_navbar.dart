@@ -1,9 +1,10 @@
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translator_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translator_page.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 
 class AiTranslatorBottomNav extends StatefulWidget {
   const AiTranslatorBottomNav({super.key});

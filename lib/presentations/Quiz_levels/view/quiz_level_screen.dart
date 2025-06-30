@@ -43,6 +43,7 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
     final String categoryTitle = category.title.trim();
 
     return Scaffold(
+   
       // appBar: AppBar(
       //   centerTitle: true,
       //   backgroundColor: Colors.teal,

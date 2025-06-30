@@ -1,3 +1,5 @@
+
+
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -127,240 +129,49 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                           return QuizCard(
                             index: index,
                             onNext: () {
-                              try {
-                                print('=== OnNext Debug Start ===');
+                              final total = controller.quizzesList.length;
+                              final current = controller.currentPage.value;
 
-                                // Debug controller state
-                                print('Controller state:');
-                                print(
-                                  '  quizzesList: ${controller.quizzesList}',
+                              print("total $total");
+                              
+                              print("Current $current");
+                              
+
+                              if (current < total - 1) {
+                                // Move to next question
+                                _pageController.nextPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
                                 );
-                                print(
-                                  '  quizzesList.length: ${controller.quizzesList?.length}',
-                                );
-                                print(
-                                  '  currentPage: ${controller.currentPage}',
-                                );
-                                print(
-                                  '  currentPage.value: ${controller.currentPage?.value}',
-                                );
-                                print(
-                                  '  percentageScore: ${controller.percentageScore}',
-                                );
-                                print(
-                                  '  correctAnswersCount: ${controller.correctAnswersCount}',
-                                );
+                              } else {
+                              
+                                final score = controller.percentageScore ?? 0.0;
+                                final correct = controller.correctAnswersCount;
+                                final totalQuestions =
+                                    controller.quizzesList.length;
+                                final wrong = totalQuestions - correct;
 
-                                // Safe null checks
-                                final quizzesList = controller.quizzesList;
-                                final currentPageRx = controller.currentPage;
-
-                                if (quizzesList == null) {
-                                  print('ERROR: quizzesList is null!');
-                                  Get.snackbar(
-                                    'Error',
-                                    'Quiz data is not available',
-                                  );
-                                  return;
-                                }
-
-                                if (currentPageRx == null) {
-                                  print('ERROR: currentPage is null!');
-                                  Get.snackbar(
-                                    'Error',
-                                    'Current page is not available',
-                                  );
-                                  return;
-                                }
-
-                                final total = quizzesList.length;
-                                final current = currentPageRx.value;
-
-                                print('Navigation values:');
-                                print('  total: $total');
-                                print('  current: $current');
-
-                                if (current < total - 1) {
-                                  print('Moving to next question...');
-                                  // Move to next question
-                                  if (_pageController != null) {
-                                    _pageController.nextPage(
-                                      duration: const Duration(
-                                        milliseconds: 300,
-                                      ),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  } else {
-                                    print('ERROR: _pageController is null!');
-                                  }
-                                } else {
-                                  print(
-                                    'Last question - moving to result screen...',
-                                  );
-
-                                  // Debug all values before navigation
-                                  print('Values before navigation:');
-                                  print(
-                                    '  controller.percentageScore: ${controller.percentageScore}',
-                                  );
-                                  print(
-                                    '  controller.correctAnswersCount: ${controller.correctAnswersCount}',
-                                  );
-                                  print('  catId: $catId');
-                                  print('  category: $category');
-                                  print('  title: $title');
-
-                                  // Safe extraction with detailed debugging
-                                  final scoreValue = controller.percentageScore;
-                                  final correctValue =
-                                      controller.correctAnswersCount;
-
-                                  print('After extraction:');
-                                  print(
-                                    '  scoreValue: $scoreValue (${scoreValue.runtimeType})',
-                                  );
-                                  print(
-                                    '  correctValue: $correctValue (${correctValue.runtimeType})',
-                                  );
-
-                                  // More detailed null checks
-                                  double finalScore;
-                                  int finalCorrect;
-
-                                  if (scoreValue == null) {
-                                    print(
-                                      'WARNING: percentageScore is null, using 0.0',
-                                    );
-                                    finalScore = 0.0;
-                                  } else if (scoreValue is double) {
-                                    finalScore = scoreValue;
-                                  } else if (scoreValue is int) {
-                                    finalScore = scoreValue.toDouble();
-                                  } else {
-                                    print(
-                                      'WARNING: percentageScore is unexpected type: ${scoreValue.runtimeType}',
-                                    );
-                                    finalScore = 0.0;
-                                  }
-
-                                  if (correctValue == null) {
-                                    print(
-                                      'WARNING: correctAnswersCount is null, using 0',
-                                    );
-                                    finalCorrect = 0;
-                                  } else if (correctValue is int) {
-                                    finalCorrect = correctValue;
-                                  } else if (correctValue is double) {
-                                    finalCorrect = correctValue.toInt();
-                                  } else {
-                                    print(
-                                      'WARNING: correctAnswersCount is unexpected type: ${correctValue.runtimeType}',
-                                    );
-                                    finalCorrect = 0;
-                                  }
-
-                                  final totalQuestions = total;
-                                  final finalWrong =
-                                      totalQuestions - finalCorrect;
-
-                                  // Debug final values
-                                  print('Final values for navigation:');
-                                  print('  finalScore: $finalScore');
-                                  print('  finalCorrect: $finalCorrect');
-                                  print('  totalQuestions: $totalQuestions');
-                                  print('  finalWrong: $finalWrong');
-                                  print('  catId: $catId');
-                                  print('  category: $category');
-                                  print('  title: $title');
-
-                                  // Create arguments map with extreme safety
-                                  final arguments = <String, dynamic>{};
-
-                                  try {
-                                    arguments['score'] = finalScore;
-                                    print('Added score to arguments');
-                                  } catch (e) {
-                                    print('Error adding score: $e');
-                                    arguments['score'] = 0.0;
-                                  }
-
-                                  try {
-                                    arguments['correct'] = finalCorrect;
-                                    print('Added correct to arguments');
-                                  } catch (e) {
-                                    print('Error adding correct: $e');
-                                    arguments['correct'] = 0;
-                                  }
-
-                                  try {
-                                    arguments['total'] = totalQuestions;
-                                    print('Added total to arguments');
-                                  } catch (e) {
-                                    print('Error adding total: $e');
-                                    arguments['total'] = 1;
-                                  }
-
-                                  try {
-                                    arguments['wrong'] = finalWrong;
-                                    print('Added wrong to arguments');
-                                  } catch (e) {
-                                    print('Error adding wrong: $e');
-                                    arguments['wrong'] = 0;
-                                  }
-
-                                  try {
-                                    arguments['catId'] = catId ?? '';
-                                    print('Added catId to arguments');
-                                  } catch (e) {
-                                    print('Error adding catId: $e');
-                                    arguments['catId'] = '';
-                                  }
-
-                                  try {
-                                    arguments['category'] = category ?? '';
-                                    print('Added category to arguments');
-                                  } catch (e) {
-                                    print('Error adding category: $e');
-                                    arguments['category'] = '';
-                                  }
-
-                                  try {
-                                    arguments['title'] = title ?? '';
-                                    print('Added title to arguments');
-                                  } catch (e) {
-                                    print('Error adding title: $e');
-                                    arguments['title'] = '';
-                                  }
-
-                                  print('Final arguments map: $arguments');
-      
-                                  // Safe navigation
-                                  try {
-                                    print('Attempting navigation...');
-                                    Get.toNamed(
-                                      "/quizzes_result_scren",
-                                      arguments: arguments,
-                                    );
-                                    print('Navigation successful!');
-                                  } catch (e, stackTrace) {
-                                    print(
-                                      'CRITICAL ERROR during navigation: $e',
-                                    );
-                                    print('Stack trace: $stackTrace');
-                                    Get.snackbar(
-                                      'Error',
-                                      'Failed to show results: $e',
-                                    );
-                                  }
-                                }
+                                // print("score: $score");
+                                // print("correct for: $correct");
+                                // print("total question: $totalQuestions");
+                                // print("wrong: $wrong");
+                                // print("---------------------");
+                                // print("catId: $catId");
+                                // print("category: $category");
     
-                              } catch (e, stackTrace) {
-                                print('CRITICAL ERROR in onNext: $e');
-                                print('Stack trace: $stackTrace');
-                                Get.snackbar('Error', 'An error occurred: $e');
+                                Get.toNamed(
+                                  "/quizzes_result_scren",
+                                  arguments: {
+                                    'score': score,
+                                    'correct': correct,
+                                    'total': totalQuestions,
+                                    'wrong': wrong,
+                                    'catId': catId ?? 'catId',
+                                    'category': category,
+                                    'title': title,
+                                  },
+                                );
                               }
-  
-                              print('=== OnNext Debug End ===');
                             },
                             onBack: () {
                               if (index > 0) {

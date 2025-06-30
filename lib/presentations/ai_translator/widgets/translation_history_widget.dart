@@ -1,8 +1,10 @@
 import 'package:ai_checker_translator/gen/assets.gen.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
+
+import '../controller/translator_controller.dart';
 
 class TranslationHistoryWidget extends StatelessWidget {
   final TranslationController controller = Get.find();
