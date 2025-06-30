@@ -22,25 +22,25 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
   final detailcontroller = Get.put(QuizDetailController());
   final ResultController resultController = Get.put(ResultController());
 
-  
+
   late final ResultArguments args;
 
   @override
   void initState() {
     super.initState();
-    // Add safe argument handling
     args = ResultArguments.fromMap(Get.arguments ?? {});
   }
 
+
   @override
   Widget build(BuildContext context) {
-    // final double? score = Get.arguments['score'] ?? 0.0;
-    // final int correct = Get.arguments['correct'] ?? 0;
-    // final int wrong = Get.arguments['wrong'] ?? 0;
-    // final int total = Get.arguments['total'] ?? 1;
-    // final int catId = Get.arguments['catId'] ?? 1;
-    // final String title = Get.arguments['title'] ?? "";
-    // final String category = Get.arguments['category'] ?? "";
+    final double? score = Get.arguments['score'] ?? 0.0;
+    final int correct = Get.arguments['correct'] ?? 0;
+    final int wrong = Get.arguments['wrong'] ?? 0;
+    final int total = Get.arguments['total'] ?? 1;
+    final int catId = Get.arguments['catId'] ?? 1;
+    final String title = Get.arguments['title'] ?? "";
+    final String category = Get.arguments['category'] ?? "";
    
     return Scaffold(
       appBar: AppBar(
