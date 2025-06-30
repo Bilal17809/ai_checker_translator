@@ -1,12 +1,12 @@
 
 
-import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:ai_checker_translator/presentations/quizzes/widgets/quizzes_card.dart';
+
+import '../quizzes_result/quizzes_result_screen.dart';
 
 class QuizzesScreen extends StatefulWidget {
   QuizzesScreen({super.key});
@@ -143,34 +143,22 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                                   duration: const Duration(milliseconds: 300),
                                   curve: Curves.easeInOut,
                                 );
-                              } else {
-                              
-                                final score = controller.percentageScore ?? 0.0;
+                              }
+                              else {
                                 final correct = controller.correctAnswersCount;
-                                final totalQuestions =
-                                    controller.quizzesList.length;
-                                final wrong = totalQuestions - correct;
+                                final total = controller.quizzesList.length;
+                                final wrong = total - correct;
+                                final score = ((correct / total) * 100).toDouble();
 
-                                // print("score: $score");
-                                // print("correct for: $correct");
-                                // print("total question: $totalQuestions");
-                                // print("wrong: $wrong");
-                                // print("---------------------");
-                                // print("catId: $catId");
-                                // print("category: $category");
-    
-                                Get.toNamed(
-                                  "/quizzes_result_scren",
-                                  arguments: {
-                                    'score': score,
-                                    'correct': correct,
-                                    'total': totalQuestions,
-                                    'wrong': wrong,
-                                    'catId': catId ?? 'catId',
-                                    'category': category,
-                                    'title': title,
-                                  },
-                                );
+                                Get.off(() => QuizResultScreen(), arguments: {
+                                  'score': score,
+                                  'correct': correct,
+                                  'wrong': wrong,
+                                  'total': total,
+                                  'catId': catId ?? 0,
+                                  'title': title,
+                                  'category': category,
+                                });
                               }
                             },
                             onBack: () {
