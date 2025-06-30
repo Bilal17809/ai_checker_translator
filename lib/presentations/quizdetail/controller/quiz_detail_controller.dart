@@ -93,12 +93,16 @@ void showResultMode() {
   int get correctAnswersCount {
     return quizzesList.where((quiz) {
       final selected = selectedAnswers[quiz.quizID];
+      print('Checking quiz: ${quiz.quizID}');
+      print('  Answer: ${quiz.answer}');
+      print('  Selected: ${selectedAnswers[quiz.quizID]}');
       return selected != null &&
           selected.trim().toLowerCase() == quiz.answer.trim().toLowerCase();
+          
     }).length;
   }
 
-  double get percentageScore {
+  double? get percentageScore {
     if (quizzesList.isEmpty) return 0;
     return (correctAnswersCount / quizzesList.length) * 100;
   }
