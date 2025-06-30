@@ -15,7 +15,7 @@ abstract class AppTheme {
 
   // BUTTON STYLES
   static final ButtonStyle elevatedButtonStyle = ElevatedButton.styleFrom(
-    backgroundColor: primaryColor,
+    backgroundColor: kWhite,
     textStyle: buttonTextStyle,
     foregroundColor: Colors.white,
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),

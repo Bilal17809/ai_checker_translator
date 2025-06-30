@@ -1,6 +1,10 @@
 
+import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
+import 'package:ai_checker_translator/core/constant/constant.dart';
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
+import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/home/controller/menu_controller.dart';
+import 'package:ai_checker_translator/presentations/home/widgets/grammar_widget.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/controller/Categories_controller.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
 import 'package:flutter/material.dart';
@@ -24,45 +28,25 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home"),
-        backgroundColor: Colors.teal,
+      backgroundColor: kWhiteF7,
+      appBar: CommonAppbarWidget(),
+      drawer: Drawer(backgroundColor: kWhite),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: kBodyHp,
+          vertical: kBodyHp,
+        ),
+        child: Column(
+          children: [
+            GrammarWidget(
+              icon: "",
+              titleone: "Boost Your learning",
+              titletwo: "Learn Grammar by playing Games",
+            ),
+          ],
+        ),
       ),
-      body: Obx(() {
-        if (dbController.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (dbController.menuList.isEmpty) {
-          return Center(child: Text("No data found"));
-        }
-        return ListView.builder(
-          itemCount: dbController.menuList.length,
-          itemBuilder: (context, index) {
-            final item = dbController.menuList[index];
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 06),
-              child: InkWell(
-                onTap: () {
-                  Get.toNamed(
-                    RoutesName.paraphraseview,
-                    arguments: {'id': item.id, 'menuname': item.name},
-                  );
-
-                  // categoriesController.fetchCategoriesData(item.id);
-
-                  // categoriesController.fetchCategoriesData(item.id);
-                },
-                child: Card(
-                  child: ListTile(
-                    leading: CircleAvatar(child: Text(item.id.toString())),
-                    title: Text(item.name),
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      }),
     );
   }
 }
+

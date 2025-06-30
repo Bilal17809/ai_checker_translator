@@ -1,7 +1,9 @@
-import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
+// import 'package:ai_checker_translator/translations/translation_contrl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:country_flags/country_flags.dart';
+
+import '../presentations/ai_translator/controller/translation_contrl.dart';
 
 class TranslateScreen extends StatefulWidget {
   const TranslateScreen({super.key});

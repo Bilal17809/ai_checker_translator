@@ -1,4 +1,5 @@
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
+import 'package:ai_checker_translator/extension/extension.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
@@ -15,15 +16,21 @@ class CommonAppbarWidget extends StatelessWidget
       centerTitle: true,
       actions: [
         // Image.asset(Assets.crown.path, height: 28),
-        SizedBox(width: 6),
-        Icon(Icons.more_vert, size: 28),
+        // SizedBox(width: 6),
+        // // Icon(Icons.more_vert, size: 28),
       ],
-      backgroundColor: Colors.green.shade100,
+      backgroundColor: kMintGreen,
       elevation: 0,
       title: Row(
         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text("Ai"),
+          Text(
+            "Ai",
+            style: context.textTheme.bodyLarge?.copyWith(
+              color: kWhite,
+              fontSize: 24,
+            ),
+          ),
           SizedBox(width: 04),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -32,15 +39,26 @@ class CommonAppbarWidget extends StatelessWidget
               borderRadius: BorderRadius.circular(6),
             ),
             child: Row(
-              children: const [
-                Text("GRAMMAR", style: TextStyle(fontSize: 14)),
-                SizedBox(width: 4),
-                Icon(Icons.menu_book_sharp, size: 16),
+              children: [
+                Text(
+                  "Grammar",
+                  style: context.textTheme.bodyLarge!.copyWith(
+                    color: kMintGreen,
+                  ),
+                ),
+                // SizedBox(width: 4),
+                // Icon(Icons.menu_book_sharp, size: 16),
               ],
             ),
           ),
           SizedBox(width: 04),
-          const Text("CHECKER"),
+          Text(
+            "Checker",
+            style: context.textTheme.bodyLarge?.copyWith(
+              color: kWhite,
+              fontSize: 24,
+            ),
+          ),
         ],
       ),
     );
