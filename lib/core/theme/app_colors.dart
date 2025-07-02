@@ -21,6 +21,7 @@ const Color kBlack0D = Color(0xFF0D0D0D);
 const Color greyColor = Color(0xff626262);
 
 const Color kMintGreen = Color(0xff18C184);
+const Color kMintGreenDark = Color(0xff0F5E42);
 //green
 const greenColor = Color(0xff00AB3F);
 
@@ -97,7 +98,6 @@ const kGradient = LinearGradient(
   begin: Alignment.topLeft,
   end: Alignment.bottomRight,
   colors: [
-    Color(0xFFF6C9B7),
-    Color(0xFFF2A78D),
+    kMintGreenDark, kMintGreen,
   ],
 );

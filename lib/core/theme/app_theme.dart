@@ -18,11 +18,12 @@ abstract class AppTheme {
     backgroundColor: kWhite,
     textStyle: buttonTextStyle,
     foregroundColor: Colors.white,
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+    
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 08),
     minimumSize: const Size(double.maxFinite, 50),
     shadowColor: Colors.grey.withValues(alpha: 0.5),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(50),
     ),
   );
 

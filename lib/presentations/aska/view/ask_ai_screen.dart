@@ -1,6 +1,9 @@
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
+import 'package:ai_checker_translator/core/theme/app_styles.dart';
+import 'package:ai_checker_translator/core/theme/app_theme.dart';
+import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/animation_controller.dart';
 // import 'package:ai_checker_translator/presentations/ai_translator/widgets/icon_button.dart';
 import 'package:ai_checker_translator/presentations/aska/view/controller/gemini_controller.dart';
 import 'package:ai_checker_translator/presentations/aska/view/widgets/text_generated_widget.dart';
@@ -8,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
+import 'package:share_plus/share_plus.dart';
 
 
 class AskAiScreen extends StatefulWidget {
@@ -17,10 +21,22 @@ class AskAiScreen extends StatefulWidget {
   State<AskAiScreen> createState() => _AskAiScreenState();
 }
 
-final texteditingcontroller = TextEditingController();
+// final texteditingcontroller = TextEditingController();
 final GeminiController controller = Get.put(GeminiController());
+final animatedController = Get.find<AnimatedTextController>();
+
 
 class _AskAiScreenState extends State<AskAiScreen> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    animatedController.startTyping(
+      text: "Ask AI (Writing Assistant)",
+      charDelay: const Duration(milliseconds: 80),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -60,6 +76,7 @@ class _AskAiScreenState extends State<AskAiScreen> {
                 physics: NeverScrollableScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const Text(
                       "Ask AI (Writing Assistant)",
@@ -79,7 +96,7 @@ class _AskAiScreenState extends State<AskAiScreen> {
                           onPressed: () {
                             controller.startMicInput(languageISO: 'en-US');
                           },
-                          icon: Icon(Icons.mic, size: 20, color: kMediumGreen2),
+                          icon: Icon(Icons.mic, size: 20, color: kMintGreen),
                         ),
                         const Spacer(),
                         IconButton(
@@ -89,12 +106,12 @@ class _AskAiScreenState extends State<AskAiScreen> {
                           icon: Icon(
                             Icons.copy,
                             size: 20,
-                            color: kMediumGreen2,
+                            color: kMintGreen,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     Text.rich(
                       TextSpan(
                         text: "Daily Limits Remaining = 10 ",
@@ -114,29 +131,29 @@ class _AskAiScreenState extends State<AskAiScreen> {
                    
                     Obx(
                       () =>
-                          controller.isLoading.value
-                              ? const Center(
-                                child: CircularProgressIndicator(
-                                  color: kMediumGreen1,
-                                ),
-                              )
-                              : ElevatedButton(
-                                onPressed: () {
-                                  controller.generateText();
-                                  FocusScope.of(context).unfocus();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      kMediumGreen2,
-                                  foregroundColor:
-                                      Colors.white, 
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                      12,
-                                    ), 
+                          SizedBox(
+                        height: 48,
+                        // width: 100,
+                        child: ElevatedButton(
+                          onPressed: () {
+                                    
+                            controller.generateText();
+                            FocusScope.of(context).unfocus();
+                          },
+                          style: AppTheme.elevatedButtonStyle.copyWith(
+                            backgroundColor: MaterialStateProperty.all(
+                              kMintGreen,
+                            ),
                                   ),
-                                ),
-                                child: const Text('Generate Text'),
+                          child:
+                              controller.isLoading.value
+                                  ? const Center(
+                                    child: CircularProgressIndicator(
+                                      color: kWhite,
+                                    ),
+                                  )
+                                  : const Text('Generate'),
+                        )
                               )
                     ),
 
@@ -158,6 +175,15 @@ class _AskAiScreenState extends State<AskAiScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: SingleChildScrollView(
                             child: GeneratedTextWidget(
+                              onTapCopy: () {
+                                controller.copyText();
+                              },
+                              onTapShare: () {
+                                Share.share(controller.responseText.value);
+                              },
+                              onTapstartSpeak: () {
+                                controller.speakGeneratedText();
+                              },
                               text: controller.responseText.value,
                             ),
                           ),

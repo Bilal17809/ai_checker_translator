@@ -1,4 +1,5 @@
 import 'package:ai_checker_translator/gen/assets.gen.dart';
+import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/animation_controller.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bottom_navbar.dart';
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
@@ -16,6 +17,7 @@ class BottomNavExample extends StatefulWidget {
 
 class _BottomNavExampleState extends State<BottomNavExample> {
   int selectedIndex = 2;
+  int previousIndex = 3;
 
   final List<Widget> screens = [
     AskAiScreen(),
@@ -78,13 +80,31 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                             _,
                           ) {
                             setState(() {
+                              previousIndex = selectedIndex;
                               selectedIndex = 2;
+                              
+                              // ✅ Only restart if user came back to Home from another tab
+                              if (previousIndex != 3 && selectedIndex == 3) {
+                                final animatedController =
+                                    Get.find<AnimatedTextController>();
+                                animatedController.restartTyping();
+                              }
+                              
                             });
                           });
                         } else {
-                          setState(() {
-                            selectedIndex = index;
-                          });
+                          if (selectedIndex != index) {
+                            setState(() {
+                              previousIndex = selectedIndex;
+                              selectedIndex = index;
+
+                              if (previousIndex != 3 && selectedIndex == 3) {
+                                final animatedController =
+                                    Get.find<AnimatedTextController>();
+                                animatedController.restartTyping();
+                              }
+                            });
+                          }
                         }
                       },
                       child: Column(

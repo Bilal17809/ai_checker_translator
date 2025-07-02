@@ -33,7 +33,40 @@ class Assets {
     'assets/icons/adjectives.png',
   );
 
+
   //-----------------------------------------------------------
+
+//homeview icons
+
+  static const AssetGenImage aicorrectionicon = AssetGenImage(
+    'assets/icons/aicorrectoricon.png',
+  );
+
+  static const AssetGenImage paraphrasericon = AssetGenImage(
+    'assets/icons/paraphrasericon.png',
+  );
+
+  static const AssetGenImage learngrammaricon = AssetGenImage(
+    'assets/icons/learngrammar.png',
+  );
+
+  static const AssetGenImage askaiicon = AssetGenImage(
+    'assets/icons/homeaskaiicon.png',
+  );
+
+  static const AssetGenImage topbannericon = AssetGenImage(
+    'assets/icons/headerbanerwidget.png',
+  );
+
+  static const AssetGenImage bottombannericon = AssetGenImage(
+    'assets/icons/bottombanerwidget.png',
+  );
+
+
+
+
+
+
   //nav_bar_images
   static const AssetGenImage askai = AssetGenImage(
     'assets/icons/ask ai (2).png',

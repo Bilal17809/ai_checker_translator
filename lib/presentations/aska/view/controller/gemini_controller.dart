@@ -4,20 +4,26 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-
+import 'package:share_plus/share_plus.dart';
+// import 'package:share_plus_platform_interface/share_plus_platform_interface.dart';
 import '../../../../core/globle_key/globle_key.dart';
 
 class GeminiController extends GetxController {
+
   final TextEditingController promptController = TextEditingController();
+  final TextEditingController textCheckPromptController =
+      TextEditingController();
 
   final responseText = ''.obs;
   final isLoading = false.obs;
-
+    
+  
   late final GenerativeModel model;
 
   final FlutterTts flutterTts = FlutterTts();
-  static const MethodChannel _speechChannel =
-      MethodChannel('com.example.getx_practice_app/speech_Text');
+  static const MethodChannel _speechChannel = MethodChannel(
+    'com.example.getx_practice_app/speech_Text',
+  );
 
   final pitch = 0.5.obs;
   final speed = 0.5.obs;
@@ -25,36 +31,32 @@ class GeminiController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    model = GenerativeModel(
-      model: 'gemini-1.5-flash',
-      apiKey: apiKey,
-    );
+    model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: apiKey);
+    _initTts();
   }
 
   Future<void> generateText() async {
-  final prompt = promptController.text.trim();
-  if (prompt.isEmpty) {
-    return Utils().toastMessage("Enter text to generate");
-  }
-
-  isLoading.value = true;
-  try {
-    final content = [Content.text(prompt)];
-    final response = await model.generateContent(content);
-    responseText.value = response.text ?? "No response from model.";
-  } catch (e) {
-  
-    if (e.toString().contains("quota") || e.toString().contains("429")) {
-      responseText.value =
-          "Quota exceeded.\nPlease check your API key and billing plan.\n\nVisit: https://ai.google.dev/gemini-api/docs/rate-limits";
-    } else {
-      responseText.value = " Error: ${e.toString()}";
+    final prompt = promptController.text.trim();
+    if (prompt.isEmpty) {
+      return Utils().toastMessage("Enter text to generate");
     }
-  } finally {
-    isLoading.value = false;
-  }
-}
 
+    isLoading.value = true;
+    try {
+      final content = [Content.text(prompt)];
+      final response = await model.generateContent(content);
+      responseText.value = response.text ?? "No response from model.";
+    } catch (e) {
+      if (e.toString().contains("quota") || e.toString().contains("429")) {
+        responseText.value =
+            "Quota exceeded.\nPlease check your API key and billing plan.\n\nVisit: https://ai.google.dev/gemini-api/docs/rate-limits";
+      } else {
+        responseText.value = " Error: ${e.toString()}";
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   void copyText() {
     if (responseText.isNotEmpty) {
@@ -63,10 +65,9 @@ class GeminiController extends GetxController {
     }
   }
 
-
-   void copyTextwithassitantbox() {
+  void copyTextwithassitantbox() {
     if (promptController.text.isNotEmpty) {
-      Clipboard.setData(ClipboardData(text:promptController.text));
+      Clipboard.setData(ClipboardData(text: promptController.text));
       Utils().toastMessage("Copied\n text copied to clipboard!");
     }
   }
@@ -77,7 +78,7 @@ class GeminiController extends GetxController {
       final result = await _speechChannel.invokeMethod('getTextFromSpeech', {
         'languageISO': languageISO,
       });
-             
+
       if (result != null && result.isNotEmpty) {
         promptController.text = result;
         // Optional: trigger generation
@@ -104,10 +105,36 @@ class GeminiController extends GetxController {
     }
   }
 
+  Future<void> shareGeneratedText() async {
+    try {
+      final text = responseText.value.trim();
+      if (text.isEmpty) {
+        Utils().toastMessage("No content to share.");
+        return;
+      }
+
+      await SharePlus.instance.share(ShareParams(text: text));
+    } catch (e) {
+      Utils().toastMessage("Sharing failed: ${e.toString()}");
+      debugPrint('Sharing error: $e');
+    }
+  }
+
+  //
+  Future<void> _initTts() async {
+    await flutterTts.setSharedInstance(true);
+    await flutterTts.setLanguage('en-US');
+    await flutterTts.setPitch(pitch.value);
+    await flutterTts.setSpeechRate(speed.value);
+  }
+
+
   @override
   void onClose() {
     promptController.dispose();
     flutterTts.stop();
     super.onClose();
   }
+
+  
 }

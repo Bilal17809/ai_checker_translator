@@ -3,7 +3,6 @@ import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../presentations/ai_translator/controller/translation_contrl.dart';
 
 class AssistantInputBox extends StatefulWidget {
@@ -18,7 +17,7 @@ class AssistantInputBox extends StatefulWidget {
   final bool readOnly;
   final double? customHeight;
   final List<Widget>? footerButtons;
-  final bool showClearIcon; // ✅ NEW
+  final bool showClearIcon;
 
   const AssistantInputBox({
     super.key,
@@ -33,7 +32,7 @@ class AssistantInputBox extends StatefulWidget {
     this.textalign = TextAlign.start,
     this.customHeight,
     this.footerButtons,
-    this.showClearIcon = false, // ✅ NEW
+    this.showClearIcon = false,
   });
 
   @override
@@ -71,50 +70,43 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
       children: [
         Container(
           height:
-              widget.customHeight ?? MediaQuery.of(context).size.height * 0.24,
-          padding: const EdgeInsets.symmetric(horizontal: 08, vertical: 06),
+          widget.customHeight ?? MediaQuery.of(context).size.height * 0.24,
+          padding: const EdgeInsets.symmetric(horizontal: 04, vertical: 02),
           decoration: roundedDecoration.copyWith(
-              border: Border.all(color: kMintGreen, width: 2),
-              borderRadius: widget.borderRadius,
+            border: Border.all(color: kMintGreen, width: 2),
+            borderRadius: widget.borderRadius,
           ),
-          // decoration: BoxDecoration(
-          //   color: Colors.white,
-          //   border: Border.all(color: kMintGreen, width: 2),
-          //   borderRadius: widget.borderRadius,
-          //   boxShadow: [
-          //     BoxShadow(
-          //       color: Colors.black.withOpacity(0.2),
-          //       spreadRadius: 1,
-          //       blurRadius: 4,
-          //       offset: const Offset(0, 4),
-          //     ),
-          //   ],
-          // ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Scrollbar(
-                  controller: _scrollController,
-                  thumbVisibility: true,
-                  child: SingleChildScrollView(
+                child: ClipRRect(
+                  borderRadius: widget.borderRadius,
+                  child: Scrollbar(
                     controller: _scrollController,
-                    child: CustomTextFormField(
-                      readOnly: widget.readOnly,
-                      textDirection: widget.textDirection,
-                      textAlign: widget.textalign,
-                      controller: widget.controller,
-                      hintText: widget.hintText,
-                      border: InputBorder.none,
-                      suffixIcon: null, 
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      // padding: const EdgeInsets.symmetric(horizontal: 00),
+                      child: CustomTextFormField(
+                        readOnly: widget.readOnly,
+                        textDirection: widget.textDirection,
+                        textAlign: widget.textalign,
+                        controller: widget.controller,
+                        hintText: widget.hintText,
+                        border: InputBorder.none,
+                        suffixIcon: null,
+                        maxLines: null, // important to allow vertical scroll
+                        keyboardType: TextInputType.multiline,
+                      ),
                     ),
                   ),
                 ),
               ),
               if (widget.showFooter) ...[
-                // const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (widget.footerButtons != null) ...widget.footerButtons!,
                   ],
@@ -122,8 +114,9 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
               ],
             ],
           ),
-      ),
+        ),
 
+        // Clear icon
         if (widget.showClearIcon && widget.controller.text.isNotEmpty)
           Positioned(
             top: 12,
@@ -139,6 +132,5 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
           ),
       ],
     );
-
   }
 }

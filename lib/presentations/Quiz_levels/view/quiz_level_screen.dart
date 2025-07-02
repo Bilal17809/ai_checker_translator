@@ -30,18 +30,35 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
     super.initState();
     category = Get.arguments as GrammarCategoryModel;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (quizzeslevelController.selectedCategory.value !=
           category.title.trim()) {
-        quizzeslevelController.fetchLevelsByCategory(category.title.trim());
+        await quizzeslevelController.fetchLevelsByCategory(
+          category.title.trim(),
+        );
       }
+      Future.delayed(Duration(milliseconds: 300), () async {
+        final levelIds =
+            quizzeslevelController.filteredCategoriesList
+                .map((e) => e.catID ?? 0)
+                .where((id) => id > 0)
+                .toList();
+
+        await controller.loadOnlyProgressForLevels(
+          levelIds,
+        ); // 👈 Only progress
+      });
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
     final String categoryTitle = category.title.trim();
+    // final total = controller.quizzesList.length;
+    // final correct = controller.correctAnswersStored.value;
 
+    // final progress = total == 0 ? 0.0 : correct / total;
     return Scaffold(
    
       // appBar: AppBar(
@@ -253,10 +270,16 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                                     )
                                   ),
                                   const SizedBox(height: 12),
-                                  _Progress(),
+                                  _Progress(
+                                    levelId:
+                                        item.catID ??
+                                        0, // 👈 your quiz level ID
+                                    totalQuestions:
+                                        10, // 👈 set your actual total questions
+                                  ),
                                   const SizedBox(height: 12),
                                    Text(
-                                    "Total Questions: 10",
+                                    "Total Question 10",
                                       style:context.textTheme.bodySmall?.copyWith(
                                   color: kWhite
                                   )
@@ -279,28 +302,41 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
   }
 }
 
-
 class _Progress extends StatelessWidget {
-  const _Progress({super.key});
+  final int levelId; // 👈 Level ID (e.g., catID)
+  final int totalQuestions; // 👈 Total questions in this level
+
+  const _Progress({
+    super.key,
+    required this.levelId,
+    required this.totalQuestions,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return  Container(
-      width: 140,
-      height: 10,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        color: Colors.white30,
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(4),
-        child: LinearProgressIndicator(
-          value: 0.5,
-          backgroundColor: Colors.transparent,
-          color: kYellow.withOpacity(0.8),
-        ),
-      ),
-    );
-  }
-}
+    final controller = Get.find<QuizDetailController>();
 
+    return Obx(() {
+      final correct = controller.correctAnswersPerLevel[levelId] ?? 0;
+      final progress = totalQuestions == 0 ? 0.0 : correct / totalQuestions;
+
+      return Container(
+        width: 140,
+        height: 10,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: Colors.white30,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: progress.clamp(0.0, 1.0),
+            backgroundColor: Colors.transparent,
+            color: kYellow.withOpacity(0.8),
+          ),
+        ),
+      );
+    });
+  }
+
+}

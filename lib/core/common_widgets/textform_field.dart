@@ -68,7 +68,6 @@ class CustomTextFormField extends StatelessWidget {
       onSaved: onSaved,
       validator: validator,
       decoration: InputDecoration(
-      
         hintText: hintText,
       
         // hintMaxLines: hintMaxLine,
@@ -78,7 +77,7 @@ class CustomTextFormField extends StatelessWidget {
         border: border ?? InputBorder.none,
         focusedBorder: focusedBorder ?? InputBorder.none,
         enabledBorder: enabledBorder ?? InputBorder.none,
-        contentPadding: EdgeInsets.symmetric(horizontal: 18)
+        contentPadding: EdgeInsets.symmetric(horizontal: 02, vertical: 16)
       ),
       
     );

@@ -109,6 +109,20 @@ final BoxDecoration roundedDecoration = BoxDecoration(
     ),
   ],
 );
+
+
+//for home view
+final BoxDecoration roundedDecorationHomevie = BoxDecoration(
+  gradient: kGradient,
+  borderRadius: BorderRadius.circular(10),
+  boxShadow: [
+    BoxShadow(
+      color: Colors.grey.withValues(alpha: 0.2),
+      blurRadius: 6,
+      offset: Offset(0, 2),
+    ),
+  ],
+);
 final BoxDecoration roundedGreenBorderDecoration = BoxDecoration(
   color: greenColor.withValues(alpha: 0.3),
   borderRadius: BorderRadius.circular(10),
@@ -116,6 +130,20 @@ final BoxDecoration roundedGreenBorderDecoration = BoxDecoration(
     color: greenColor,
     width: 1.0,
   ),
+);
+
+//home view container decoration
+
+final BoxDecoration rounBorderDecoration = BoxDecoration(
+  color: kWhite,
+  borderRadius: BorderRadius.only(
+    bottomLeft: Radius.circular(30),
+    topRight: Radius.circular(30),
+    bottomRight: Radius.circular(08),
+    topLeft: Radius.circular(08),
+  ),
+  border: Border.all(color: kMintGreen),
+  boxShadow: [BoxShadow(color: greyColor, blurRadius: 2)],
 );
 
 final BoxDecoration rounderGreyBorderDecoration = BoxDecoration(

@@ -106,21 +106,21 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                       bottom: 0,
                       child: PageView.builder(
                         controller: _pageController,
-                        // physics:
-                        //     (controller.currentPage.value <
-                        //             controller.quizzesList.length)
-                        //         ? (() {
-                        //           final quiz =
-                        //               controller.quizzesList[controller
-                        //                   .currentPage
-                        //                   .value];
-                        //           final selected =
-                        //               controller.selectedAnswers[quiz.quizID];
-                        //           return selected == null
-                        //               ? const NeverScrollableScrollPhysics()
-                        //               : const AlwaysScrollableScrollPhysics();
-                        //         })()
-                        //         : const NeverScrollableScrollPhysics(),
+                        physics:
+                            (controller.currentPage.value <
+                                    controller.quizzesList.length)
+                                ? (() {
+                                  final quiz =
+                                      controller.quizzesList[controller
+                                          .currentPage
+                                          .value];
+                                  final selected =
+                                      controller.selectedAnswers[quiz.quizID];
+                                  return selected == null
+                                      ? const NeverScrollableScrollPhysics()
+                                      : const AlwaysScrollableScrollPhysics();
+                                })()
+                                : const NeverScrollableScrollPhysics(),
                         // controller: _pageController,
                         onPageChanged:
                             (value) => controller.currentPage.value = value,
@@ -140,7 +140,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                               if (current < total - 1) {
                                 // Move to next question
                                 _pageController.nextPage(
-                                  duration: const Duration(milliseconds: 300),
+                                  duration: const Duration(milliseconds: 1000),
                                   curve: Curves.easeInOut,
                                 );
                               }
@@ -164,7 +164,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                             onBack: () {
                               if (index > 0) {
                                 _pageController.previousPage(
-                                  duration: const Duration(milliseconds: 300),
+                                  duration: const Duration(milliseconds: 500),
                                   curve: Curves.easeInOut,
                                 );
                               }

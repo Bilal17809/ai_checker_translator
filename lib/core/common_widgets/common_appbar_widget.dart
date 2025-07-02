@@ -32,24 +32,18 @@ class CommonAppbarWidget extends StatelessWidget
             ),
           ),
           SizedBox(width: 04),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            decoration: BoxDecoration(
-              color: kWhite,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Row(
-              children: [
-                Text(
-                  "Grammar",
-                  style: context.textTheme.bodyLarge!.copyWith(
-                    color: kMintGreen,
-                  ),
+          Row(
+            children: [
+              Text(
+                "Grammar",
+                style: context.textTheme.bodyLarge!.copyWith(
+                  color: kWhite,
+                  fontSize: 18,
                 ),
-                // SizedBox(width: 4),
-                // Icon(Icons.menu_book_sharp, size: 16),
-              ],
-            ),
+              ),
+              // SizedBox(width: 4),
+              // Icon(Icons.menu_book_sharp, size: 16),
+            ],
           ),
           SizedBox(width: 04),
           Text(

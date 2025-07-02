@@ -245,7 +245,7 @@ class QuizCard extends StatelessWidget {
                             children: [
                               CircleAvatar(
                                 maxRadius: 34,
-                                backgroundColor: kMediumGreen2,
+                                backgroundColor: kMintGreen,
                                 child: IconButton(
                                   icon: const Icon(
                                     Icons.arrow_back,
@@ -259,7 +259,7 @@ class QuizCard extends StatelessWidget {
                                 maxRadius: 34,
                                 backgroundColor:
                                     hasAnswered
-                                        ? kMediumGreen2
+                                        ? kMintGreen
                                         : Colors.grey.shade400,
                                 child: IconButton(
                                   icon: const Icon(
