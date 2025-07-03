@@ -1,40 +1,69 @@
-import 'dart:async';
-import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 
-class AnimatedTextController extends GetxController {
-  final animatedText = ''.obs;
-  Timer? _timer;
-  int _currentIndex = 0;
+class AnimatedTypingText extends StatefulWidget {
+  final String text;
+  final Duration charDuration;
+  final TextStyle? style;
 
-  String _fullText = '';
-  Duration _charDelay = const Duration(milliseconds: 100);
+  const AnimatedTypingText({
+    super.key,
+    required this.text,
+    this.charDuration = const Duration(milliseconds: 50),
+    this.style,
+  });
 
-  /// Start typing animation with any text and optional speed
-  void startTyping({required String text, Duration? charDelay}) {
-    _timer?.cancel(); // stop any previous timer
-    animatedText.value = '';
-    _currentIndex = 0;
-    _fullText = text;
-    _charDelay = charDelay ?? const Duration(milliseconds: 50);
+  @override
+  State<AnimatedTypingText> createState() => _AnimatedTypingTextState();
+}
 
-    _timer = Timer.periodic(_charDelay, (timer) {
-      if (_currentIndex < _fullText.length) {
-        animatedText.value += _fullText[_currentIndex];
-        _currentIndex++;
-      } else {
-        _timer?.cancel();
-      }
+class _AnimatedTypingTextState extends State<AnimatedTypingText>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<int> _characterCount;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final totalDuration = widget.charDuration * widget.text.length;
+
+    _controller = AnimationController(duration: totalDuration, vsync: this);
+
+    _characterCount = StepTween(
+      begin: 0,
+      end: widget.text.length,
+    ).animate(_controller)..addListener(() {
+      setState(() {});
     });
-  }
 
-  /// Restart with same previous text and speed
-  void restartTyping() {
-    startTyping(text: _fullText, charDelay: _charDelay);
+    _controller.forward();
   }
 
   @override
-  void onClose() {
-    _timer?.cancel();
-    super.onClose();
+  void didUpdateWidget(covariant AnimatedTypingText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.text != widget.text) {
+      _controller.reset();
+      _characterCount = StepTween(
+        begin: 0,
+        end: widget.text.length,
+      ).animate(_controller);
+      _controller.forward();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final visibleText = widget.text.substring(
+      0,
+      _characterCount.value.clamp(0, widget.text.length),
+    );
+    return Text(visibleText, style: widget.style);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

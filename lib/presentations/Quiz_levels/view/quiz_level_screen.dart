@@ -6,7 +6,6 @@ import 'package:ai_checker_translator/presentations/paraphrase/model/grammarcate
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../core/common_widgets/app_core_colors.dart';
 import '../../../core/common_widgets/icon_buttons.dart';
 import '../../../core/constant/constant.dart';
@@ -55,33 +54,9 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
   @override
   Widget build(BuildContext context) {
     final String categoryTitle = category.title.trim();
-    // final total = controller.quizzesList.length;
-    // final correct = controller.correctAnswersStored.value;
-
-    // final progress = total == 0 ? 0.0 : correct / total;
     return Scaffold(
    
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   backgroundColor: Colors.teal,
-      //   title: Row(
-      //       mainAxisSize: MainAxisSize.min,
-      //       children: [
-      //         Text(
-      //           categoryTitle,
-      //           style: const TextStyle(fontSize: 18, color: Colors.white),
-      //         ),
-      //         const SizedBox(width: 8),
-      //       ],
-      //     ),
-      //
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.refresh),
-      //       onPressed: () => quizzeslevelController.refreshData(),
-      //     ),
-      //   ],
-      // ),
+     
       /*
       create appbar widget use it every where.
       */

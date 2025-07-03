@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
+import 'package:ai_checker_translator/misteral_api_data/api_services/use_casses/api_use_casses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -7,6 +10,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:share_plus/share_plus.dart';
 // import 'package:share_plus_platform_interface/share_plus_platform_interface.dart';
 import '../../../../core/globle_key/globle_key.dart';
+import 'package:http/http.dart' as http;
 
 class GeminiController extends GetxController {
 
@@ -16,9 +20,11 @@ class GeminiController extends GetxController {
 
   final responseText = ''.obs;
   final isLoading = false.obs;
+  final isSpeaking = false.obs;
     
   
   late final GenerativeModel model;
+  final MistralUseCase useCase;
 
   final FlutterTts flutterTts = FlutterTts();
   static const MethodChannel _speechChannel = MethodChannel(
@@ -31,32 +37,35 @@ class GeminiController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: apiKey);
+    // useCase = Get.find<MistralUseCase>();
+    // model = GenerativeModel(model: 'mistral-small-3.2', apiKey: apiKey);
     _initTts();
   }
 
-  Future<void> generateText() async {
+
+
+  GeminiController(this.useCase);
+
+  Future<void> generate() async {
     final prompt = promptController.text.trim();
     if (prompt.isEmpty) {
-      return Utils().toastMessage("Enter text to generate");
+      Get.snackbar("Error", "Please enter a prompt");
+      return;
     }
 
     isLoading.value = true;
     try {
-      final content = [Content.text(prompt)];
-      final response = await model.generateContent(content);
-      responseText.value = response.text ?? "No response from model.";
+      final result = await useCase(prompt);
+      responseText.value = result;
     } catch (e) {
-      if (e.toString().contains("quota") || e.toString().contains("429")) {
-        responseText.value =
-            "Quota exceeded.\nPlease check your API key and billing plan.\n\nVisit: https://ai.google.dev/gemini-api/docs/rate-limits";
-      } else {
-        responseText.value = " Error: ${e.toString()}";
-      }
+      responseText.value = e.toString();
     } finally {
       isLoading.value = false;
     }
   }
+
+
+
 
   void copyText() {
     if (responseText.isNotEmpty) {
@@ -92,16 +101,30 @@ class GeminiController extends GetxController {
   /// 🔊 Speak the generated response
   Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
     try {
+      if (isSpeaking.value) {
       await flutterTts.stop();
+        isSpeaking.value = false;
+        return;
+      }
+
+      final text = responseText.value.trim();
+      if (text.isEmpty) return;
+
       await flutterTts.setLanguage(languageCode);
       await flutterTts.setPitch(pitch.value);
       await flutterTts.setSpeechRate(speed.value);
 
-      if (promptController.text.trim().isNotEmpty) {
-        await flutterTts.speak(promptController.text.trim());
-      }
+      isSpeaking.value = true;
+
+      await flutterTts.speak(text);
+
+      /// Listen for when speaking completes
+      flutterTts.setCompletionHandler(() {
+        isSpeaking.value = false;
+      });
     } catch (e) {
       Utils().toastMessage("TTS Error: ${e.toString()}");
+      isSpeaking.value = false;
     }
   }
 

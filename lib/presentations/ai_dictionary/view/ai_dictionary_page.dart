@@ -19,20 +19,16 @@ class AiDictionaryPage extends StatefulWidget {
 
 class _AiDictionaryPageState extends State<AiDictionaryPage> {
 
-  final animatedController = Get.find<AnimatedTextController>();
-  final GeminiAiCorrectionController controller = Get.put(
-    GeminiAiCorrectionController(),
-  );
-
+  // final animatedController = Get.find<AnimatedTextController>();
+  final GeminiAiCorrectionController controller =
+      Get.find<GeminiAiCorrectionController>();
+  
+    
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     controller.resetController();
-    animatedController.startTyping(
-      text: "I can correct your grammar, spelling, punctuation, and more",
-      charDelay: const Duration(milliseconds: 80),
-    );
   }
 
   @override
@@ -40,7 +36,6 @@ class _AiDictionaryPageState extends State<AiDictionaryPage> {
     final mediaQuery = MediaQuery.of(context);
     final bottomInset = mediaQuery.viewInsets.bottom;
     final screenHeight = mediaQuery.size.height;
-
     
     return Scaffold(
       appBar: CommonAppbarWidget(),
@@ -58,13 +53,12 @@ class _AiDictionaryPageState extends State<AiDictionaryPage> {
                     "Hi i'm Ai Corrector",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  Obx(
-                    () => Text(
-                      animatedController.animatedText.value,
-                      style: context.textTheme.bodySmall!.copyWith(
-                        color: kBlue,
-                      ),
-                    ),
+                  AnimatedTypingText(
+                    key: widget.key,
+                    text:
+                        "I can correct your grammar, spelling, punctuation, and more",
+                    charDuration: Duration(milliseconds: 50),
+                    style: TextStyle(fontSize: 14, color: Colors.blue),
                   ),
 
                   const SizedBox(height: 20),
@@ -113,7 +107,7 @@ class _AiDictionaryPageState extends State<AiDictionaryPage> {
                       // width: 100,
                       child: ElevatedButton(
                         onPressed: () {
-                          controller.correctGrammarAndSpelling();
+                          controller.generate();
                           FocusScope.of(context).unfocus();
                         },
                         style: AppTheme.elevatedButtonStyle.copyWith(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_styles.dart';
@@ -10,7 +11,7 @@ class BackIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pop(context);
+        Get.back();
       },
       child: Container(
         height: 32,

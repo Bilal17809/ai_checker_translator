@@ -1,5 +1,4 @@
 import 'package:ai_checker_translator/gen/assets.gen.dart';
-import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/animation_controller.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bottom_navbar.dart';
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
@@ -18,14 +17,15 @@ class BottomNavExample extends StatefulWidget {
 class _BottomNavExampleState extends State<BottomNavExample> {
   int selectedIndex = 2;
   int previousIndex = 3;
+  Key animatedKey = UniqueKey();
 
-  final List<Widget> screens = [
-    AskAiScreen(),
-    ParaphraseView(),
-    HomeView(),
-    AiDictionaryPage(),
-    Container(),
-  ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  
 
   final List<String> images = [
     Assets.askai.path,
@@ -46,6 +46,14 @@ class _BottomNavExampleState extends State<BottomNavExample> {
   @override
   Widget build(BuildContext context) {
     final bool isTranslatorPage = selectedIndex == 4;
+
+    final List<Widget> screens = [
+      AskAiScreen(key: animatedKey),
+      ParaphraseView(),
+      HomeView(),
+      AiDictionaryPage(key: animatedKey),
+      Container(),
+    ];
 
     return Scaffold(
       body: IndexedStack(index: selectedIndex, children: screens),
@@ -82,14 +90,10 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                             setState(() {
                               previousIndex = selectedIndex;
                               selectedIndex = 2;
-                              
-                              // ✅ Only restart if user came back to Home from another tab
-                              if (previousIndex != 3 && selectedIndex == 3) {
-                                final animatedController =
-                                    Get.find<AnimatedTextController>();
-                                animatedController.restartTyping();
+                              if (previousIndex != 3 && selectedIndex == 3 ||
+                                  previousIndex != 0 && selectedIndex == 0) {
+                                animatedKey = UniqueKey();
                               }
-                              
                             });
                           });
                         } else {
@@ -98,13 +102,13 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                               previousIndex = selectedIndex;
                               selectedIndex = index;
 
-                              if (previousIndex != 3 && selectedIndex == 3) {
-                                final animatedController =
-                                    Get.find<AnimatedTextController>();
-                                animatedController.restartTyping();
+                              if (previousIndex != 3 && selectedIndex == 3 ||
+                                  previousIndex != 0 && selectedIndex == 0) {
+                                animatedKey = UniqueKey();
                               }
                             });
                           }
+
                         }
                       },
                       child: Column(

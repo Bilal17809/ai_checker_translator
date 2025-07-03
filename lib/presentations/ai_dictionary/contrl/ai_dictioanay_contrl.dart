@@ -1,5 +1,6 @@
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/globle_key/globle_key.dart';
+import 'package:ai_checker_translator/misteral_api_data/api_services/use_casses/api_use_casses.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -12,13 +13,14 @@ class GeminiAiCorrectionController extends GetxController {
   final textCheckPromptController = TextEditingController();
 
   late final GenerativeModel model;
+  final MistralUseCase useCase;
 
-
+  GeminiAiCorrectionController(this.useCase);
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: apiKey);
+    // model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: apiKey);
   }
 
   final FlutterTts flutterTts = FlutterTts();
@@ -31,6 +33,7 @@ class GeminiAiCorrectionController extends GetxController {
 
   final grammarResponseText = "".obs;
   final isLoading = false.obs;
+  final isSpeaking = false.obs;
 
   //start mic input
   Future<void> startMicInput({String languageISO = 'en-US'}) async {
@@ -51,43 +54,60 @@ class GeminiAiCorrectionController extends GetxController {
   }
 
   //speak
-  Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
+Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
     try {
+      if (isSpeaking.value) {
       await flutterTts.stop();
+        isSpeaking.value = false;
+        return;
+      }
+
+      final text = grammarResponseText.value.trim();
+      if (text.isEmpty) return;
+
       await flutterTts.setLanguage(languageCode);
       await flutterTts.setPitch(pitch.value);
       await flutterTts.setSpeechRate(speed.value);
 
-      if (grammarResponseText.value.trim().isNotEmpty) {
-        await flutterTts.speak(grammarResponseText.value.trim());
-      }
+      isSpeaking.value = true;
+
+      await flutterTts.speak(text);
+
+      /// Listen for when speaking completes
+      flutterTts.setCompletionHandler(() {
+        isSpeaking.value = false;
+      });
     } catch (e) {
       Utils().toastMessage("TTS Error: ${e.toString()}");
+      isSpeaking.value = false;
     }
   }
 
-  Future<void> correctGrammarAndSpelling() async {
-    final inputText = textCheckPromptController.text.trim();
-    if (inputText.isEmpty) {
-      Utils().toastMessage("Enter some text to correct.");
+
+  Future<void> generate() async {
+    final inputeText = textCheckPromptController.text.trim();
+    if (inputeText.isEmpty) {
+      Utils().toastMessage("Enter teext to");
       return;
     }
 
     isLoading.value = true;
     try {
-      final correctionPrompt =
-          "Please correct the following text for grammar and spelling mistakes, and return only the corrected version:\n\n$inputText";
+      final correctionPrompt = '''
+          Correct the following sentence or words for grammar and spelling.
+If it is already correct, return it exactly as-is without any explanation:
 
-      final content = [Content.text(correctionPrompt)];
-      final response = await model.generateContent(content);
-
-      grammarResponseText.value = response.text ?? "No correction received.";
+"$inputeText"
+''';
+      final result = await useCase(correctionPrompt);
+      grammarResponseText.value = result;
     } catch (e) {
-      grammarResponseText.value = "Correction Error: ${e.toString()}";
+      grammarResponseText.value = e.toString();
     } finally {
       isLoading.value = false;
     }
   }
+
 
   void copyText() {
     if (grammarResponseText.isNotEmpty) {
