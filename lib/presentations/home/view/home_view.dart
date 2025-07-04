@@ -1,4 +1,5 @@
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
+import 'package:ai_checker_translator/core/common_widgets/keyboard_dismiss_wrapper.dart';
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,8 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return KeyboardDismissWrapper(
+      child: Scaffold(
       appBar: CommonAppbarWidget(),
       drawer: const Drawer(),
       body: LayoutBuilder(
@@ -37,7 +39,7 @@ class _HomeViewState extends State<HomeView> {
                       showActionButton: false,
                     ),
                     const SizedBox(height: 16),
-
+      
                     /// Row 1
                     Expanded(
                       child: Row(
@@ -63,7 +65,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                     const SizedBox(height: 16),
-
+      
                     /// Row 2
                     Expanded(
                       child: Row(
@@ -89,7 +91,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                     const SizedBox(height: 16),
-
+      
                     /// Bottom Grammar Test
                     GrammarTestCardWidget(
                       icon: Assets.bottombannericon.path,
@@ -98,7 +100,8 @@ class _HomeViewState extends State<HomeView> {
                           "Begins the English Grammar Test to improve your grammar skills.",
                       showActionButton: true,
                       actionButtonText: "Let’s Go",
-                      onActionPressed: () => print("Let's Go pressed!"),
+                        onActionPressed:
+                            () => Get.toNamed(RoutesName.paraphraseview),
                     ),
                   ],
                 ),
@@ -107,6 +110,7 @@ class _HomeViewState extends State<HomeView> {
           );
         },
       ),
+      )
     );
   }
 }

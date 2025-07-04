@@ -1,7 +1,9 @@
 import 'package:ai_checker_translator/gen/assets.gen.dart';
+import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/ai_dictioanay_contrl.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bottom_navbar.dart';
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
+import 'package:ai_checker_translator/presentations/aska/view/controller/gemini_controller.dart';
 import 'package:ai_checker_translator/presentations/home/view/home_view.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,9 @@ class BottomNavExample extends StatefulWidget {
   @override
   State<BottomNavExample> createState() => _BottomNavExampleState();
 }
+
+final geminicontroller = Get.find<GeminiController>();
+final geminiAiCorrectionController = Get.find<GeminiAiCorrectionController>();
 
 class _BottomNavExampleState extends State<BottomNavExample> {
   int selectedIndex = 2;
@@ -45,6 +50,7 @@ class _BottomNavExampleState extends State<BottomNavExample> {
 
   @override
   Widget build(BuildContext context) {
+    // FocusScope.of(context).unfocus();
     final bool isTranslatorPage = selectedIndex == 4;
 
     final List<Widget> screens = [
@@ -83,15 +89,28 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                     final isSelected = selectedIndex == index;
                     return GestureDetector(
                       onTap: () {
+                        FocusScope.of(
+                          context,
+                        ).unfocus(); // Hide keyboard if any
+
+                        final wasOnCorrection = selectedIndex == 3;
+
                         if (index == 4) {
+                          // Translator screen
                           Get.to(() => const AiTranslatorBottomNav())!.then((
                             _,
                           ) {
                             setState(() {
                               previousIndex = selectedIndex;
-                              selectedIndex = 2;
-                              if (previousIndex != 3 && selectedIndex == 3 ||
-                                  previousIndex != 0 && selectedIndex == 0) {
+                              selectedIndex = 2; // default back to Home
+
+                              // 💡 Reset if previously on correction
+                              if (wasOnCorrection) {
+                                geminiAiCorrectionController.resetController();
+                              }
+
+                              // Reset key for re-render if needed
+                              if (previousIndex == 0 || previousIndex == 3) {
                                 animatedKey = UniqueKey();
                               }
                             });
@@ -102,15 +121,31 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                               previousIndex = selectedIndex;
                               selectedIndex = index;
 
-                              if (previousIndex != 3 && selectedIndex == 3 ||
-                                  previousIndex != 0 && selectedIndex == 0) {
+                              // 💡 Only reset when leaving "AI Correction" tab
+                              if (wasOnCorrection) {
+                                geminiAiCorrectionController.resetController();
+                              }
+
+                              // Reset other controllers as needed
+                              if (previousIndex == 0) {
+                                geminiAiCorrectionController.resetController();
+                                geminicontroller.resetData();
+                              }
+
+                              // Force rebuild for animated screens
+                              if (index == 0 || index == 3) {
+                                geminiAiCorrectionController.resetController();
                                 animatedKey = UniqueKey();
+                              }
+
+                              if (previousIndex == 3) {
+                                geminiAiCorrectionController.resetController();
                               }
                             });
                           }
-
                         }
                       },
+
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [

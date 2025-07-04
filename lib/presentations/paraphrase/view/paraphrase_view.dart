@@ -1,3 +1,4 @@
+import 'package:ai_checker_translator/core/common_widgets/keyboard_dismiss_wrapper.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/controller/quizzeslevel_controller.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/view/quiz_level_screen.dart';
@@ -26,53 +27,59 @@ class _ParaphraseViewState extends State<ParaphraseView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return KeyboardDismissWrapper(
+      child: Scaffold(
       backgroundColor: kWhiteF7,
       appBar: AppBar(
         title: Text("Quizzes", style: TextStyle(color: Colors.white)),
         backgroundColor: kMintGreen,
         centerTitle: true,
       ),
-      body: Obx(() {
-        if (categoriesController.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Obx(() {
+            if (categoriesController.isLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-        if (categoriesController.grammarCategories.isEmpty) {
-          return const Center(child: Text("No categories found"));
-        }
+            if (categoriesController.grammarCategories.isEmpty) {
+              return const Center(child: Text("No categories found"));
+            }
 
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 18,
-            crossAxisSpacing: 18,
-            childAspectRatio: 3 / 3,
-          ),
-          itemCount: categoriesController.grammarCategories.length,
-          itemBuilder: (context, index) {
-            final item = categoriesController.grammarCategories[index];
-            final title = item.title.trim();
-              
-            return QuizzessGrammarWidget(
-              icon: item.icons,
-              grammarTitle: title,
-              quizNumber: "Quiz: ${item.quizCount}",
-              onTap: () {
-                quizzeslevelController.fetchLevelsByCategory(
-                  item.title,
-                ); // Map format
-                Get.to(
-                  () => const QuizLevelScreen(),
-                  arguments: item
-                    
-                ); // Passing map to next screen
+            return GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 18,
+                crossAxisSpacing: 18,
+                childAspectRatio: 3 / 3,
+              ),
+              itemCount: categoriesController.grammarCategories.length,
+              itemBuilder: (context, index) {
+                final item = categoriesController.grammarCategories[index];
+                final title = item.title.trim();
+
+                return QuizzessGrammarWidget(
+                  icon: item.icons,
+                  grammarTitle: title,
+                  quizNumber: "Quiz: ${item.quizCount}",
+                  onTap: () {
+                    quizzeslevelController.fetchLevelsByCategory(
+                      item.title,
+                    ); // Map format
+                    Get.to(
+                      () => const QuizLevelScreen(),
+                      arguments: item,
+                    ); // Passing map to next screen
+                  },
+                );
               },
             );
-          },
-        );
-      }),
+          }),
+        ),
+      )
     );
   }
 }

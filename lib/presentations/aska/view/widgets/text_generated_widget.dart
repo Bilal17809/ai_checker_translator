@@ -1,4 +1,5 @@
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
+import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/animation_controller.dart';
 import 'package:ai_checker_translator/presentations/aska/view/controller/gemini_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,7 @@ class GeneratedTextWidget extends StatelessWidget {
     required this.onTapShare,
     required this.onTapstartSpeak,
   });
+  final ScrollController _scrollController = ScrollController();
   final geminicontroller = Get.find<GeminiController>();
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class GeneratedTextWidget extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Colors.green.shade200, width: 1.5),
+        border: Border.all(color: kMintGreen, width: 1.5),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -44,17 +46,17 @@ class GeneratedTextWidget extends StatelessWidget {
               maxHeight: 200,
             ),
             child: Scrollbar(
+              controller: _scrollController,
               thumbVisibility: true,
               child: SingleChildScrollView(
+                controller: _scrollController,
                 child: Align(
                   alignment: Alignment.topLeft,
-                  child: Text(
-                    text,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      height: 1.5,
-                    ),
-                  ),
+                  child: AnimatedTypingText(
+                    text: text,
+                    charDuration: Duration(milliseconds: 50),
+                    style: TextStyle(fontSize: 14, height: 1.4),
+                  )
                 ),
               ),
             ),
@@ -84,7 +86,7 @@ class GeneratedTextWidget extends StatelessWidget {
                     icon: const Icon(
                       Icons.copy,
                       size: 20,
-                      color: kMediumGreen2,
+                      color: kMintGreen,
                     ),
                     tooltip: "Copy",
                     onPressed: onTapCopy,
@@ -93,7 +95,7 @@ class GeneratedTextWidget extends StatelessWidget {
                     icon: const Icon(
                       Icons.share,
                       size: 20,
-                      color: kMediumGreen2,
+                      color: kMintGreen,
                     ),
                     tooltip: "Share",
                     onPressed: onTapShare,

@@ -117,8 +117,9 @@ If it is already correct, return it exactly as-is without any explanation:
   }
 
   void resetController() {
+    grammarResponseText.value = '';
     textCheckPromptController.clear();
-    textCheckPromptController.clear();
+    flutterTts.stop();
   }
 }
 

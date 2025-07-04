@@ -1,5 +1,6 @@
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
+import 'package:ai_checker_translator/core/common_widgets/keyboard_dismiss_wrapper.dart';
 // import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_theme.dart';
@@ -28,7 +29,7 @@ class _AiDictionaryPageState extends State<AiDictionaryPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    controller.resetController();
+    // controller.resetController();
   }
 
   @override
@@ -37,7 +38,8 @@ class _AiDictionaryPageState extends State<AiDictionaryPage> {
     final bottomInset = mediaQuery.viewInsets.bottom;
     final screenHeight = mediaQuery.size.height;
     
-    return Scaffold(
+    return KeyboardDismissWrapper(
+      child: Scaffold(
       appBar: CommonAppbarWidget(),
       body: Stack(
         children: [
@@ -136,13 +138,13 @@ class _AiDictionaryPageState extends State<AiDictionaryPage> {
             bottom: bottomInset,
             left: 0,
             right: 0,
-            top: screenHeight * 0.50,
+              top: screenHeight * 0.54,
             child: Obx(
               () =>
                   controller.grammarResponseText.isEmpty
                       ? const SizedBox()
                       : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: SingleChildScrollView(
                           child: GeneratedTextWidget(
                             onTapShare: () {
@@ -163,6 +165,7 @@ class _AiDictionaryPageState extends State<AiDictionaryPage> {
         ],
       ),
       
+      )
     );
   }
 }

@@ -49,7 +49,7 @@ class GeminiController extends GetxController {
   Future<void> generate() async {
     final prompt = promptController.text.trim();
     if (prompt.isEmpty) {
-      Get.snackbar("Error", "Please enter a prompt");
+      Utils().toastMessage("Enter text to generate");
       return;
     }
 
@@ -159,5 +159,11 @@ class GeminiController extends GetxController {
     super.onClose();
   }
 
+
+  void resetData() {
+    responseText.value = '';
+    promptController.clear();
+    flutterTts.stop();
+  }
   
 }

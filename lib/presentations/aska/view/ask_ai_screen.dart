@@ -20,7 +20,30 @@ class AskAiScreen extends StatefulWidget {
 
 final GeminiController controller = Get.find<GeminiController>();
 
-class _AskAiScreenState extends State<AskAiScreen> {
+class _AskAiScreenState extends State<AskAiScreen> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    controller.flutterTts.stop();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      controller.flutterTts.stop();
+      controller.promptController.clear();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);

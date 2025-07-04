@@ -21,7 +21,7 @@ class AllBindins implements Bindings{
     Get.lazyPut(() => MistralUseCase(Get.find()));
     Get.lazyPut(() => GeminiController(Get.find()));
     Get.lazyPut(() => GeminiAiCorrectionController(Get.find()));
-
+      
     // Get.lazyPut<AnimatedTextController>(() => AnimatedTextController());
     // Get.lazyPut<TranslatorController>(
     //   () => TranslatorController(),
