@@ -8,15 +8,12 @@ import 'package:get/get.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:share_plus/share_plus.dart';
-// import 'package:share_plus_platform_interface/share_plus_platform_interface.dart';
-import '../../../../core/globle_key/globle_key.dart';
-import 'package:http/http.dart' as http;
+
 
 class GeminiController extends GetxController {
 
   final TextEditingController promptController = TextEditingController();
-  final TextEditingController textCheckPromptController =
-      TextEditingController();
+ 
 
   final responseText = ''.obs;
   final isLoading = false.obs;
@@ -67,18 +64,12 @@ class GeminiController extends GetxController {
 
 
 
-  void copyText() {
-    if (responseText.isNotEmpty) {
-      Clipboard.setData(ClipboardData(text: responseText.value));
-      Utils().toastMessage("Copied\nResponse text copied to clipboard!");
-    }
+  void copyPromptText() {
+    Utils.copyTextFrom(text: promptController.text);
   }
-
-  void copyTextwithassitantbox() {
-    if (promptController.text.isNotEmpty) {
-      Clipboard.setData(ClipboardData(text: promptController.text));
-      Utils().toastMessage("Copied\n text copied to clipboard!");
-    }
+  
+  void copyResponseText() {
+    Utils.copyTextFrom(text: responseText.value);
   }
 
   /// 🎙️ Start voice input using speech-to-text

@@ -140,7 +140,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                               if (current < total - 1) {
                                 // Move to next question
                                 _pageController.nextPage(
-                                  duration: const Duration(milliseconds: 1000),
+                                  duration: const Duration(milliseconds: 700),
                                   curve: Curves.easeInOut,
                                 );
                               }

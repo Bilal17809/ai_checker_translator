@@ -1,4 +1,5 @@
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
+import 'package:ai_checker_translator/core/common_widgets/life_cycle_mixin.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/widgets/translator_button.dart';
 import 'package:flutter/material.dart';
@@ -19,30 +20,14 @@ class AiTranslatorPage extends StatefulWidget {
 }
 
 class _AiTranslatorPageState extends State<AiTranslatorPage>
-    with WidgetsBindingObserver {
+    with AppLifecycleMixin {
   final TranslationController controller = Get.put(TranslationController());
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+  void onAppPause() {
     controller.flutterTts.stop();
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.detached) {
-      controller.flutterTts.stop();
-      controller.controller.clear();
-    }
+    controller.controller.clear();
+    FocusScope.of(context).unfocus();
   }
 
   @override
@@ -54,6 +39,7 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kMintGreen,
+        iconTheme: IconThemeData(color: kWhite),
         title: LogoWidget(title: 'Translator'),
         centerTitle: true,
       ),
@@ -85,7 +71,7 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
                       textColor: Colors.teal,
                       icons: [Icons.copy, Icons.close],
                       onIconTaps: [
-                        () => controller.copyText(),
+                        () => controller.copyTextEditingControllerText(),
                         () => controller.clearData(),
                       ],
                     ),

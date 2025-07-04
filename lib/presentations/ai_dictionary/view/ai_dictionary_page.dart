@@ -1,6 +1,7 @@
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/keyboard_dismiss_wrapper.dart';
+import 'package:ai_checker_translator/core/common_widgets/life_cycle_mixin.dart';
 // import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_theme.dart';
@@ -18,7 +19,8 @@ class AiDictionaryPage extends StatefulWidget {
   State<AiDictionaryPage> createState() => _AiDictionaryPageState();
 }
 
-class _AiDictionaryPageState extends State<AiDictionaryPage> {
+class _AiDictionaryPageState extends State<AiDictionaryPage>
+    with AppLifecycleMixin {
 
   // final animatedController = Get.find<AnimatedTextController>();
   final GeminiAiCorrectionController controller =
@@ -26,10 +28,10 @@ class _AiDictionaryPageState extends State<AiDictionaryPage> {
   
     
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // controller.resetController();
+  void onAppPause() {
+    controller.flutterTts.stop();
+    controller.textCheckPromptController.clear();
+    FocusScope.of(context).unfocus();
   }
 
   @override
@@ -60,7 +62,9 @@ class _AiDictionaryPageState extends State<AiDictionaryPage> {
                     text:
                         "I can correct your grammar, spelling, punctuation, and more",
                     charDuration: Duration(milliseconds: 50),
-                    style: TextStyle(fontSize: 14, color: Colors.blue),
+                      style: context.textTheme.bodySmall!.copyWith(
+                        color: kBlue,
+                      ),
                   ),
 
                   const SizedBox(height: 20),
@@ -79,7 +83,7 @@ class _AiDictionaryPageState extends State<AiDictionaryPage> {
                       const Spacer(),
                       IconButton(
                         onPressed: () {
-                          // controller.copyTextwithassitantbox();
+                            controller.copyPromptText();
                         },
                         icon: Icon(Icons.copy, size: 20, color: kMintGreen),
                       ),
@@ -138,7 +142,7 @@ class _AiDictionaryPageState extends State<AiDictionaryPage> {
             bottom: bottomInset,
             left: 0,
             right: 0,
-              top: screenHeight * 0.54,
+              top: screenHeight * 0.52,
             child: Obx(
               () =>
                   controller.grammarResponseText.isEmpty
@@ -151,7 +155,7 @@ class _AiDictionaryPageState extends State<AiDictionaryPage> {
                               Share.share(controller.grammarResponseText.value);
                             },
                             onTapCopy: () {
-                              controller.copyText();
+                                controller.copyResponseText();
                             },
                             onTapstartSpeak: () {
                               controller.speakGeneratedText();

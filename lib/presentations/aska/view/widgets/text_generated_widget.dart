@@ -42,25 +42,29 @@ class GeneratedTextWidget extends StatelessWidget {
           // 🔹 Scrollable Text
           ConstrainedBox(
             constraints: const BoxConstraints(
-              minHeight: 80,
-              maxHeight: 200,
-            ),
+    minHeight: 100, maxHeight: 200),
             child: Scrollbar(
               controller: _scrollController,
               thumbVisibility: true,
               child: SingleChildScrollView(
                 controller: _scrollController,
                 child: Align(
-                  alignment: Alignment.topLeft,
-                  child: AnimatedTypingText(
-                    text: text,
-                    charDuration: Duration(milliseconds: 50),
-                    style: TextStyle(fontSize: 14, height: 1.4),
-                  )
+                  alignment: Alignment.topLeft, 
+                  child: SizedBox(
+                    width: double.infinity, 
+                    child: AnimatedTypingText(
+                      text: text,
+                      style: const TextStyle(fontSize: 14, height: 1.4),
+                      charDuration: const Duration(milliseconds: 32),
+                      scrollController: _scrollController,
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
+
+
 
           const SizedBox(height: 8),
 

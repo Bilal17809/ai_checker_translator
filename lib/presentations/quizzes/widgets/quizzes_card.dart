@@ -60,6 +60,7 @@ class QuizCard extends StatelessWidget {
                         "Question ${index + 1}/${controller.quizzesList.length}",
                         style: const TextStyle(
                           fontSize: 18,
+                          color: kMintGreen,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -118,163 +119,171 @@ class QuizCard extends StatelessWidget {
                 ),
               ),
 
-              /// ✅ Options scrollable below the white container
+              /// ✅ Options and Explanation Scrollable, Buttons Fixed
               Positioned(
                 top: 50 + height * 0.30 + 32,
                 left: 0,
                 right: 0,
                 bottom: 0,
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      ...options.asMap().entries.map((entry) {
-                        final i = entry.key;
-                        final option = entry.value;
+                child: Column(
+                  children: [
+                    /// Scrollable part
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          children: [
+                            ...options.asMap().entries.map((entry) {
+                              final i = entry.key;
+                              final option = entry.value;
 
-                        final isSelected = selectedCode == option.code;
-                        final isCorrect =
-                            quiz.answer.trim() == option.code.trim();
+                              final isSelected = selectedCode == option.code;
+                              final isCorrect =
+                                  quiz.answer.trim() == option.code.trim();
 
-                        Color bgGradient = Colors.white;
-                        Color borderColor = Colors.grey.shade300;
-                        Color textColor = Colors.black;
-                        Color circleBg = Colors.grey.shade300;
-                        Color circleTextColor = Colors.black;
+                              Color bgGradient = Colors.white;
+                              Color borderColor = Colors.grey.shade300;
+                              Color textColor = Colors.black;
+                              Color circleBg = Colors.grey.shade300;
+                              Color circleTextColor = Colors.black;
 
-                        if (hasAnswered || isResultMode) {
-                          if (isCorrect) {
-                            bgGradient = kMediumGreen1;
-                            textColor = Colors.white;
-                            borderColor = Colors.green;
-                            circleBg = kMediumGreen2;
-                            circleTextColor = Colors.white;
-                            if (isSelected) {
-                              circleBg = kMediumGreen2;
-                              bgGradient = kMediumGreen1;
-                              textColor = Colors.black;
-                            }
-                          } else if (isSelected) {
-                            bgGradient = const Color(0x80ec9ca3);
-                            textColor = Colors.white;
-                            borderColor = Colors.red;
-                            circleBg = Colors.red;
-                            circleTextColor = Colors.white;
-                          }
-                        } else if (isSelected) {
-                          circleBg = Colors.teal;
-                          circleTextColor = Colors.white;
-                        }
+                              if (hasAnswered || isResultMode) {
+                                if (isCorrect) {
+                                  bgGradient = kMediumGreen1;
+                                  textColor = Colors.white;
+                                  borderColor = Colors.green;
+                                  circleBg = kMediumGreen2;
+                                  circleTextColor = Colors.white;
+                                  if (isSelected) {
+                                    circleBg = kMediumGreen2;
+                                    bgGradient = kMediumGreen1;
+                                    textColor = Colors.black;
+                                  }
+                                } else if (isSelected) {
+                                  bgGradient = const Color(0x80ec9ca3);
+                                  textColor = Colors.white;
+                                  borderColor = Colors.red;
+                                  circleBg = Colors.red;
+                                  circleTextColor = Colors.white;
+                                }
+                              } else if (isSelected) {
+                                circleBg = Colors.teal;
+                                circleTextColor = Colors.white;
+                              }
 
-                        return GestureDetector(
-                          onTap: () {
-                            if (!hasAnswered && !isResultMode) {
-                              controller.selectedAnswers[quiz.quizID] =
-                                  option.code;
-                            }
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(
-                              vertical: 6,
-                              horizontal: 8,
-                            ),
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: bgGradient,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: borderColor),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 28,
-                                  height: 28,
+                              return GestureDetector(
+                                onTap: () {
+                                  if (!hasAnswered && !isResultMode) {
+                                    controller.selectedAnswers[quiz.quizID] =
+                                        option.code;
+                                  }
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 6,
+                                    horizontal: 8,
+                                  ),
+                                  padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: circleBg,
-                                    shape: BoxShape.circle,
+                                    color: bgGradient,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: borderColor),
                                   ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    String.fromCharCode(65 + i),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: circleTextColor,
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 28,
+                                        height: 28,
+                                        decoration: BoxDecoration(
+                                          color: circleBg,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          String.fromCharCode(65 + i),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: circleTextColor,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          option.content,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: textColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Text(
-                                    option.content,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: textColor,
-                                    ),
-                                  ),
+                              );
+                            }).toList(),
+
+                            if (hasAnswered || isResultMode) ...[
+                              const SizedBox(height: 16),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
                                 ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }).toList(),
-
-                      /// ✅ Explanation
-                      if (hasAnswered || isResultMode) ...[
-                        const SizedBox(height: 16),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text(
-                            "Explanation: ${quiz.explanation}",
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontStyle: FontStyle.italic,
-                              color: Colors.teal,
-                            ),
-                          ),
-                        ),
-                      ],
-
-                      const SizedBox(height: 20),
-
-                      /// ✅ Navigation Buttons
-                      if (!isResultMode)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CircleAvatar(
-                                maxRadius: 34,
-                                backgroundColor: kMintGreen,
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.arrow_back,
-                                    color: Colors.white,
-                                    size: 38,
+                                child: Text(
+                                  "Explanation: ${quiz.explanation}",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.teal,
                                   ),
-                                  onPressed: onBack,
-                                ),
-                              ),
-                              CircleAvatar(
-                                maxRadius: 34,
-                                backgroundColor:
-                                    hasAnswered
-                                        ? kMintGreen
-                                        : Colors.grey.shade400,
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.arrow_forward,
-                                    color: Colors.white,
-                                    size: 38,
-                                  ),
-                                  onPressed: hasAnswered ? onNext : null,
                                 ),
                               ),
                             ],
-                          ),
+                            const SizedBox(height: 20),
+                          ],
                         ),
-                    ],
-                  ),
+                      ),
+                    ),
+
+                    /// ✅ Fixed Buttons (outside scroll)
+                    if (!isResultMode)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CircleAvatar(
+                              maxRadius: 34,
+                              backgroundColor: kMintGreen,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_back,
+                                  color: Colors.white,
+                                  size: 38,
+                                ),
+                                onPressed: onBack,
+                              ),
+                            ),
+                            CircleAvatar(
+                              maxRadius: 34,
+                              backgroundColor:
+                                  hasAnswered
+                                      ? kMintGreen
+                                      : Colors.grey.shade400,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.white,
+                                  size: 38,
+                                ),
+                                onPressed: hasAnswered ? onNext : null,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    const SizedBox(height: 16),
+                  ],
                 ),
               ),
             ],

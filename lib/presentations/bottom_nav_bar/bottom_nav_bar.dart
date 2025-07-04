@@ -95,11 +95,12 @@ class _BottomNavExampleState extends State<BottomNavExample> {
 
                         final wasOnCorrection = selectedIndex == 3;
 
-                        if (index == 4) {
+                        if (index == 4) {      
                           // Translator screen
                           Get.to(() => const AiTranslatorBottomNav())!.then((
                             _,
                           ) {
+                            geminicontroller.resetData();
                             setState(() {
                               previousIndex = selectedIndex;
                               selectedIndex = 2; // default back to Home
@@ -134,7 +135,7 @@ class _BottomNavExampleState extends State<BottomNavExample> {
 
                               // Force rebuild for animated screens
                               if (index == 0 || index == 3) {
-                                geminiAiCorrectionController.resetController();
+                                // geminiAiCorrectionController.resetController();
                                 animatedKey = UniqueKey();
                               }
 

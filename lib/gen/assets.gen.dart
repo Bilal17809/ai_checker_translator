@@ -12,6 +12,9 @@ import 'package:flutter/widgets.dart';
 class Assets {
   const Assets._();
 
+  //Splash
+  static const AssetGenImage splash = AssetGenImage("assets/images/splash.png");
+
   //QUIZZ level screen icons
   static const AssetGenImage verbsicon = AssetGenImage(
     'assets/icons/verb (1).png',

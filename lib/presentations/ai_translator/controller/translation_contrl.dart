@@ -283,12 +283,14 @@ class TranslationController extends GetxController {
   }
 
   // New function to copy text to clipboard
-  void copyText() {
-    if (translatedText.isNotEmpty) {
-      Clipboard.setData(ClipboardData(text: translatedText.value));
-      Utils().toastMessage("Copied\nTranslated text copied to clipboard!");
+  void copyTranslatedText() {
+    Utils.copyTextFrom(text: translatedText.value);
     }
+
+  void copyTextEditingControllerText() {
+    Utils.copyTextFrom(text: controller.text);
   }
+  
 
 
   // Reset the language and clear data

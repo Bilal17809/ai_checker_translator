@@ -4,12 +4,14 @@ class AnimatedTypingText extends StatefulWidget {
   final String text;
   final Duration charDuration;
   final TextStyle? style;
+  final ScrollController? scrollController;
 
   const AnimatedTypingText({
     super.key,
     required this.text,
     this.charDuration = const Duration(milliseconds: 50),
     this.style,
+    this.scrollController,
   });
 
   @override
@@ -34,6 +36,18 @@ class _AnimatedTypingTextState extends State<AnimatedTypingText>
       end: widget.text.length,
     ).animate(_controller)..addListener(() {
       setState(() {});
+
+    
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (widget.scrollController != null &&
+            widget.scrollController!.hasClients) {
+          try {
+            widget.scrollController!.jumpTo(
+              widget.scrollController!.position.maxScrollExtent,
+            );
+          } catch (_) {}
+        }
+      });
     });
 
     _controller.forward();
@@ -58,6 +72,7 @@ class _AnimatedTypingTextState extends State<AnimatedTypingText>
       0,
       _characterCount.value.clamp(0, widget.text.length),
     );
+
     return Text(visibleText, style: widget.style);
   }
 

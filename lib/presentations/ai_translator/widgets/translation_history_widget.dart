@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 
-import '../controller/translator_controller.dart';
 
 class TranslationHistoryWidget extends StatelessWidget {
   final TranslationController controller = Get.find();
@@ -18,25 +17,27 @@ class TranslationHistoryWidget extends StatelessWidget {
     return Obx(() {
       if (controller.translationHistory.isEmpty) {
         return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                Assets.historyicon.path,
-                height: 50,
-                color: Colors.grey,
-              ),
-              SizedBox(height: 10),
-              Text(
-                "No History Found!",
-                style: TextStyle(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  Assets.historyicon.path,
+                  height: 50,
                   color: Colors.grey,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
                 ),
-              ),
-            ],
+                SizedBox(height: 10),
+                Text(
+                  "No History Found!",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       }
@@ -115,7 +116,7 @@ class TranslationHistoryWidget extends StatelessWidget {
 
                             IconButton(
                               onPressed: () {
-                                controller.copyText();
+                                controller.copyTranslatedText();
                               },
                               icon: const Icon(
                                 Icons.copy,

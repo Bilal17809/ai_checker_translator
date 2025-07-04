@@ -87,7 +87,7 @@ Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
   Future<void> generate() async {
     final inputeText = textCheckPromptController.text.trim();
     if (inputeText.isEmpty) {
-      Utils().toastMessage("Enter teext to");
+      Utils().toastMessage("Enter text to generate");
       return;
     }
 
@@ -109,12 +109,13 @@ If it is already correct, return it exactly as-is without any explanation:
   }
 
 
-  void copyText() {
-    if (grammarResponseText.isNotEmpty) {
-      Clipboard.setData(ClipboardData(text: grammarResponseText.value));
-      Utils().toastMessage("Copied\nResponse text copied to clipboard!");
-    }
+  void copyResponseText() {
+    Utils.copyTextFrom(text: grammarResponseText.value);
   }
+
+void copyPromptText() {
+    Utils.copyTextFrom(text: textCheckPromptController.text);
+}
 
   void resetController() {
     grammarResponseText.value = '';

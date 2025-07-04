@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 
@@ -5,14 +7,13 @@ import '../theme/app_colors.dart';
 import '../theme/app_styles.dart';
 
 class BackIconButton extends StatelessWidget {
-  const BackIconButton({super.key});
+  final VoidCallback onTap;
+  BackIconButton({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Get.back();
-      },
+      onTap: onTap,
       child: Container(
         height: 32,
         width: 32,

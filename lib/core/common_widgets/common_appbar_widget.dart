@@ -1,6 +1,5 @@
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/extension/extension.dart';
-import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
 class CommonAppbarWidget extends StatelessWidget
@@ -13,6 +12,7 @@ class CommonAppbarWidget extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      iconTheme: IconThemeData(color: kWhite),
       centerTitle: true,
       actions: [
         // Image.asset(Assets.crown.path, height: 28),

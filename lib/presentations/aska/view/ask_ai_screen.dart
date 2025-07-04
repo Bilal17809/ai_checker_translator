@@ -1,5 +1,7 @@
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
+import 'package:ai_checker_translator/core/common_widgets/keyboard_dismiss_wrapper.dart';
+import 'package:ai_checker_translator/core/common_widgets/life_cycle_mixin.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_theme.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/animation_controller.dart';
@@ -18,30 +20,16 @@ class AskAiScreen extends StatefulWidget {
   State<AskAiScreen> createState() => _AskAiScreenState();
 }
 
-final GeminiController controller = Get.find<GeminiController>();
 
-class _AskAiScreenState extends State<AskAiScreen> with WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
+
+class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
+  final GeminiController controller = Get.find<GeminiController>();
 
   @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+  void onAppPause() {
     controller.flutterTts.stop();
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.detached) {
-      controller.flutterTts.stop();
-      controller.promptController.clear();
-    }
+    controller.promptController.clear();
+    FocusScope.of(context).unfocus();
   }
 
   @override
@@ -50,26 +38,7 @@ class _AskAiScreenState extends State<AskAiScreen> with WidgetsBindingObserver {
     final bottomInset = mediaQuery.viewInsets.bottom;
     final screenHeight = mediaQuery.size.height;
 
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) {
-        if (didPop) return;
-        PanaraConfirmDialog.show(
-          context,
-          title: "Exit App",
-          message: "Do you really want to exit the app?",
-          confirmButtonText: "Exit",
-          cancelButtonText: "No",
-          onTapCancel: () => Navigator.of(context).pop(),
-          onTapConfirm: () {
-            Navigator.of(context).pop();
-            SystemNavigator.pop();
-          },
-          panaraDialogType: PanaraDialogType.custom,
-          color: kMediumGreen2,
-          barrierDismissible: false,
-        );
-      },
+    return KeyboardDismissWrapper(
       child: Scaffold(
         appBar: CommonAppbarWidget(),
         body: Stack(
@@ -85,7 +54,9 @@ class _AskAiScreenState extends State<AskAiScreen> with WidgetsBindingObserver {
                       key: widget.key,
                       text: "Ask AI (Writting Assistant)",
                       charDuration: Duration(milliseconds: 50),
-                      style: TextStyle(fontSize: 20, color: Colors.blue),
+                      style: context.textTheme.bodyLarge!.copyWith(
+                        color: kBlue,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     AssistantInputBox(
@@ -107,7 +78,7 @@ class _AskAiScreenState extends State<AskAiScreen> with WidgetsBindingObserver {
                         ),
                         const Spacer(),
                         IconButton(
-                          onPressed: controller.copyTextwithassitantbox,
+                          onPressed: controller.copyPromptText,
                           icon: const Icon(
                             Icons.copy,
                             size: 20,
@@ -166,7 +137,7 @@ class _AskAiScreenState extends State<AskAiScreen> with WidgetsBindingObserver {
               bottom: bottomInset,
               left: 0,
               right: 0,
-              top: screenHeight * 0.50,
+              top: screenHeight * 0.48,
               child: Obx(
                 () =>
                     controller.responseText.isEmpty
@@ -175,7 +146,7 @@ class _AskAiScreenState extends State<AskAiScreen> with WidgetsBindingObserver {
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: SingleChildScrollView(
                             child: GeneratedTextWidget(
-                              onTapCopy: controller.copyText,
+                              onTapCopy: controller.copyResponseText,
                               onTapShare:
                                   () => Share.share(
                                     controller.responseText.value,
@@ -191,5 +162,6 @@ class _AskAiScreenState extends State<AskAiScreen> with WidgetsBindingObserver {
         ),
       ),
     );
+  
   }
 }

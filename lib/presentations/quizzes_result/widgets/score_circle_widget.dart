@@ -18,7 +18,7 @@ class ScoreCircle extends StatelessWidget {
           clipBehavior: Clip.none,
           children: [
             Container(
-              height: hight * 0.21,
+              height: hight * 0.19,
               width: width * 0.40,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
@@ -28,7 +28,7 @@ class ScoreCircle extends StatelessWidget {
             Positioned(
               top: -1,
               child: SizedBox(
-                height: hight * 0.21,
+                height: hight * 0.19,
                 width: width * 0.40,
                 child: CircularProgressIndicator(
                   value: value,

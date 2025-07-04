@@ -1,8 +1,9 @@
 
-import 'dart:ui';
+
 
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
@@ -24,4 +25,11 @@ class Utils {
       "Error", title
       );
    }
+        
+  static void copyTextFrom({required String? text}) {
+    if (text == null || text.trim().isEmpty) return;
+    Clipboard.setData(ClipboardData(text: text));
+    Utils().toastMessage("Text copied successfully!");
+  }
+
 }

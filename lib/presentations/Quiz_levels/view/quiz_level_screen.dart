@@ -74,7 +74,12 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: BackIconButton(),
+                    child: BackIconButton(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        print("Back");
+                      },
+                    ),
                   ),
                   Center(
                     child: Text(

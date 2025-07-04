@@ -31,6 +31,7 @@ class _ParaphraseViewState extends State<ParaphraseView> {
       child: Scaffold(
       backgroundColor: kWhiteF7,
       appBar: AppBar(
+          iconTheme: IconThemeData(color: kWhite),
         title: Text("Quizzes", style: TextStyle(color: Colors.white)),
         backgroundColor: kMintGreen,
         centerTitle: true,
