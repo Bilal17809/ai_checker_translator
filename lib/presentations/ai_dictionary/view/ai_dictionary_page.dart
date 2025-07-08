@@ -2,15 +2,15 @@ import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_wi
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/keyboard_dismiss_wrapper.dart';
 import 'package:ai_checker_translator/core/common_widgets/life_cycle_mixin.dart';
-// import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_theme.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/ai_dictioanay_contrl.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/animation_controller.dart';
-import 'package:ai_checker_translator/presentations/aska/view/widgets/text_generated_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../../aska/widgets/text_generated_widget.dart';
 
 class AiDictionaryPage extends StatefulWidget {
   const AiDictionaryPage({super.key});

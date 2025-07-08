@@ -1,28 +1,26 @@
 
-import 'package:ai_checker_translator/data/paraphrase_repo/paraphrase_repo.dart';
-import 'package:ai_checker_translator/data/quizzes_repo/quizzes_repo.dart';
-import 'package:ai_checker_translator/misteral_api_data/api_services/api_services.dart';
-import 'package:ai_checker_translator/misteral_api_data/api_services/repository/api_respository.dart';
-import 'package:ai_checker_translator/misteral_api_data/api_services/repository/repo_impelementaion.dart';
-import 'package:ai_checker_translator/misteral_api_data/api_services/use_casses/api_use_casses.dart';
+import 'package:ai_checker_translator/data/services/paraphrase_repo.dart';
+import 'package:ai_checker_translator/data/services/quizzes_repo.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/controller/quizzeslevel_controller.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/ai_dictioanay_contrl.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/controller/languages_controller.dart';
-import 'package:ai_checker_translator/presentations/aska/view/controller/gemini_controller.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/controller/paraphrase_controller.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/controller/Categories_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
+import '../../data/data_source/online_data_sr.dart';
+import '../../data/repositories_imp/repositories_imp.dart';
+import '../../domain/repositories/mistral_repo.dart';
+import '../../domain/use_cases/get_mistral.dart';
+import '../../presentations/aska/controller/gemini_controller.dart';
 
 class AllBindins implements Bindings {
   @override
   void dependencies() {
     _initDependencies();
   }
-
   Future<void> _initDependencies() async {
     Get.lazyPut<LanguageController>(() => LanguageController());
     Get.lazyPut<MenuController>(() => MenuController());
@@ -31,19 +29,13 @@ class AllBindins implements Bindings {
     Get.lazyPut(() => MistralUseCase(Get.find()));
     Get.lazyPut(() => GeminiAiCorrectionController(Get.find()));
     Get.put(GeminiController(Get.find()));
-
-    //  Quizzes Repo
     final quizRepo = QuizRepository('english_grammer.db');
     await quizRepo.init();
     Get.put(CategoriesController(quizRepo));
     Get.put(QuizDetailController(quizRepo));
     Get.put(QuizzeslevelController(quizRepo));
-
-    //  Paraphrase Repo
     final paraRepo = ParaphraseRepo("db_prahse.db");
     await paraRepo.initDatabase();
     Get.put(ParaphraseController(paraRepo), permanent: true);
-
-    print("✅ All bindings initialized");
   }
 }

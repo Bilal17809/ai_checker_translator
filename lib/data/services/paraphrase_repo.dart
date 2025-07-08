@@ -1,7 +1,7 @@
 
-import 'package:ai_checker_translator/data/models/parphrase_models/topicphrase_model.dart';
-import 'package:ai_checker_translator/data/models/parphrase_models/topics_model.dart';
-import 'package:ai_checker_translator/data/services/database_helper.dart';
+import 'package:ai_checker_translator/data/models/topicphrase_model.dart';
+import 'package:ai_checker_translator/data/models/topics_model.dart';
+import 'package:ai_checker_translator/data/helper/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ParaphraseRepo {

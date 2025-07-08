@@ -1,5 +1,3 @@
-
-// data/remote/mistral_api_service.dart
 import 'dart:convert';
 import 'package:ai_checker_translator/core/globle_key/globle_key.dart';
 import 'package:http/http.dart' as http;
@@ -7,8 +5,6 @@ import 'package:http/http.dart' as http;
 class MistralApiService {
 
   static const String _baseUrl = 'https://api.mistral.ai/v1/chat/completions';
-
-
   Future<String> generateText(String prompt) async {
     final response = await http.post(
       Uri.parse(_baseUrl),
@@ -24,7 +20,6 @@ class MistralApiService {
         "temperature": 0.7,
       }),
     );
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return data['choices'][0]['message']['content'];

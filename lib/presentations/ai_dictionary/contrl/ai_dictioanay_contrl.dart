@@ -1,13 +1,10 @@
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
-import 'package:ai_checker_translator/core/globle_key/globle_key.dart';
-import 'package:ai_checker_translator/misteral_api_data/api_services/use_casses/api_use_casses.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-// import '../../../data/models/quizzes_model.dart';
-// import '../../../data/services/database_helper.dart';
+import '../../../domain/use_cases/get_mistral.dart';
 
 class GeminiAiCorrectionController extends GetxController {
   final textCheckPromptController = TextEditingController();
@@ -123,31 +120,6 @@ void copyPromptText() {
     flutterTts.stop();
   }
 }
-
-
-
-
-
-
-
-  // var quizzessList = <QuizzesModel>[].obs;
-  // var isLoading = true.obs;
-
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   fetcQuizzesdata();
-  // }
-
-  // Future<void> fetcQuizzesdata() async {
-  //   isLoading.value = true;
-  //   final db = DatabaseHelper();
-  //   await db.initDatabase();
-  //   quizzessList.value = await db.fetcQuizzes();
-  //   isLoading.value = false;
-  // }
-
-
 
 
 

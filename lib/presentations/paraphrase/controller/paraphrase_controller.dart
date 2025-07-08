@@ -1,7 +1,7 @@
 
-import 'package:ai_checker_translator/data/models/parphrase_models/topicphrase_model.dart';
-import 'package:ai_checker_translator/data/models/parphrase_models/topics_model.dart';
-import 'package:ai_checker_translator/data/paraphrase_repo/paraphrase_repo.dart';
+import 'package:ai_checker_translator/data/models/topicphrase_model.dart';
+import 'package:ai_checker_translator/data/models/topics_model.dart';
+import 'package:ai_checker_translator/data/services/paraphrase_repo.dart';
 import 'package:get/get.dart';
 
 class ParaphraseController  extends GetxController{

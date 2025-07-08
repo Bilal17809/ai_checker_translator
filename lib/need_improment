@@ -1,0 +1,12 @@
+1. ai_dictionary control
+2. translator_controller
+3. there is two translator controller???
+4. model inside translator??? use this inside that file don't create separate file
+5. i correct your aska, check how to manage the widget in activities
+6. menu controller is comment ??? if unnecessary delete it
+7. "check the whole, if there is any where use model folder inside the activity remove use inside that
+where it needed"
+8.improve category_controller
+ 9. same you repeated model every where in wrong places do correct "quizzes_result"
+10. check how to call api use MVVM Layer architectures
+11. keep all apis keys in globe key folder must!

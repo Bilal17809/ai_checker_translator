@@ -3,11 +3,12 @@ import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/ai_dict
 import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bottom_navbar.dart';
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
-import 'package:ai_checker_translator/presentations/aska/view/controller/gemini_controller.dart';
 import 'package:ai_checker_translator/presentations/home/view/home_view.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../aska/controller/gemini_controller.dart';
 
 class BottomNavExample extends StatefulWidget {
   const BottomNavExample({super.key});

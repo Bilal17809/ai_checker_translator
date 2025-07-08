@@ -5,13 +5,14 @@ import 'package:ai_checker_translator/core/common_widgets/life_cycle_mixin.dart'
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_theme.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/animation_controller.dart';
-import 'package:ai_checker_translator/presentations/aska/view/controller/gemini_controller.dart';
-import 'package:ai_checker_translator/presentations/aska/view/widgets/text_generated_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../controller/gemini_controller.dart';
+import '../widgets/text_generated_widget.dart';
 
 class AskAiScreen extends StatefulWidget {
   const AskAiScreen({super.key});
