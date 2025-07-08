@@ -14,6 +14,14 @@ const TextStyle headlineMediumStyle = TextStyle(
   fontWeight: FontWeight.w700,
   color: blackTextColor,
 );
+
+const TextStyle splashText = TextStyle(
+  color: kWhite,
+  fontSize: 34,
+  fontWeight: FontWeight.bold,
+  shadows: [BoxShadow(color: kBlack, blurRadius: 6)],
+);
+
 const TextStyle headlineSmallStyle = TextStyle(
   fontFamily: fontFamily,
   fontSize: 24,
@@ -29,10 +37,11 @@ const TextStyle titleLargeStyle = TextStyle(
 );
 
 const TextStyle titleMediumStyle = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 20,
-    fontWeight: FontWeight.w500,
-    color: blackTextColor);
+  fontFamily: fontFamily,
+  fontSize: 20,
+  fontWeight: FontWeight.w500,
+  color: blackTextColor,
+);
 
 const TextStyle titleSmallStyle = TextStyle(
   fontFamily: fontFamily,
@@ -92,7 +101,6 @@ final BoxDecoration roundedDecorationWithShadow = BoxDecoration(
   ],
 );
 
-
 /*
 use this for container decoration
 >>> if you need extra then just context. it will
@@ -110,7 +118,6 @@ final BoxDecoration roundedDecoration = BoxDecoration(
   ],
 );
 
-
 //for home view
 final BoxDecoration roundedDecorationHomevie = BoxDecoration(
   gradient: kGradient,
@@ -126,10 +133,7 @@ final BoxDecoration roundedDecorationHomevie = BoxDecoration(
 final BoxDecoration roundedGreenBorderDecoration = BoxDecoration(
   color: greenColor.withValues(alpha: 0.3),
   borderRadius: BorderRadius.circular(10),
-  border: Border.all(
-    color: greenColor,
-    width: 1.0,
-  ),
+  border: Border.all(color: greenColor, width: 1.0),
 );
 
 //home view container decoration
@@ -149,9 +153,7 @@ final BoxDecoration rounBorderDecoration = BoxDecoration(
 final BoxDecoration rounderGreyBorderDecoration = BoxDecoration(
   color: kWhite,
   borderRadius: BorderRadius.circular(12),
-  border: Border.all(
-    color: greyBorderColor,
-  ),
+  border: Border.all(color: greyBorderColor),
 );
 
 final boxShadow = BoxShadow(

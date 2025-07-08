@@ -1,8 +1,8 @@
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_styles.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/controller/quizzeslevel_controller.dart';
-import 'package:ai_checker_translator/presentations/paraphrase/controller/Categories_controller.dart';
-import 'package:ai_checker_translator/presentations/paraphrase/model/grammarcategory_model.dart';
+import 'package:ai_checker_translator/presentations/quizzes_category_screen/controller/Categories_controller.dart';
+import 'package:ai_checker_translator/presentations/quizzes_category_screen/model/grammarcategory_model.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +22,7 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
   late final GrammarCategoryModel category;
   final quizzeslevelController = Get.find<QuizzeslevelController>();
   final categoriesController = Get.find<CategoriesController>();
-  final QuizDetailController controller = Get.put(QuizDetailController());
+  final controller = Get.find<QuizDetailController>();
 
   @override
   void initState() {

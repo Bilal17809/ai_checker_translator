@@ -1,12 +1,14 @@
+import 'package:ai_checker_translator/data/quizzes_repo/quizzes_repo.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
-import 'package:ai_checker_translator/presentations/paraphrase/model/grammarcategory_model.dart';
-import 'package:flutter/material.dart';
+import 'package:ai_checker_translator/presentations/quizzes_category_screen/model/grammarcategory_model.dart';
 import 'package:get/get.dart';
-
-import '../../../data/models/categories_model.dart';
-import '../../../data/services/database_helper.dart';
+import '../../../data/models/quizzess_models/categories_model.dart';
 
 class CategoriesController extends GetxController {
+
+    final QuizRepository quizRepo;
+  CategoriesController(this.quizRepo);
+
   var categoriesList = <CategoriesModel>[].obs;
   var isLoading = true.obs;
 
@@ -58,10 +60,13 @@ class CategoriesController extends GetxController {
   }
 
   Future<void> fetchCategoriesData() async {
-    isLoading.value = true;
-    final db = DatabaseHelper();
-    await db.initDatabase();
-    categoriesList.value = await db.fetchCategories();
-    isLoading.value = false;
+    try {
+      isLoading.value = true;
+      categoriesList.value = await quizRepo.fetchCategories();
+    } catch (e) {
+      print("❌ Error loading categories: $e");
+    } finally {
+      isLoading.value = false;
+    }
   }
 }

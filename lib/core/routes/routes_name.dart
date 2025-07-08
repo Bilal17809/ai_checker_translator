@@ -20,5 +20,7 @@ class RoutesName {
   static const String quizlevelscreen = "/quiz_level_screen";
   static const String quizzesscreen = "/quizzes_scren";
   static const String quizzesresultscreen = "/quizzes_result_scren";
+  static const String quizzesCategoryScreen = "/quizzes_category_screen";
+  static const String topicPhraseScreen = "/topic_pharases_screen";
   // static const String aiDictionaryPage = 'aiDictionary_page';
 }

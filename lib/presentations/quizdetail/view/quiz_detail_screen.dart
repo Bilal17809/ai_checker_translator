@@ -14,7 +14,7 @@ class QuizDetailScreen extends StatefulWidget {
 
 class _QuizDetailScreenState extends State<QuizDetailScreen> {
 
-    final quizdetailcontroller = Get.put(QuizDetailController());
+  final quizdetailcontroller = Get.find<QuizDetailController>();
     late final int quizID;
 
   @override

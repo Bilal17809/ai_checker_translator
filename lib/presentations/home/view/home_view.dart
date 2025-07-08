@@ -143,7 +143,7 @@ class _HomeViewState extends State<HomeView> {
                       showActionButton: true,
                       actionButtonText: "Let’s Go",
                         onActionPressed:
-                            () => Get.toNamed(RoutesName.paraphraseview),
+                            () => Get.toNamed(RoutesName.quizzesCategoryScreen),
                     ),
                   ],
                 ),

@@ -1,58 +1,55 @@
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // ✅ Added
-import '../../../data/models/quiz_details_model.dart';
-import '../../../data/models/quizzes_model.dart';
-import '../../../data/services/database_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../data/models/quizzess_models/quiz_details_model.dart';
+import '../../../data/models/quizzess_models/quizzes_model.dart';
+import '../../../data/quizzes_repo/quizzes_repo.dart';
 
 class QuizDetailController extends GetxController {
+
+
+  final QuizRepository quizRepo;
+  QuizDetailController(this.quizRepo);
+
   var quizzesList = <QuizzesModel>[].obs;
   var details = <QuizDetailsModel>[].obs;
   var currentPage = 0.obs;
   var isResultMode = false.obs;
-
-  void showResultMode() {
-    isResultMode.value = true;
-  }
-
   var isLoading = false.obs;
   var selectedAnswers = <int, String>{}.obs;
-
-  // ✅ Added: reactive map to store correct answers by level ID (e.g., catId)
   var correctAnswersPerLevel = <int, int>{}.obs;
 
-  // ✅ Added: load per-level correct answers when controller initializes
   @override
   void onInit() {
     super.onInit();
     loadCorrectAnswersForLevel(1);
   }
 
+  void showResultMode() {
+    isResultMode.value = true;
+  }
+
   Future<void> fetchQuizzesByCategoryId(int catId) async {
     try {
       isLoading.value = true;
 
-      final db = DatabaseHelper();
-      await db.initDatabase();
-
-      final quizzes = await db.fetchQuizzesByCatId(catId);
+      final quizzes = await quizRepo.fetchQuizzesByCatId(catId);
       quizzesList.value = quizzes;
-      print("✅ Fetched ${quizzes.length} quizzes for catId: $catId");
+      print("✅ Fetched \${quizzes.length} quizzes for catId: \$catId");
 
       final allDetails = <QuizDetailsModel>[];
       for (final quiz in quizzes) {
         if (quiz.quizID != null) {
-          final options = await db.fetchQuizDetailsByQuizID(quiz.quizID);
+          final options = await quizRepo.fetchQuizDetailsByQuizID(quiz.quizID);
           allDetails.addAll(options);
         }
       }
 
       details.value = allDetails;
-      print("✅ Fetched ${details.length} total quiz options");
+      print("✅ Fetched \${details.length} total quiz options");
 
-      // ✅ Load saved correct answers count for this level
       await loadCorrectAnswersForLevel(catId);
     } catch (e) {
-      print("❌ Error fetching quizzes or details: $e");
+      print("❌ Error fetching quizzes or details: \$e");
     } finally {
       isLoading.value = false;
     }
@@ -61,15 +58,11 @@ class QuizDetailController extends GetxController {
   Future<void> fetchDetails(int quizID) async {
     try {
       isLoading.value = true;
-
-      final db = DatabaseHelper();
-      await db.initDatabase();
-
-      final options = await db.fetchQuizDetailsByQuizID(quizID);
+      final options = await quizRepo.fetchQuizDetailsByQuizID(quizID);
       details.value = options;
-      print("✅ Fetched ${options.length} options for quizID: $quizID");
+      print("✅ Fetched \${options.length} options for quizID: \$quizID");
     } catch (e) {
-      print("❌ Error fetching quiz details: $e");
+      print("❌ Error fetching quiz details: \$e");
     } finally {
       isLoading.value = false;
     }
@@ -101,14 +94,13 @@ class QuizDetailController extends GetxController {
     final count =
         quizzesList.where((quiz) {
       final selected = selectedAnswers[quiz.quizID];
-      print('Checking quiz: ${quiz.quizID}');
-      print('  Answer: ${quiz.answer}');
-      print('  Selected: ${selectedAnswers[quiz.quizID]}');
+          print('Checking quiz: \${quiz.quizID}');
+          print('  Answer: \${quiz.answer}');
+          print('  Selected: \${selectedAnswers[quiz.quizID]}');
       return selected != null &&
               selected.trim().toLowerCase() == quiz.answer.trim().toLowerCase();
     }).length;
 
-    // ✅ Save to SharedPreferences if current level has quizzes
     if (quizzesList.isNotEmpty) {
       final catId = quizzesList.first.catID;
       saveCorrectAnswersForLevel(catId, count);
@@ -127,7 +119,6 @@ class QuizDetailController extends GetxController {
     currentPage.value = 0;
     isResultMode.value = false;
   }
-
 
   // ✅ Save correct answer count to SharedPreferences
   Future<void> saveCorrectAnswersForLevel(int catId, int count) async {
@@ -156,15 +147,4 @@ class QuizDetailController extends GetxController {
 
     print("✅ Only progress loaded for levels: $correctAnswersPerLevel");
   }
-
-  // Future<void> saveResultAfterQuiz() async {
-  //   if (quizzesList.isEmpty) return;
-
-  //   final correct = correctAnswersCount;
-  //   final catId = quizzesList.first.catID;
-
-  //   await saveCorrectAnswersForLevel(catId, correct);
-  //   print("📌 Final result saved for catId $catId => $correct correct");
-  // }
-
-}
+} 

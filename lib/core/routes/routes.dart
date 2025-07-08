@@ -5,8 +5,10 @@ import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart
 import 'package:ai_checker_translator/presentations/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:ai_checker_translator/presentations/home/view/home_view.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
+import 'package:ai_checker_translator/presentations/paraphrase/view/topic_phrase_screen.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/view/quiz_detail_screen.dart';
 import 'package:ai_checker_translator/presentations/quizzes/quizzes_screen.dart';
+import 'package:ai_checker_translator/presentations/quizzes_category_screen/view/quizess_category_screen.dart';
 import 'package:ai_checker_translator/presentations/splash/view/splash_page.dart';
 import 'package:get/get.dart';
 import '../../presentations/Quiz_levels/view/quiz_level_screen.dart';
@@ -44,16 +46,24 @@ class Routes {
     ),
 
     GetPage(
+      name: RoutesName.quizzesCategoryScreen,
+      page: () => QuizessCategoryScreen(),
+      binding: AllBindins(),
+    ),
+
+    GetPage(
       name: RoutesName.paraphraseview,
       page: () {
-        final args = Get.arguments as Map<String, dynamic>? ?? {};
+        // final args = Get.arguments as Map<String, dynamic>? ?? {};
         return ParaphraseView(
-          id: args['id'] ?? 0,
-          menuname: args['menuname'] ?? '',
+          //   id: args['id'] ?? 0,
+          //   menuname: args['menuname'] ?? '',
         );
       },
       binding: AllBindins(),
     ),
+
+   
 
     GetPage(
       name: RoutesName.aidictionary,
@@ -76,6 +86,12 @@ class Routes {
     GetPage(
       name: RoutesName.quizzesscreen,
       page: () => QuizzesScreen(),
+      binding: AllBindins(),
+    ),
+
+    GetPage(
+      name: RoutesName.topicPhraseScreen,
+      page: () => TopicPhrasesScreen(),
       binding: AllBindins(),
     ),
   ];

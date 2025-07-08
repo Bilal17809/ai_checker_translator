@@ -50,9 +50,9 @@ class _BottomNavExampleState extends State<BottomNavExample> {
 
   @override
   Widget build(BuildContext context) {
-    // FocusScope.of(context).unfocus();
+    FocusScope.of(context).unfocus();
     final bool isTranslatorPage = selectedIndex == 4;
-
+      
     final List<Widget> screens = [
       AskAiScreen(key: animatedKey),
       ParaphraseView(),
@@ -91,11 +91,12 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                       onTap: () {
                         FocusScope.of(
                           context,
-                        ).unfocus(); // Hide keyboard if any
+                        ).unfocus(); 
 
                         final wasOnCorrection = selectedIndex == 3;
 
-                        if (index == 4) {      
+                        if (index == 4) {
+                          FocusScope.of(context).unfocus();
                           // Translator screen
                           Get.to(() => const AiTranslatorBottomNav())!.then((
                             _,
@@ -103,7 +104,7 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                             geminicontroller.resetData();
                             setState(() {
                               previousIndex = selectedIndex;
-                              selectedIndex = 2; // default back to Home
+                              selectedIndex = 2;
 
                               // 💡 Reset if previously on correction
                               if (wasOnCorrection) {

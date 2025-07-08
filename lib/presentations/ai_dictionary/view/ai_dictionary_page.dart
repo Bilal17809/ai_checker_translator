@@ -69,6 +69,7 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
 
                   const SizedBox(height: 20),
                   AssistantInputBox(
+                      // readOnly: true,
                     hintText: "Type here or paste your content",
                     controller: controller.textCheckPromptController,
                     iconButtons: [],

@@ -60,6 +60,7 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                     ),
                     const SizedBox(height: 20),
                     AssistantInputBox(
+                      // readOnly: true,
                       hintText: "Type here or paste your content",
                       controller: controller.promptController,
                       iconButtons: [],
@@ -109,6 +110,7 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                         height: 48,
                         child: ElevatedButton(
                           onPressed: () {
+                            controller.flutterTts.stop();
                             controller.generate();
                             FocusScope.of(context).unfocus();
                           },
@@ -120,8 +122,11 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                           child:
                               controller.isLoading.value
                                   ? const Center(
-                                    child: CircularProgressIndicator(
-                                      color: kWhite,
+                                    child: SizedBox(
+                                      height: 50,
+                                      child: CircularProgressIndicator(
+                                        color: kWhite,
+                                      ),
                                     ),
                                   )
                                   : const Text('Generate'),

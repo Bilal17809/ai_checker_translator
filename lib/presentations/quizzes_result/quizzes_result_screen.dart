@@ -1,6 +1,6 @@
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
-import 'package:ai_checker_translator/presentations/paraphrase/model/grammarcategory_model.dart';
+import 'package:ai_checker_translator/presentations/quizzes_category_screen/model/grammarcategory_model.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:ai_checker_translator/presentations/quizzes_result/controller/result_screen_controller.dart';
 import 'package:ai_checker_translator/presentations/quizzes_result/result_arguments_model/result_argument_model.dart';
@@ -19,7 +19,7 @@ class QuizResultScreen extends StatefulWidget {
 }
 
 class _QuizResultScreenState extends State<QuizResultScreen> {
-  final detailcontroller = Get.put(QuizDetailController());
+  final detailcontroller = Get.find<QuizDetailController>();
   final ResultController resultController = Get.put(ResultController());
 
 
