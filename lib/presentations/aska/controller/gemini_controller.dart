@@ -1,17 +1,15 @@
 import 'dart:convert';
-
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
-import 'package:ai_checker_translator/misteral_api_data/api_services/use_casses/api_use_casses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../../domain/use_cases/get_mistral.dart';
 
 
 class GeminiController extends GetxController {
-
   final TextEditingController promptController = TextEditingController();
  
 

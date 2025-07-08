@@ -5,7 +5,20 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translator/translator.dart';
+/*
+>>>>>>>>>>>>>>> improve <<<<<<<<<<<<<<<<<<<
+if you already languages define in laguage_controller.dart
+then why you define here ????????? make this code short and
+readable
+*/
 
+/*
+>>>>>>>>>>>>>>> improve <<<<<<<<<<<<<<<<<<<
+create separate class name local_storage just call sharepenece
+here if there is no need then don't create the function for each
+*/
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>> unnecessary comment is very very annoying
 class TranslationController extends GetxController {
   RxString selectedLanguage1 = "English".obs;
   RxString selectedLanguage2 = "Spanish".obs;
@@ -375,6 +388,7 @@ void swapLanguages() {
     translationHistory.insert(0, entry);
     saveHistory();
   }
+
 
   Future<void> saveHistory() async {
     final prefs = await SharedPreferences.getInstance();

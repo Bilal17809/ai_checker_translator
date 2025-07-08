@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+
+/*
+>>>>>>>>>>>>>>> improve <<<<<<<<<<<<<<<<<<<
+create the animation in core all animation over
+there you need just call here try it must!
+*/
+
 enum TypingDirection { leftToRight, rightToLeft }
 
 class AnimatedTypingText extends StatefulWidget {

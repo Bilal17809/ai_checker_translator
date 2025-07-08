@@ -2,12 +2,12 @@ import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.d
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
-import 'package:ai_checker_translator/presentations/aska/view/controller/gemini_controller.dart';
 import 'package:ai_checker_translator/presentations/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
+import '../../aska/controller/gemini_controller.dart';
 import '../widgets/feature_card_widget.dart';
 import '../widgets/grammar_test_card_widget.dart';
 

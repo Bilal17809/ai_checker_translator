@@ -1,13 +1,18 @@
-import 'package:ai_checker_translator/data/quizzes_repo/quizzes_repo.dart';
+import 'package:ai_checker_translator/data/services/quizzes_repo.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/model/grammarcategory_model.dart';
 import 'package:get/get.dart';
-import '../../../data/models/quizzess_models/categories_model.dart';
+import '../../../data/models/categories_model.dart';
 
 class CategoriesController extends GetxController {
 
     final QuizRepository quizRepo;
   CategoriesController(this.quizRepo);
+
+
+  /*
+  improve how to do use for loop
+  */
 
   var categoriesList = <CategoriesModel>[].obs;
   var isLoading = true.obs;

@@ -1,8 +1,8 @@
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/animation_controller.dart';
-import 'package:ai_checker_translator/presentations/aska/view/controller/gemini_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../controller/gemini_controller.dart';
 
 
 

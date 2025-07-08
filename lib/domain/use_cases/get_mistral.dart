@@ -1,9 +1,5 @@
 
-// application/mistral_usecase.dart
-
-
-import 'package:ai_checker_translator/misteral_api_data/api_services/repository/api_respository.dart';
-
+import '../repositories/mistral_repo.dart';
 class MistralUseCase {
   final MistralRepository repository;
   MistralUseCase(this.repository);

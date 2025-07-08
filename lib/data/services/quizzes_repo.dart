@@ -1,12 +1,10 @@
 
-import 'package:ai_checker_translator/data/services/database_helper.dart';
+import 'package:ai_checker_translator/data/helper/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
-import '../models/quizzess_models/categories_model.dart';
-import '../models/quizzess_models/menu_model.dart';
-import '../models/quizzess_models/quiz_details_model.dart';
-import '../models/quizzess_models/quizzes_model.dart';
-// import '../../data/services/database_service.dart';
-
+import '../models/categories_model.dart';
+import '../models/menu_model.dart';
+import '../models/quiz_details_model.dart';
+import '../models/quizzes_model.dart';
 class QuizRepository {
   late Database _db;
   final String dbName;
@@ -73,11 +71,3 @@ class QuizRepository {
     }
   }
 }
-
-
-// ✅ usage inside controller:
-// // import '../../data/repositories/quiz_repository.dart';
-// final _repo = QuizRepository('english_grammer.db');
-// await _repo.init();
-// final menu = await _repo.fetchMenu();
-// final quizzes = await _repo.fetchQuizzesByCatId(1);

@@ -1,9 +1,6 @@
 
-// data/remote/mistral_repository_impl.dart
-
-
-import 'package:ai_checker_translator/misteral_api_data/api_services/api_services.dart';
-import 'package:ai_checker_translator/misteral_api_data/api_services/repository/api_respository.dart';
+import '../../domain/repositories/mistral_repo.dart';
+import '../data_source/online_data_sr.dart';
 
 class MistralRepositoryImpl implements MistralRepository {
   final MistralApiService apiService;

@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../data/models/quizzess_models/quiz_details_model.dart';
-import '../../../data/models/quizzess_models/quizzes_model.dart';
-import '../../../data/quizzes_repo/quizzes_repo.dart';
+import '../../../data/models/quiz_details_model.dart';
+import '../../../data/models/quizzes_model.dart';
+import '../../../data/services/quizzes_repo.dart';
 
 class QuizDetailController extends GetxController {
 

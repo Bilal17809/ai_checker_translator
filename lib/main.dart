@@ -1,5 +1,4 @@
 import 'package:ai_checker_translator/core/bindings/bindings.dart';
-import 'package:ai_checker_translator/translations/translation_view.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import '/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
