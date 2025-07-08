@@ -40,7 +40,7 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
       appBar: AppBar(
         backgroundColor: kMintGreen,
         iconTheme: IconThemeData(color: kWhite),
-        title: LogoWidget(title: 'Translator'),
+        title: Text("Translator"),
         centerTitle: true,
       ),
       // drawer: Drawer(),

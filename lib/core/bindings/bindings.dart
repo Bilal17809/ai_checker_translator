@@ -35,9 +35,9 @@ class AllBindins implements Bindings {
     //  Quizzes Repo
     final quizRepo = QuizRepository('english_grammer.db');
     await quizRepo.init();
-    Get.put(CategoriesController(quizRepo));
-    Get.put(QuizDetailController(quizRepo));
-    Get.put(QuizzeslevelController(quizRepo));
+    Get.put(CategoriesController(quizRepo), permanent: true);
+    Get.put(QuizDetailController(quizRepo), permanent: true);
+    Get.put(QuizzeslevelController(quizRepo), permanent: true);
 
     //  Paraphrase Repo
     final paraRepo = ParaphraseRepo("db_prahse.db");

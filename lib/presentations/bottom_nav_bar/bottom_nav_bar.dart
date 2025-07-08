@@ -50,7 +50,7 @@ class _BottomNavExampleState extends State<BottomNavExample> {
 
   @override
   Widget build(BuildContext context) {
-    FocusScope.of(context).unfocus();
+    // FocusScope.of(context).unfocus();
     final bool isTranslatorPage = selectedIndex == 4;
       
     final List<Widget> screens = [

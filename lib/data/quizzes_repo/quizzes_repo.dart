@@ -10,6 +10,7 @@ import '../models/quizzess_models/quizzes_model.dart';
 class QuizRepository {
   late Database _db;
   final String dbName;
+  bool isInitialized = false;
 
   QuizRepository(this.dbName);
 
