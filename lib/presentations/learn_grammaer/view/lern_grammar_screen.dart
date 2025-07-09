@@ -1,0 +1,106 @@
+import 'package:ai_checker_translator/core/theme/app_colors.dart';
+import 'package:ai_checker_translator/core/theme/app_styles.dart';
+import 'package:ai_checker_translator/presentations/learn_grammaer/view/rules_screen.dart';
+import 'package:ai_checker_translator/presentations/quizzes_category_screen/controller/Categories_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+// import 'package:get/get_core/get_core.dart';
+// import 'package:get/get_state_manager/get_state_manager.dart';
+
+class LearnGrammarScreen extends StatefulWidget {
+  const LearnGrammarScreen({super.key});
+
+  @override
+  State<LearnGrammarScreen> createState() => _LernGrammarScreenState();
+}
+
+class _LernGrammarScreenState extends State<LearnGrammarScreen> {
+  final categoriesController = Get.find<CategoriesController>();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: kWhiteF7,
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: kWhite),
+        title: Text("Learn Grammar", style: TextStyle(color: kWhite)),
+        backgroundColor: kMintGreen,
+      ),
+      body: Obx(() {
+        if (categoriesController.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (categoriesController.categoriesList.isEmpty) {
+          return Center(child: Text("No data found"));
+        }
+        return ListView.builder(
+          itemCount: categoriesController.categoriesList.length,
+          itemBuilder: (context, index) {
+            final data = categoriesController.categoriesList[index];
+            return  Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 04),
+  child: Card(
+    color: kWhite,
+    elevation: 1,
+    child: InkWell(
+      onTap: () {
+        Get.to(
+          () => RulesScreen(
+            catId: data.catID,
+            content: data.content,
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                CircularProgressIndicator(
+                value: 10,
+                strokeWidth: 4,
+                color: kMintGreen.withOpacity(0.08),
+              ),
+              Positioned(
+                top: 10,
+                left: 10,
+                child: categoriesController.rulesCountMap.containsKey(data.catID) ? Text("0%",style: TextStyle(fontWeight: FontWeight.bold),
+                ) : Icon(Icons.check,size: 18,color: Colors.grey,)
+                )
+              ],
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                   mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    data.catName,
+                    style: context.textTheme.bodyLarge,
+                  ),
+                  if (categoriesController.rulesCountMap.containsKey(data.catID))
+                    Text(
+                      "Learn 0/${categoriesController.rulesCountMap[data.catID]} tests",
+                      style: context.textTheme.bodySmall,
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            Icon(Icons.arrow_forward_ios, size: 20, color: kMintGreen),
+          ],
+        ),
+      ),
+    ),
+  ),
+);
+
+          },
+        );
+      }),
+    );
+  }
+}
