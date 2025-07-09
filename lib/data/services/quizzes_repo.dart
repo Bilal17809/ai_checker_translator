@@ -1,5 +1,6 @@
 
 import 'package:ai_checker_translator/data/helper/database_helper.dart';
+import 'package:ai_checker_translator/data/models/rules_model.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/categories_model.dart';
 import '../models/menu_model.dart';
@@ -21,9 +22,13 @@ class QuizRepository {
     return data.isNotEmpty ? data.map((e) => MenuModel.fromMap(e)).toList() : [];
   }
 
-  Future<List<CategoriesModel>> fetchCategories() async {
+  Future<List<CategoriesModel>> fetchCategories(int menuId) async {
     try {
-      final data = await _db.query('Categories', where: "MenuID = ?", whereArgs: []);
+      final data = await _db.query(
+        'Categories',
+        where: "MenuID = ?",
+        whereArgs: [menuId],
+      );
       return data.isNotEmpty ? data.map((e) => CategoriesModel.fromMap(e)).toList() : [];
     } catch (e) {
       print(" Error fetching categories: $e");
@@ -67,6 +72,23 @@ class QuizRepository {
       return result.map((e) => QuizzesModel.fromMap(e)).toList();
     } catch (e) {
       print(" Error fetching quizzes by catId: $e");
+      return [];
+    }
+  }
+
+//fetch Rules bycatID
+  Future<List<RulesModel>> fetchRulesByCatId(int catId) async {
+    try {
+      final data = await _db.query(
+        'Rules',
+        where: 'CatID = ?',
+        whereArgs: [catId],
+      );
+      return data.isNotEmpty
+          ? data.map((e) => RulesModel.fromMap(e)).toList()
+          : [];
+    } catch (e) {
+      print(" Error fetching rules by CatID $catId: $e");
       return [];
     }
   }

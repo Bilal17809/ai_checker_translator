@@ -1,5 +1,7 @@
+import 'package:ai_checker_translator/data/models/rules_model.dart';
 import 'package:ai_checker_translator/data/services/quizzes_repo.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
+import 'package:ai_checker_translator/presentations/learn_grammaer/view/rules_detail_screen.dart';
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/model/grammarcategory_model.dart';
 import 'package:get/get.dart';
 import '../../../data/models/categories_model.dart';
@@ -15,6 +17,8 @@ class CategoriesController extends GetxController {
   */
 
   var categoriesList = <CategoriesModel>[].obs;
+  var rulesList = <RulesModel>[].obs;
+  var rulesCountMap = <int, int>{}.obs;
   var isLoading = true.obs;
 
   var grammarCategories =
@@ -61,17 +65,50 @@ class CategoriesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchCategoriesData();
+    fetchCategoriesData(1);
   }
 
-  Future<void> fetchCategoriesData() async {
+  Future<void> fetchCategoriesData(int menuId) async {
     try {
       isLoading.value = true;
-      categoriesList.value = await quizRepo.fetchCategories();
+      categoriesList.value = await quizRepo.fetchCategories(menuId);
+      await fetchAllRulesCountForCategories();
     } catch (e) {
       print("❌ Error loading categories: $e");
     } finally {
       isLoading.value = false;
     }
   }
+
+    
+  Future<void> fetchRulesByCategoryId(int catId) async {
+    try {
+      isLoading.value = true;
+      rulesList.value = await quizRepo.fetchRulesByCatId(catId);
+    } catch (e) {
+      print("❌ Error loading rules: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void goToRuleDetail(RulesModel rule) {
+    Get.to(
+      () => RuleDetailScreen(
+        title: rule.titleOnly,
+        definition: rule.definitionOnly,
+      ),
+    );
+  }
+
+  Future<void> fetchAllRulesCountForCategories() async {
+    rulesCountMap.clear();
+    for (var cat in categoriesList) {
+      final rules = await quizRepo.fetchRulesByCatId(cat.catID ?? 0);
+      if (rules.isNotEmpty) {
+        rulesCountMap[cat.catID ?? 0] = rules.length;
+      }
+    }
+  }
+
 }

@@ -6,6 +6,8 @@ warning should be remove from it
 
 
 
+import 'package:flutter/material.dart';
+
 class RoutesName {
   // static  dynamic splashPage;
   static const String bottomNevBar = "/bottom_nav_bar";
@@ -22,5 +24,9 @@ class RoutesName {
   static const String quizzesresultscreen = "/quizzes_result_scren";
   static const String quizzesCategoryScreen = "/quizzes_category_screen";
   static const String topicPhraseScreen = "/topic_pharases_screen";
+
+  static const String learngrammarscreen = "/learn_grammar_screen";
+  static const String rulesscreen = "/rules_screen";
+  static const String rulesdetailscreen = "/rules_detail_screen"; 
   // static const String aiDictionaryPage = 'aiDictionary_page';
 }

@@ -4,6 +4,9 @@ import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bo
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
 import 'package:ai_checker_translator/presentations/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:ai_checker_translator/presentations/home/view/home_view.dart';
+import 'package:ai_checker_translator/presentations/learn_grammaer/view/lern_grammar_screen.dart';
+import 'package:ai_checker_translator/presentations/learn_grammaer/view/rules_detail_screen.dart';
+import 'package:ai_checker_translator/presentations/learn_grammaer/view/rules_screen.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/topic_phrase_screen.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/view/quiz_detail_screen.dart';
@@ -92,6 +95,24 @@ class Routes {
     GetPage(
       name: RoutesName.topicPhraseScreen,
       page: () => TopicPhrasesScreen(),
+      binding: AllBindins(),
+    ),
+
+    GetPage(
+      name: RoutesName.learngrammarscreen,
+      page: () => LearnGrammarScreen(),
+      binding: AllBindins(),
+    ),
+
+    GetPage(
+      name: RoutesName.rulesscreen,
+      page: () => RulesScreen(),
+      binding: AllBindins(),
+    ),
+
+    GetPage(
+      name: RoutesName.rulesdetailscreen,
+      page: () => RuleDetailScreen(),
       binding: AllBindins(),
     ),
   ];

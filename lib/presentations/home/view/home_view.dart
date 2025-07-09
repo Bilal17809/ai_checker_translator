@@ -112,7 +112,9 @@ class _HomeViewState extends State<HomeView> {
                           Expanded(
                             child: FeatureCardWidget(
                               OnTap:
-                                  () => Get.toNamed(RoutesName.paraphraseview),
+                                    () => Get.toNamed(
+                                      RoutesName.learngrammarscreen,
+                                    ),
                               image: Assets.learngrammaricon.path,
                               title: "Learn Grammar",
                             ),

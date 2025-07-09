@@ -23,6 +23,7 @@ class CustomTextFormField extends StatelessWidget {
   final Function(String?)? onSaved;
   final String? Function(String?)? validator;
   final ScrollPhysics? scrollPhysics;
+  final EdgeInsetsGeometry? contentPadding;
   // final int hintMaxLine;
   final int? maxLines;
   // final bool showclearicon;
@@ -48,6 +49,7 @@ class CustomTextFormField extends StatelessWidget {
     this.scrollPhysics,
     // this.hintMaxLine = 0,
     this.maxLines,
+    this.contentPadding
 
     // this.showclearicon = false,
     
@@ -77,7 +79,9 @@ class CustomTextFormField extends StatelessWidget {
         border: border ?? InputBorder.none,
         focusedBorder: focusedBorder ?? InputBorder.none,
         enabledBorder: enabledBorder ?? InputBorder.none,
-        contentPadding: EdgeInsets.symmetric(horizontal: 02, vertical: 16)
+        contentPadding:
+            contentPadding ??
+            const EdgeInsets.symmetric(horizontal: 02, vertical: 16),
       ),
       
     );
