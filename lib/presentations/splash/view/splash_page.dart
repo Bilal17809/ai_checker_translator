@@ -56,6 +56,7 @@ class _SplashPageState extends State<SplashPage> {
                       ),
                       direction: TypingDirection.leftToRight,
                       curve: Curves.easeOutCubic,
+                     
                     ),
                     AnimatedTypingText(
                       text: "Checker",
@@ -65,9 +66,11 @@ class _SplashPageState extends State<SplashPage> {
                         fontSize: 34,
                         fontWeight: FontWeight.bold,
                         shadows: [BoxShadow(color: kBlack, blurRadius: 6)],
+                    
                       ),
                       direction: TypingDirection.leftToRight,
                       curve: Curves.easeOutCubic,
+                    
                     ),
                     SizedBox(height: 16),
                   AnimatedTypingText(
@@ -82,6 +85,7 @@ class _SplashPageState extends State<SplashPage> {
                       direction: TypingDirection.rightToLeft,
                       textAlign: TextAlign.right,
                       curve: Curves.easeOutCubic,
+                    
                   ),
                     SizedBox(height: 100),
                     if (controller.isLoading.value)

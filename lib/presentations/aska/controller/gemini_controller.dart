@@ -8,20 +8,18 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../domain/use_cases/get_mistral.dart';
 
-
 class GeminiController extends GetxController {
   final TextEditingController promptController = TextEditingController();
- 
-
   final responseText = ''.obs;
   final isLoading = false.obs;
   final isSpeaking = false.obs;
-    
+  final isTypingStarted = false.obs;
+  final isResponseReady = false.obs; // Track if response is fully generated
   
   late final GenerativeModel model;
   final MistralUseCase useCase;
-
   final FlutterTts flutterTts = FlutterTts();
+  
   static const MethodChannel _speechChannel = MethodChannel(
     'com.example.getx_practice_app/speech_Text',
   );
@@ -29,17 +27,13 @@ class GeminiController extends GetxController {
   final pitch = 0.5.obs;
   final speed = 0.5.obs;
 
+  GeminiController(this.useCase);
+
   @override
   void onInit() {
     super.onInit();
-    // useCase = Get.find<MistralUseCase>();
-    // model = GenerativeModel(model: 'mistral-small-3.2', apiKey: apiKey);
     _initTts();
   }
-
-
-
-  GeminiController(this.useCase);
 
   Future<void> generate() async {
     final prompt = promptController.text.trim();
@@ -49,18 +43,25 @@ class GeminiController extends GetxController {
     }
 
     isLoading.value = true;
+    isTypingStarted.value = false;
+    isResponseReady.value = false;
+    responseText.value = '';
+
     try {
       final result = await useCase(prompt);
       responseText.value = result;
+      isResponseReady.value = true; // Response is ready
     } catch (e) {
-      responseText.value = e.toString();
+      responseText.value = "Error: ${e.toString()}";
+      isResponseReady.value = true;
     } finally {
       isLoading.value = false;
     }
   }
 
-
-
+  void startAnimation() {
+    isTypingStarted.value = true;
+  }
 
   void copyPromptText() {
     Utils.copyTextFrom(text: promptController.text);
@@ -70,7 +71,6 @@ class GeminiController extends GetxController {
     Utils.copyTextFrom(text: responseText.value);
   }
 
-  /// 🎙️ Start voice input using speech-to-text
   Future<void> startMicInput({String languageISO = 'en-US'}) async {
     try {
       final result = await _speechChannel.invokeMethod('getTextFromSpeech', {
@@ -79,19 +79,16 @@ class GeminiController extends GetxController {
 
       if (result != null && result.isNotEmpty) {
         promptController.text = result;
-        // Optional: trigger generation
-        // await generateText();
       }
     } on PlatformException catch (e) {
       print("Mic Error: ${e.message}");
     }
   }
 
-  /// 🔊 Speak the generated response
   Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
     try {
       if (isSpeaking.value) {
-      await flutterTts.stop();
+        await flutterTts.stop();
         isSpeaking.value = false;
         return;
       }
@@ -104,10 +101,8 @@ class GeminiController extends GetxController {
       await flutterTts.setSpeechRate(speed.value);
 
       isSpeaking.value = true;
-
       await flutterTts.speak(text);
 
-      /// Listen for when speaking completes
       flutterTts.setCompletionHandler(() {
         isSpeaking.value = false;
       });
@@ -124,7 +119,6 @@ class GeminiController extends GetxController {
         Utils().toastMessage("No content to share.");
         return;
       }
-
       await SharePlus.instance.share(ShareParams(text: text));
     } catch (e) {
       Utils().toastMessage("Sharing failed: ${e.toString()}");
@@ -132,14 +126,12 @@ class GeminiController extends GetxController {
     }
   }
 
-  //
   Future<void> _initTts() async {
     await flutterTts.setSharedInstance(true);
     await flutterTts.setLanguage('en-US');
     await flutterTts.setPitch(pitch.value);
     await flutterTts.setSpeechRate(speed.value);
   }
-
 
   @override
   void onClose() {
@@ -148,11 +140,11 @@ class GeminiController extends GetxController {
     super.onClose();
   }
 
-
   void resetData() {
     responseText.value = '';
     promptController.clear();
+    isTypingStarted.value = false;
+    isResponseReady.value = false;
     flutterTts.stop();
   }
-  
 }

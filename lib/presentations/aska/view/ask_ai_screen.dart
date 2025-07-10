@@ -57,11 +57,13 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                       charDuration: Duration(milliseconds: 50),
                       style: context.textTheme.bodyLarge!.copyWith(
                         color: kBlue,
+                    
                       ),
+                 
                     ),
                     const SizedBox(height: 20),
                     AssistantInputBox(
-                      // readOnly: true,
+                      readOnly: false,
                       hintText: "Type here or paste your content",
                       controller: controller.promptController,
                       iconButtons: [],

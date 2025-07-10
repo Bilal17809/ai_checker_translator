@@ -115,6 +115,10 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                               // Reset key for re-render if needed
                               if (previousIndex == 0 || previousIndex == 3) {
                                 animatedKey = UniqueKey();
+                                // FocusScope.of(context).unfocus();
+                              }
+                              if (index == 3 || previousIndex == 3) {
+                                FocusScope.of(context).unfocus();
                               }
                             });
                           });

@@ -31,6 +31,7 @@ class GeminiAiCorrectionController extends GetxController {
   final grammarResponseText = "".obs;
   final isLoading = false.obs;
   final isSpeaking = false.obs;
+  final isTypingStarted = false.obs;
 
   //start mic input
   Future<void> startMicInput({String languageISO = 'en-US'}) async {
@@ -89,6 +90,8 @@ Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
     }
 
     isLoading.value = true;
+    isTypingStarted.value = false; // Reset typing state
+    grammarResponseText.value = ''; // Clear previous response
     try {
       final correctionPrompt = '''
           Correct the following sentence or words for grammar and spelling.
@@ -98,6 +101,7 @@ If it is already correct, return it exactly as-is without any explanation:
 ''';
       final result = await useCase(correctionPrompt);
       grammarResponseText.value = result;
+      isTypingStarted.value = true;
     } catch (e) {
       grammarResponseText.value = e.toString();
     } finally {
@@ -115,7 +119,9 @@ void copyPromptText() {
 }
 
   void resetController() {
+    
     grammarResponseText.value = '';
+    isTypingStarted.value = false;
     textCheckPromptController.clear();
     flutterTts.stop();
   }

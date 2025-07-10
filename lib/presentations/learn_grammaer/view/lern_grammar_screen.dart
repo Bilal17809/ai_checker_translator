@@ -36,71 +36,111 @@ class _LernGrammarScreenState extends State<LearnGrammarScreen> {
           itemCount: categoriesController.categoriesList.length,
           itemBuilder: (context, index) {
             final data = categoriesController.categoriesList[index];
-            return  Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 04),
-  child: Card(
-    color: kWhite,
-    elevation: 1,
-    child: InkWell(
-      onTap: () {
-        Get.to(
-          () => RulesScreen(
-            catId: data.catID,
-            content: data.content,
-          ),
-        );
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                CircularProgressIndicator(
-                value: 10,
-                strokeWidth: 4,
-                color: kMintGreen.withOpacity(0.08),
-              ),
-              Positioned(
-                top: 10,
-                left: 10,
-                child: categoriesController.rulesCountMap.containsKey(data.catID) ? Text("0%",style: TextStyle(fontWeight: FontWeight.bold),
-                ) : Icon(Icons.check,size: 18,color: Colors.grey,)
-                )
-              ],
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                   mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    data.catName,
-                    style: context.textTheme.bodyLarge,
-                  ),
-                  if (categoriesController.rulesCountMap.containsKey(data.catID))
-                    Text(
-                      "Learn 0/${categoriesController.rulesCountMap[data.catID]} tests",
-                      style: context.textTheme.bodySmall,
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 10),
-            Icon(Icons.arrow_forward_ios, size: 20, color: kMintGreen),
-          ],
-        ),
-      ),
-    ),
-  ),
-);
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 04),
+              child: Card(
+                color: kWhite,
+                elevation: 1,
+                child: InkWell(
+                  onTap: () {
+                    Get.to(
+                      () =>
+                          RulesScreen(catId: data.catID, content: data.content),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Obx(() {
+                          final progress = categoriesController
+                              .getProgressForCategory(data.catID ?? 0);
+                          final isContentLearned = categoriesController
+                              .isCategoryWithoutRulesLearned(data.catID ?? 0);
 
+                          return Stack(
+                            clipBehavior: Clip.none,
+                            alignment: Alignment.center,
+                            children: [
+                              CircularProgressIndicator(
+                                value:
+                                    categoriesController.rulesCountMap
+                                            .containsKey(data.catID)
+                                        ? progress
+                                        : 1.0,
+                                strokeWidth: 4,
+                                backgroundColor: kMintGreen.withOpacity(0.08),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  isContentLearned || progress > 0
+                                      ? kMintGreen
+                                      : kMintGreen.withOpacity(0.3),
+                                ),
+                              ),
+                              Positioned(
+                                top: 10,
+                                left: 08,
+                                child:
+                                    categoriesController.rulesCountMap
+                                            .containsKey(data.catID)
+                                        ? Text(
+                                          "${(progress * 100).toStringAsFixed(0)}%",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color:
+                                                progress > 0
+                                                    ? Colors.green
+                                                    : Colors.black,
+                                          ),
+                                        )
+                                        : Icon(
+                                          Icons.check,
+                                          size: 18,
+                                          color:
+                                              isContentLearned
+                                                  ? kMintGreen
+                                                  : Colors.grey,
+                                        ),
+                              ),
+                            ],
+                          );
+                        }),
+
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                data.catName,
+                                style: context.textTheme.bodyLarge,
+                              ),
+                              if (categoriesController.rulesCountMap
+                                  .containsKey(data.catID))
+                                Text(
+                                  "Learn 0/${categoriesController.rulesCountMap[data.catID]} tests",
+                                  style: context.textTheme.bodySmall,
+                                ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 20,
+                          color: kMintGreen,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
           },
         );
       }),
     );
+    
   }
 }

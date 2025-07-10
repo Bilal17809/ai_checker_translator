@@ -65,6 +65,7 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
                       style: context.textTheme.bodySmall!.copyWith(
                         color: kBlue,
                       ),
+                 
                   ),
 
                   const SizedBox(height: 20),
