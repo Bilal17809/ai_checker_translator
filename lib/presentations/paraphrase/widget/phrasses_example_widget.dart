@@ -51,16 +51,7 @@ class PhrassesExampleWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 14),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      buttons(
-                        speakonTap
-                        , Icons.copy),
-                      //  SizedBox(width: 10),
-                      buttons(copy, Icons.volume_up_outlined),
-                    ],
-                  ),
+                
                   Expanded(
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.only(top: 8),
@@ -72,6 +63,15 @@ class PhrassesExampleWidget extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      buttons(speakonTap, Icons.copy),
+                      //  SizedBox(width: 10),
+                      buttons(copy, Icons.volume_up_outlined),
+                    ],
+                  ),
+               
                 ],
               ),
             ),
@@ -90,9 +90,9 @@ Widget buttons(final VoidCallback? onTap, IconData icons) {
       child: Container(
         height: 40,
         width: 40,
-        decoration: roundedDecoration.copyWith(
-          borderRadius: BorderRadius.circular(50),
-        ),
+        // decoration: roundedDecoration.copyWith(
+        //   borderRadius: BorderRadius.circular(50),
+        // ),
         child: Center(child: Icon(icons, color: kMintGreen)),
       ),
     ),

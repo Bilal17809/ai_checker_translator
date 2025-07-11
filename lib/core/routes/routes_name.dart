@@ -15,6 +15,8 @@ class RoutesName {
   static const String askaiscreen = "/askai_screen";
   static const String homePage = '/home_page';
   static const String aitranslationpage = '/ai_translation_page';
+  static const String aitranslationHistoryScreen =
+      '/ai_translation_History_screen';
   static const String aiTranslatornavbar = "/ai_translator_bottom_navbar";
   static const String paraphraseview = "/paraphrase_view";
   static const String aidictionary = "/ai_dictionary";

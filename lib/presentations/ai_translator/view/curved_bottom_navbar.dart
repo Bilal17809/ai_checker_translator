@@ -1,5 +1,8 @@
+
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
+import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translation_History_screen.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translator_page.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +22,7 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
   final List<Widget> _pages = [
     const Center(child: Text("Share Page")),
     AiTranslatorPage(),
-    const Center(child: Text("Refresh Page")),
+    AiTranslationHistoryScreen()
   ];
   final controller = Get.put(TranslationController());
 
@@ -43,23 +46,36 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
           backgroundColor: Colors.transparent,
           color: kMintGreen,
           buttonBackgroundColor: kMintGreen,
-          items: const <Widget>[
-            Text("Share", style: TextStyle(color: kWhite)),
+          items: <Widget>[
+            Icon(Icons.clear, color: Colors.white),
             Icon(Icons.mic, size: 46, color: Colors.white),
-            Icon(Icons.refresh, size: 30, color: Colors.white),
+            Image.asset(
+              Assets.aitranslationhistoryicon.path,
+              color: kWhite,
+              height: 30,
+            ),
           ],
           onTap: (index) async {
-            if (index == 1) {
-              final translationController = Get.put(TranslationController());
-              translationController.clearData();
-              final selectedLanguageCode =
-                  '${translationController.languageCodes[translationController.selectedLanguage1.value]}-US';
-              translationController.startSpeechToText(selectedLanguageCode);
+            if (index == 0) {
+              controller.translationHistory.clear();
+              controller.flutterTts.stop();
+              // Utils().toastMessage("History cleared!");
+              return;
             }
+
+            if (index == 1) {
+              controller.clearData();
+              final selectedLanguageCode =
+                  '${controller.languageCodes[controller.selectedLanguage1.value]}-US';
+              controller.startSpeechToText(selectedLanguageCode);
+            }
+
+            // 👇 Allow normal navigation only for other tabs
             setState(() {
               _page = index;
             });
           },
+
         ),
       ),
     );

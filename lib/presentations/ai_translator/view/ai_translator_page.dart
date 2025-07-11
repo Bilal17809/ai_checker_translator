@@ -40,7 +40,7 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
       appBar: AppBar(
         backgroundColor: kMintGreen,
         iconTheme: IconThemeData(color: kWhite),
-        title: Text("Translator"),
+        title: Text("Translator", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
       // drawer: Drawer(),
@@ -146,7 +146,12 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
               top: screenHeight * 0.46,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TranslationHistoryWidget(),
+                child: TranslationHistoryWidget(
+                  showFavouriteIcon: true,
+                  showOnlyFavourites: false,
+                  deleteFromFavouritesOnly: false,
+                  overrideSpeakAndCopy: false,
+                )
               ),
             ),
           ],

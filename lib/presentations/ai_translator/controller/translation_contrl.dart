@@ -29,6 +29,9 @@ class TranslationController extends GetxController {
   final speed = 0.5.obs;
   final isSpeechPlaying = false.obs;
 
+  final RxList<String> favouriteTranslations = <String>[].obs;
+  static const _favouritesKey = 'favourite_translations';
+
   final RxList<String> translationHistory = <String>[].obs;
   static const _historyKey = 'translation_history';
 
@@ -36,7 +39,7 @@ class TranslationController extends GetxController {
   void onInit() {
     super.onInit();
     loadHistory();
-    // loadFromPrefs();
+    loadFavourites(); // Add this
   }
 
   @override
@@ -44,6 +47,8 @@ class TranslationController extends GetxController {
 
     super.onClose();
   }
+
+ 
 
   TextEditingController controller = TextEditingController();
   final translator = GoogleTranslator();
@@ -350,10 +355,10 @@ void swapLanguages() {
     controller.text = translatedText.value;
     translatedText.value = tempText;
 
-    // Translate again using new source/target
-    if (controller.text.isNotEmpty) {
-      translate(controller.text);
-    }
+    // // Translate again using new source/target
+    // // if (controller.text.isNotEmpty) {
+    // //   translate(controller.text);
+    // }
   }
 
   Future<void> saveToPrefs() async {
@@ -433,7 +438,44 @@ void swapLanguages() {
   }
 
 
+  
 
+
+// Save Favourite
+  void addToFavourites(String item) async {
+    if (!favouriteTranslations.contains(item)) {
+      favouriteTranslations.insert(0, item);
+      await saveFavourites();
+    }
+  }
+
+  // Remove Favourite
+  void removeFromFavourites(String item) async {
+    favouriteTranslations.remove(item);
+    await saveFavourites();
+  }
+
+  // Check if favourite
+  bool isFavourite(String item) {
+    return favouriteTranslations.contains(item);
+  }
+
+  // Save to SharedPreferences
+  Future<void> saveFavourites() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(_favouritesKey, favouriteTranslations);
+  }
+
+  // Load from SharedPreferences
+  Future<void> loadFavourites() async {
+    final prefs = await SharedPreferences.getInstance();
+    favouriteTranslations.value = prefs.getStringList(_favouritesKey) ?? [];
+  }
+
+  void deleteFromFavouritesOnly(String item) async {
+    favouriteTranslations.remove(item);
+    await saveFavourites(); // already exists in your controller
+  }
 
 }
 

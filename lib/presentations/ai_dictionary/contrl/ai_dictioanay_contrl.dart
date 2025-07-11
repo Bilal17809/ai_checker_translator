@@ -90,24 +90,67 @@ Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
     }
 
     isLoading.value = true;
-    isTypingStarted.value = false; // Reset typing state
-    grammarResponseText.value = ''; // Clear previous response
-    try {
-      final correctionPrompt = '''
-          Correct the following sentence or words for grammar and spelling.
-If it is already correct, return it exactly as-is without any explanation:
+    isTypingStarted.value = false;
+    grammarResponseText.value = '';
 
-"$inputeText"
-''';
-      final result = await useCase(correctionPrompt);
-      grammarResponseText.value = result;
+    try {
+      final correctedPrompt = _buildCorrectionPromptWithLimit(inputeText);
+
+      // Optional: control maxTokens if needed
+      final result = await useCase(correctedPrompt, maxTokens: 150);
+
+      final lineLimited = _limitResponseLines(result, 10);
+      final charLimited = _limitResponseCharacters(lineLimited, 500);
+
+      grammarResponseText.value = charLimited;
       isTypingStarted.value = true;
     } catch (e) {
-      grammarResponseText.value = e.toString();
+      grammarResponseText.value = "Error: ${e.toString()}";
     } finally {
       isLoading.value = false;
     }
   }
+
+
+  String _buildCorrectionPromptWithLimit(String input) {
+    final words = input.split(RegExp(r'\s+')).length;
+    final lines = input.split('\n').length;
+    final chars = input.length;
+
+    if (words <= 3 && chars < 40) {
+      return '''
+Correct the following short word or phrase. 
+Return only corrected version in 1 line without explanation:
+"$input"
+''';
+    } else if (words <= 15 && lines <= 2) {
+      return '''
+Fix grammar/spelling of the following short sentence.
+Return corrected sentence only. No explanation.
+"$input"
+''';
+    } else {
+      return '''
+Correct grammar and spelling in the following paragraph.
+Return only the corrected version without any explanation in max 5–10 lines.
+"$input"
+''';
+    }
+  }
+
+  String _limitResponseLines(String text, int maxLines) {
+    final lines = text.split('\n');
+    if (lines.length <= maxLines) return text;
+    return lines.take(maxLines).join('\n');
+  }
+
+  String _limitResponseCharacters(String text, int maxChars) {
+    if (text.length <= maxChars) return text;
+    return text.substring(0, maxChars).trim() + '...';
+  }
+
+
+
 
 
   void copyResponseText() {

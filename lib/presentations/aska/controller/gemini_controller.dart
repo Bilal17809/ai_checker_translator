@@ -1,4 +1,4 @@
-import 'dart:convert';
+// import 'dart:convert';
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,12 +9,13 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../domain/use_cases/get_mistral.dart';
 
 class GeminiController extends GetxController {
+
   final TextEditingController promptController = TextEditingController();
   final responseText = ''.obs;
   final isLoading = false.obs;
   final isSpeaking = false.obs;
   final isTypingStarted = false.obs;
-  final isResponseReady = false.obs; // Track if response is fully generated
+  final isResponseReady = false.obs; 
   
   late final GenerativeModel model;
   final MistralUseCase useCase;
@@ -48,9 +49,15 @@ class GeminiController extends GetxController {
     responseText.value = '';
 
     try {
-      final result = await useCase(prompt);
-      responseText.value = result;
-      isResponseReady.value = true; // Response is ready
+      final limitedPrompt = _generatePromptWithLimit(prompt);
+
+      final result = await useCase(limitedPrompt, maxTokens: 200);
+
+      final lineLimited = _limitResponseLines(result, 20);
+      final finalLimited = _limitResponseCharacters(lineLimited, 800);
+
+      responseText.value = finalLimited;
+      isResponseReady.value = true;
     } catch (e) {
       responseText.value = "Error: ${e.toString()}";
       isResponseReady.value = true;
@@ -58,6 +65,37 @@ class GeminiController extends GetxController {
       isLoading.value = false;
     }
   }
+
+
+String _generatePromptWithLimit(String prompt) {
+    final lines = prompt.split('\n').length;
+    final words = prompt.split(RegExp(r'\s+')).length;
+    final chars = prompt.length;
+
+    if (words <= 3 && chars < 40) {
+      return "$prompt\n\nReply in 1-2 lines only.";
+    } else if (words <= 10 && chars < 100) {
+      return "$prompt\n\nKeep answer short (max 4-5 lines).";
+    } else if (words <= 30 || lines <= 3) {
+      return "$prompt\n\nAnswer briefly in 6-10 lines.";
+    } else if (words <= 60 || lines <= 6) {
+      return "$prompt\n\nGive a detailed but concise answer in 10-15 lines.";
+    } else {
+      return "$prompt\n\nSummarize and answer clearly in max 15-20 lines only.";
+    }
+  }
+
+  String _limitResponseLines(String text, int maxLines) {
+    final lines = text.split('\n');
+    if (lines.length <= maxLines) return text;
+    return lines.take(maxLines).join('\n');
+  }
+
+  String _limitResponseCharacters(String text, int maxChars) {
+    if (text.length <= maxChars) return text;
+    return text.substring(0, maxChars).trim() + '...';
+  }
+
 
   void startAnimation() {
     isTypingStarted.value = true;

@@ -1,4 +1,5 @@
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
+import 'package:ai_checker_translator/core/common_widgets/custom_drawer.dart';
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
@@ -55,7 +56,7 @@ class _HomeViewState extends State<HomeView> {
       },
       child: Scaffold(
       appBar: CommonAppbarWidget(),
-      drawer: const Drawer(),
+        drawer: CustomDrawer(),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Padding(

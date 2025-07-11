@@ -68,10 +68,9 @@ class RuleDetailScreen extends StatelessWidget {
                     ),
                     icon: Icon(
                       isLearned.value
-                          ? Icons.check_circle
-                          : Icons.lightbulb_outline,
+                          ? Icons.done_all : Icons.done,
                     ),
-                    label: Text(isLearned.value ? "Unlearn" : "Learn It"),
+                    label: Text(isLearned.value ? "Learn it" : "Unlearn"),
                   ),
                 ),
             ],

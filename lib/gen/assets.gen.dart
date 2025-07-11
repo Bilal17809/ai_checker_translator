@@ -36,6 +36,12 @@ class Assets {
     'assets/icons/adjectives.png',
   );
 
+  //ai translation history icon
+
+  static const AssetGenImage aitranslationhistoryicon = AssetGenImage(
+    'assets/icons/history.png',
+  );
+
 
   //-----------------------------------------------------------
 

@@ -1,3 +1,4 @@
+import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_styles.dart';
 import 'package:ai_checker_translator/presentations/learn_grammaer/view/rules_screen.dart';
@@ -54,56 +55,61 @@ class _LernGrammarScreenState extends State<LearnGrammarScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Obx(() {
+                          final hasRules = categoriesController.rulesCountMap
+                              .containsKey(data.catID);
                           final progress = categoriesController
                               .getProgressForCategory(data.catID ?? 0);
                           final isContentLearned = categoriesController
                               .isCategoryWithoutRulesLearned(data.catID ?? 0);
 
                           return Stack(
-                            clipBehavior: Clip.none,
                             alignment: Alignment.center,
                             children: [
                               CircularProgressIndicator(
+                                
                                 value:
                                     categoriesController.rulesCountMap
                                             .containsKey(data.catID)
                                         ? progress
                                         : 1.0,
                                 strokeWidth: 4,
-                                backgroundColor: kMintGreen.withOpacity(0.08),
+                                backgroundColor: Colors.grey.withOpacity(0.2),
                                 valueColor: AlwaysStoppedAnimation<Color>(
-                                  isContentLearned || progress > 0
-                                      ? kMintGreen
-                                      : kMintGreen.withOpacity(0.3),
+                                  Utils.getColor(
+                                    progress: progress,
+                                    hasRules: hasRules,
+                                    isContentLearned: isContentLearned,
+                                  ),
                                 ),
+                                
                               ),
-                              Positioned(
-                                top: 10,
-                                left: 08,
-                                child:
-                                    categoriesController.rulesCountMap
-                                            .containsKey(data.catID)
-                                        ? Text(
-                                          "${(progress * 100).toStringAsFixed(0)}%",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color:
-                                                progress > 0
-                                                    ? Colors.green
-                                                    : Colors.black,
-                                          ),
-                                        )
-                                        : Icon(
-                                          Icons.check,
-                                          size: 18,
-                                          color:
-                                              isContentLearned
-                                                  ? kMintGreen
-                                                  : Colors.grey,
-                                        ),
-                              ),
+                              categoriesController.rulesCountMap.containsKey(
+                                    data.catID,
+                                  )
+                                  ? Text(
+                                    "${(progress * 100).toStringAsFixed(0)}%",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Utils.getColor(
+                                        progress: progress,
+                                        hasRules: hasRules,
+                                        isContentLearned: isContentLearned,
+                                      ),
+                                    ),
+                                  )
+                                  : Icon(
+                                    isContentLearned
+                                        ? Icons.done_all
+                                        : Icons.done,
+                                    size: 18,
+                                    color:
+                                        isContentLearned
+                                            ? Colors.green
+                                            : Colors.grey,
+                                  ),
                             ],
                           );
+
                         }),
 
                         const SizedBox(width: 16),

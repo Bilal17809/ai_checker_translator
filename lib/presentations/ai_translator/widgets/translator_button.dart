@@ -14,28 +14,35 @@ class TranslatorButton extends StatelessWidget {
       alignment: Alignment.topLeft,
       child: InkWell(
         onTap: onTap,
-        child: Container(
-          height: height * 0.06,
-          width: width * 0.26,
-          decoration: BoxDecoration(
-            color: kMintGreen,
-            borderRadius: BorderRadius.circular(16)
-          ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(children: [
-                  Icon(Icons.translate, color: kWhite, size: 18),
-                  Text(
-                    "Translate",
-                    style: TextStyle(
-                      color: kWhite,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 06, horizontal: 06),
+          child: Container(
+            height: height * 0.05,
+            width: width * 0.26,
+            decoration: BoxDecoration(
+              color: kMintGreen,
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.translate, color: kWhite, size: 14),
+                    SizedBox(width: 04),
+                    Text(
+                      "Translate",
+                      style: TextStyle(
+                        color: kWhite,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-              ],),
-            )
+                  ],
+                ),
+              )
+            ),
           ),
         ),
       ),

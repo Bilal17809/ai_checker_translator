@@ -61,7 +61,7 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                       ),
                  
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     AssistantInputBox(
                       readOnly: false,
                       hintText: "Type here or paste your content",
@@ -91,7 +91,7 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
                     Text.rich(
                       TextSpan(
                         text: "Daily Limits Remaining = 10 ",
@@ -145,7 +145,7 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
               bottom: bottomInset,
               left: 0,
               right: 0,
-              top: screenHeight * 0.48,
+              top: screenHeight * 0.46,
               child: Obx(
                 () =>
                     controller.responseText.isEmpty

@@ -1,4 +1,5 @@
 import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translation_History_screen.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translator_page.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/curved_bottom_navbar.dart';
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
@@ -113,6 +114,12 @@ class Routes {
     GetPage(
       name: RoutesName.rulesdetailscreen,
       page: () => RuleDetailScreen(),
+      binding: AllBindins(),
+    ),
+
+    GetPage(
+      name: RoutesName.aitranslationHistoryScreen,
+      page: () => AiTranslationHistoryScreen(),
       binding: AllBindins(),
     ),
   ];

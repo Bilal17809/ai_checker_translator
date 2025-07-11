@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:ai_checker_translator/data/models/rules_model.dart';
 import 'package:ai_checker_translator/data/services/quizzes_repo.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
@@ -41,10 +43,10 @@ class CategoriesController extends GetxController {
     return rulesCountMap[catId] == null && contentLearned.contains(catId);
   }
 
-  void updateProgress() {
-    learnedMap.refresh();
-    contentLearned.refresh();
-  }
+  // void updateProgress() {
+  //   learnedMap.refresh();
+  //   contentLearned.refresh();
+  // }
 
   var grammarCategories =
       <GrammarCategoryModel>[
@@ -215,4 +217,6 @@ class CategoriesController extends GetxController {
   bool isCategoryContentLearned(int catId) {
     return contentLearned.contains(catId);
   }
+
+
 }

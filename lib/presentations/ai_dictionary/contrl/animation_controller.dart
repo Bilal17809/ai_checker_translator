@@ -154,3 +154,92 @@ class _AnimatedTypingTextState extends State<AnimatedTypingText>
     super.dispose();
   }
 }
+
+
+
+
+
+
+
+class SimpleTypingText extends StatefulWidget {
+  final String text;
+  final Duration charDuration;
+  final TextStyle? style;
+  final TextAlign textAlign;
+  final ScrollController? scrollController;
+  final VoidCallback? onComplete;
+
+  const SimpleTypingText({
+    super.key,
+    required this.text,
+    this.charDuration = const Duration(milliseconds: 20),
+    this.style,
+    this.textAlign = TextAlign.left,
+    this.scrollController,
+    this.onComplete,
+  });
+
+  @override
+  State<SimpleTypingText> createState() => _SimpleTypingTextState();
+}
+
+class _SimpleTypingTextState extends State<SimpleTypingText>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<int> _characterCount;
+
+  @override
+  void initState() {
+    super.initState();
+    final totalDuration = widget.charDuration * widget.text.length;
+
+    _controller = AnimationController(vsync: this, duration: totalDuration);
+    _characterCount = StepTween(begin: 0, end: widget.text.length).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.linear),
+    )..addListener(() {
+      setState(() {});
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (widget.scrollController?.hasClients ?? false) {
+          try {
+            widget.scrollController!.jumpTo(
+              widget.scrollController!.position.maxScrollExtent,
+            );
+          } catch (_) {}
+        }
+      });
+    });
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        widget.onComplete?.call();
+      }
+    });
+
+    _controller.forward();
+  }
+
+  @override
+  void didUpdateWidget(SimpleTypingText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.text != widget.text) {
+      _controller.dispose();
+      initState(); // reinitialize everything
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final visibleText = widget.text.substring(
+      0,
+      _characterCount.value.clamp(0, widget.text.length),
+    );
+
+    return Text(visibleText, style: widget.style, textAlign: widget.textAlign);
+  }
+}

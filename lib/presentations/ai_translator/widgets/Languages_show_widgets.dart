@@ -94,11 +94,12 @@ class LanguageWidget extends StatelessWidget {
                 width: 24,
               ),
             ),
+            SizedBox(width: 04),
             Flexible(
               child: Text(
                 selectedLang,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+                maxLines: 1, // ✅ only one line
+                overflow: TextOverflow.ellipsis, // ✅ truncate with "..."
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

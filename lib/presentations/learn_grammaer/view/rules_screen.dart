@@ -20,14 +20,6 @@ class RulesScreen extends StatefulWidget {
 class _RulesScreenState extends State<RulesScreen> with AppLifecycleMixin {
   final categoriesController = Get.find<CategoriesController>();
 
-  
-  // @override
-  // void onAppPause() {
-  //   categoriesController.learnedMap.refresh();
-  //   categoriesController.contentLearned.refresh();
-  //   FocusScope.of(context).unfocus();
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -51,7 +43,7 @@ class _RulesScreenState extends State<RulesScreen> with AppLifecycleMixin {
           title: Text("Grammar Rules", style: TextStyle(color: kWhite)),
           centerTitle: true,
           backgroundColor: kMintGreen,
-      ),
+        ),
         body: Obx(() {
           if (categoriesController.isLoading.value) {
             return const Center(child: CircularProgressIndicator());
@@ -111,7 +103,7 @@ class _RulesScreenState extends State<RulesScreen> with AppLifecycleMixin {
                                             ?.contains(rule.ruleId) ??
                                         false
                                     ? Icon(
-                                      Icons.check,
+                                      Icons.done_all,
                                       color: kMintGreen,
                                       size: 16,
                                     )
@@ -139,7 +131,6 @@ class _RulesScreenState extends State<RulesScreen> with AppLifecycleMixin {
                   );
                 }).toList(),
 
-
                 if (categoriesController.rulesList.isEmpty)
                   Obx(() {
                     final isLearned = categoriesController.contentLearned
@@ -158,12 +149,9 @@ class _RulesScreenState extends State<RulesScreen> with AppLifecycleMixin {
                             borderRadius: BorderRadius.circular(50),
                           ),
                         ),
-                        icon: Icon(
-                          isLearned
-                              ? Icons.check_circle
-                              : Icons.lightbulb_outline,
-                        ),
-                        label: Text(isLearned ? "Unlearn" : "Learn it"),
+
+                        label: Text(isLearned ? "Learn it" : "Unlearn"),
+                        icon: Icon(isLearned ? Icons.done_all : Icons.done),
                         onPressed: () {
                           final id = widget.catId ?? 0;
 
@@ -180,12 +168,11 @@ class _RulesScreenState extends State<RulesScreen> with AppLifecycleMixin {
                       ),
                     );
                   }),
-
               ],
             ),
           );
         }),
-      )
+      ),
     );
   }
 }

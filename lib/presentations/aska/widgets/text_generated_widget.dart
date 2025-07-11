@@ -28,9 +28,11 @@ class _GeneratedTextWidgetState extends State<GeneratedTextWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final hiegt = MediaQuery.of(context).size.height;
     return Obx(() {
       return Container(
-        padding: const EdgeInsets.all(12),
+        height: hiegt * 0.28,
+        // padding: const EdgeInsets.symmetric(horizontal: 08),
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(color: kMintGreen, width: 1.5),
@@ -46,24 +48,23 @@ class _GeneratedTextWidgetState extends State<GeneratedTextWidget> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 100, maxHeight: 200),
-              child: Scrollbar(
-                controller: _scrollController,
-                thumbVisibility: true,
-                child: SingleChildScrollView(
+            Expanded(
+              child: ClipOval(
+                clipBehavior: Clip.none,
+                child: Scrollbar(
                   controller: _scrollController,
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: SizedBox(
-                      width: double.infinity,
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: Align(
+                      alignment: Alignment.topLeft,
                       child: _buildContent(),
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            // const SizedBox(height: 06),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -113,14 +114,14 @@ class _GeneratedTextWidgetState extends State<GeneratedTextWidget> {
       return const SizedBox.shrink();
     }
 
-    return AnimatedTypingText(
-      text: widget.text,
-      style: const TextStyle(fontSize: 14, height: 1.4),
-      charDuration: const Duration(milliseconds: 20),
-      scrollController: _scrollController,
-      onComplete: () {
-        // Animation completed
-      },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: SimpleTypingText(
+        text: widget.text,
+        style: const TextStyle(fontSize: 14, height: 1.4),
+        charDuration: const Duration(milliseconds: 8),
+        scrollController: _scrollController,
+      ),
     );
   }
 

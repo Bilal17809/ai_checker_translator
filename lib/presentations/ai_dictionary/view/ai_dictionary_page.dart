@@ -68,7 +68,7 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
                  
                   ),
 
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 14),
                   AssistantInputBox(
                       // readOnly: true,
                     hintText: "Type here or paste your content",
@@ -144,7 +144,7 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
             bottom: bottomInset,
             left: 0,
             right: 0,
-              top: screenHeight * 0.52,
+              top: screenHeight * 0.48,
             child: Obx(
               () =>
                   controller.grammarResponseText.isEmpty
