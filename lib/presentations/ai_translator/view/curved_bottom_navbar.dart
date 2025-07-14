@@ -1,4 +1,6 @@
 
+import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
+import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
@@ -62,15 +64,25 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
               // Utils().toastMessage("History cleared!");
               return;
             }
-
             if (index == 1) {
+              final hasInternet = await Utils.isConnectedToInternet();
+
+              if (!hasInternet) {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => const NoInternetDialog(),
+                );
+                return;
+              }
+
               controller.clearData();
+
               final selectedLanguageCode =
                   '${controller.languageCodes[controller.selectedLanguage1.value]}-US';
+
               controller.startSpeechToText(selectedLanguageCode);
             }
-
-            // 👇 Allow normal navigation only for other tabs
             setState(() {
               _page = index;
             });

@@ -35,6 +35,9 @@ class GeminiAiCorrectionController extends GetxController {
 
   //start mic input
   Future<void> startMicInput({String languageISO = 'en-US'}) async {
+
+    final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
+    if (!hasInternet) return;
     try {
       final result = await _speechChannel.invokeMethod('getTextFromSpeech', {
         'languageISO': languageISO,
@@ -88,6 +91,8 @@ Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
       Utils().toastMessage("Enter text to generate");
       return;
     }
+    final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
+    if (!hasInternet) return;
 
     isLoading.value = true;
     isTypingStarted.value = false;

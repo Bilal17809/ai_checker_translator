@@ -71,6 +71,7 @@ class CustomTextFormField extends StatelessWidget {
       validator: validator,
       decoration: InputDecoration(
         hintText: hintText,
+        
       
         // hintMaxLines: hintMaxLine,
         maintainHintHeight: true,

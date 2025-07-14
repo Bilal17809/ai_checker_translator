@@ -39,7 +39,6 @@ class LanguageWidget extends StatelessWidget {
           IconButton(
             onPressed: () {
               controller.swapLanguages();
-              controller.speakText();
               FocusScope.of(context).unfocus();
             },
             icon: const Icon(Icons.swap_horiz, size: 28),

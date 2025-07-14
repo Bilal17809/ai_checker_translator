@@ -10,6 +10,7 @@ class TranslationHistoryWidget extends StatelessWidget {
   final bool showOnlyFavourites;
   final bool deleteFromFavouritesOnly;
   final bool overrideSpeakAndCopy;
+  final bool showSourceText; // ✅ New flag added
 
   TranslationHistoryWidget({
     super.key,
@@ -17,6 +18,7 @@ class TranslationHistoryWidget extends StatelessWidget {
     this.showOnlyFavourites = false,
     this.deleteFromFavouritesOnly = false,
     this.overrideSpeakAndCopy = false,
+    this.showSourceText = true, // ✅ default true
   });
 
   final TranslationController controller = Get.find();
@@ -42,8 +44,8 @@ class TranslationHistoryWidget extends StatelessWidget {
                   color: Colors.grey,
                 ),
                 const SizedBox(height: 10),
-                Center(
-                  child: const Text(
+                const Center(
+                  child: Text(
                     "No History Found!",
                     style: TextStyle(
                       color: Colors.grey,
@@ -64,9 +66,8 @@ class TranslationHistoryWidget extends StatelessWidget {
         itemCount: historyList.length,
         itemBuilder: (context, index) {
           final item = historyList[index];
-          final parts = item.split("||");
-          final sourceText = parts[0];
-          final targetText = parts.length > 1 ? parts[1] : "";
+          final sourceText = item['source'] ?? "";
+          final targetText = item['target'] ?? "";
 
           return Column(
             children: [
@@ -93,8 +94,10 @@ class TranslationHistoryWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(sourceText, style: const TextStyle(fontSize: 14)),
-                      const Divider(),
+                      if (showSourceText) ...[
+                        Text(sourceText, style: const TextStyle(fontSize: 14)),
+                        const Divider(),
+                      ],
                       Text(targetText, style: const TextStyle(fontSize: 14)),
                       Align(
                         alignment: Alignment.bottomRight,
@@ -119,52 +122,39 @@ class TranslationHistoryWidget extends StatelessWidget {
                                   },
                                   icon: Icon(
                                     controller.isFavourite(item)
-                                        ? Icons
-                                            .favorite_outlined // 💚 Filled heart if already in favourites
-                                        : Icons
-                                            .favorite_border, // 🤍 Empty heart if not
-                                    color: kMintGreen,
+                                        ? Icons.favorite_outlined
+                                        : Icons.favorite_border,
+                                    color:
+                                        controller.isFavourite(item)
+                                            ? Colors.red
+                                            : kMintGreen,
                                   ),
                                 ),
                               ),
-
-
                             IconButton(
                               onPressed: () {
                                 if (overrideSpeakAndCopy) {
-                                  final parts = item.split('||');
-                                  final targetPart =
-                                      parts.length > 1 ? parts[1].trim() : '';
-
-                                  final lines = targetPart.split('\n');
-                                  String actualTranslated = '';
-                                  if (lines.length > 1) {
-                                    actualTranslated =
-                                        lines.sublist(1).join('\n').trim();
-                                  } else {
-                                    actualTranslated = targetPart;
-                                  }
+                                  final lines = targetText.split('\n');
+                                  String actualTranslated =
+                                      lines.length > 1
+                                          ? lines.sublist(1).join('\n').trim()
+                                          : targetText;
 
                                   if (actualTranslated.isNotEmpty) {
                                     controller.flutterTts.speak(
                                       actualTranslated,
                                     );
-                                  } else {
-                                    Utils().toastMessage("Nothing to speak");
                                   }
                                 } else {
-                                  final parts = item.split("||");
-                                  final translatedSection =
-                                      parts.length > 1 ? parts[1] : '';
-                                  final translatedLines = translatedSection
-                                      .trim()
-                                      .split('\n');
+                                  final translatedLines = targetText.split(
+                                    '\n',
+                                  );
                                   final actualTranslation =
                                       translatedLines.length > 1
                                           ? translatedLines
                                               .sublist(1)
                                               .join('\n')
-                                          : translatedSection;
+                                          : targetText;
 
                                   controller.flutterTts.speak(
                                     actualTranslation.trim(),
@@ -176,23 +166,18 @@ class TranslationHistoryWidget extends StatelessWidget {
                                 color: kMintGreen,
                               ),
                             ),
-
-
                             IconButton(
                               onPressed: () {
-                                if (overrideSpeakAndCopy) {
-                                  // Custom copy logic
-                                  Utils.copyTextFrom(text: targetText.trim());
-                                  // Utils().toastMessage(
-                                  //   "Copied from History screen",
-                                  // );
-                                } else {
-                                  controller.copyTranslatedText();
-                                }
+                                final lines = targetText.split('\n');
+                                String actualTranslated =
+                                    lines.length > 1
+                                        ? lines.sublist(1).join('\n').trim()
+                                        : targetText;
+
+                                Utils.copyTextFrom(text: actualTranslated);
                               },
                               icon: const Icon(Icons.copy, color: kMintGreen),
                             ),
-
                             IconButton(
                               onPressed: () {
                                 if (deleteFromFavouritesOnly) {
@@ -201,14 +186,8 @@ class TranslationHistoryWidget extends StatelessWidget {
                                     "Removed from Favourites",
                                   );
                                 } else {
-                                  final index = controller.translationHistory
-                                      .indexOf(item);
-                                  if (index != -1) {
-                                    controller.deleteHistoryItem(index);
-                                    Utils().toastMessage(
-                                      "Deleted from History",
-                                    );
-                                  }
+                                  controller.deleteHistoryItem(index);
+                                  Utils().toastMessage("Deleted from History");
                                 }
                                 controller.flutterTts.stop();
                               },

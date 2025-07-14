@@ -58,3 +58,16 @@ class CommonAppbarWidget extends StatelessWidget
     );
   }
 }
+
+class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String appBarTitle;
+  const CommonAppBar({super.key, required this.appBarTitle});
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(title: Row(children: [BackButton(), Text(appBarTitle)]));
+  }
+}

@@ -27,6 +27,9 @@ class _QuizessCategoryScreenState extends State<QuizessCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration(milliseconds: 50), () {
+      FocusScope.of(context).unfocus();
+    });
     return KeyboardDismissWrapper(
       child: Scaffold(
       backgroundColor: kWhiteF7,

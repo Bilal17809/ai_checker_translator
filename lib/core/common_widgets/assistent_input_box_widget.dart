@@ -71,14 +71,16 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
         Container(
           height:
           widget.customHeight ?? MediaQuery.of(context).size.height * 0.24,
-          padding: const EdgeInsets.symmetric(horizontal: 04, vertical: 02),
+          padding: const EdgeInsets.symmetric(horizontal: 04, vertical: 00),
           decoration: roundedDecoration.copyWith(
             border: Border.all(color: kMintGreen, width: 2),
             borderRadius: widget.borderRadius,
           ),
           child: Column(
+            
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 10),
               Expanded(
                 child: ClipRRect(
                   borderRadius: widget.borderRadius,
@@ -87,7 +89,7 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
                     thumbVisibility: true,
                     child: SingleChildScrollView(
                       controller: _scrollController,
-                      // padding: const EdgeInsets.symmetric(horizontal: 00),
+                      
                       child: CustomTextFormField(
                         readOnly: widget.readOnly,
                         textDirection: widget.textDirection,
@@ -119,7 +121,7 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
         // Clear icon
         if (widget.showClearIcon && widget.controller.text.isNotEmpty)
           Positioned(
-            top: 12,
+            top: 00,
             right: 8,
             child: IconButton(
               icon: const Icon(Icons.close, size: 18),

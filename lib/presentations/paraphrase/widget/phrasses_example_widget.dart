@@ -2,7 +2,7 @@ import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_styles.dart';
 import 'package:ai_checker_translator/extension/extension.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+
 
 class PhrassesExampleWidget extends StatelessWidget {
   final String phrase;

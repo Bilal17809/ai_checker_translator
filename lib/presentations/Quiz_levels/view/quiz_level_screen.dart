@@ -1,5 +1,6 @@
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_styles.dart';
+import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/controller/quizzeslevel_controller.dart';
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/controller/Categories_controller.dart';
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/model/grammarcategory_model.dart';
@@ -49,6 +50,12 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
       });
     });
   }
+
+  final levelImages = [
+    Assets.quizimagelevelone,
+    Assets.quizimageleveltwo,
+    Assets.quizimagelevelthree,
+  ];
 
 
   @override
@@ -229,7 +236,7 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: Image.asset(
-                                  "assets/icons/level-1.png",
+                                  levelImages[index % levelImages.length].path,
                                   width: 110,
                                   height: 100,
                                   fit: BoxFit.cover,
@@ -253,9 +260,9 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                                   _Progress(
                                     levelId:
                                         item.catID ??
-                                        0, // 👈 your quiz level ID
+                                        0, 
                                     totalQuestions:
-                                        10, // 👈 set your actual total questions
+                                        10, 
                                   ),
                                   const SizedBox(height: 12),
                                    Text(
@@ -283,8 +290,8 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
 }
 
 class _Progress extends StatelessWidget {
-  final int levelId; // 👈 Level ID (e.g., catID)
-  final int totalQuestions; // 👈 Total questions in this level
+  final int levelId;
+  final int totalQuestions;
 
   const _Progress({
     super.key,

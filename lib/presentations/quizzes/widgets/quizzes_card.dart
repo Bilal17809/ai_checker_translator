@@ -1,3 +1,4 @@
+import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -176,8 +177,18 @@ class QuizCard extends StatelessWidget {
                                   if (!hasAnswered && !isResultMode) {
                                     controller.selectedAnswers[quiz.quizID] =
                                         option.code;
+
+                                    final isCorrect =
+                                        quiz.answer.trim() ==
+                                        option.code.trim();
+                                    if (isCorrect) {
+                                      Utils.playCorrectSound();
+                                    } else {
+                                      Utils.playWrongSound();
+                                    }
                                   }
                                 },
+
                                 child: Container(
                                   margin: const EdgeInsets.symmetric(
                                     vertical: 6,

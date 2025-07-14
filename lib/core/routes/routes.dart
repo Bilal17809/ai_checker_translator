@@ -29,7 +29,7 @@ class Routes {
     ),
     GetPage(
       name: RoutesName.bottomNevBar,
-      page: () => BottomNavExample(),
+      page: () => BottomNavExample(key: BottomNavExample.bottomNavKey),
       binding: AllBindins(),
     ),
     GetPage(

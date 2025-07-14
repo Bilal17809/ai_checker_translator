@@ -1,5 +1,6 @@
 
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
+import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
 
@@ -11,58 +12,54 @@ class CustomDrawer extends StatelessWidget {
     return Drawer(
       child: Column(
         children: [
-          DrawerHeader(
-        
-            decoration: const BoxDecoration(
-              color: kMintGreen
-            ),
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                
-                    const Icon(Icons.apps, color: Colors.white, size: 40),
+          Column(
+            children: [
+              DrawerHeader(
+                decoration: const BoxDecoration(
+              color: kMintGreen),
+                child: Row(
+                  children: [
+                    ClipOval(
+                      // clipBehavior: Clip.none,
+                      child: Image.asset(Assets.appIcon.path, height: 70),
+                    ),
                     const SizedBox(width: 12),
                     Text(
                       "AI Checker Translator",
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  
-              ],
-            ),
+                  ],
+                ),
+              ),
+              Divider(thickness: 10, height: 02),
+            ],
           ),
 
-          // Reusable drawer tiles
+         
           DrawerTile(
-            icon: Icons.home,
-            title: 'Home',
+            icon: Icons.privacy_tip,
+            title: 'Privacy Policy',
             onTap: () {
               Navigator.pop(context);
-              // Handle navigation here
+              // Navigate or handle
             },
           ),
           DrawerTile(
-            icon: Icons.settings,
-            title: 'Settings',
+            icon: Icons.star,
+            title: 'Rate Us',
             onTap: () {
               Navigator.pop(context);
-              // Navigate to settings
-            },
-          ),
-          DrawerTile(
-            icon: Icons.logout,
-            title: 'Logout',
-            onTap: () {
-              Navigator.pop(context);
-              // Handle logout
+         
             },
           ),
         ],
       ),
     );
+
+
   }
 }
 
@@ -84,7 +81,7 @@ class DrawerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: Colors.deepPurple),
+      leading: Icon(icon, color: kMintGreen),
       title: Text(title),
       onTap: onTap,
     );

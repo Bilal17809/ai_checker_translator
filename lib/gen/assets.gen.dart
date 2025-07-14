@@ -42,6 +42,10 @@ class Assets {
     'assets/icons/history.png',
   );
 
+  static const AssetGenImage nointernet = AssetGenImage(
+    'assets/icons/no-internet.png',
+  );
+
 
   //-----------------------------------------------------------
 
@@ -71,7 +75,21 @@ class Assets {
     'assets/icons/bottombanerwidget.png',
   );
 
+  static const AssetGenImage appIcon = AssetGenImage(
+    'assets/icons/appicon.png',
+  );
 
+  //levels images
+  static const AssetGenImage quizimagelevelone = AssetGenImage(
+    'assets/icons/level-1.png',
+  );
+
+  static const AssetGenImage quizimageleveltwo = AssetGenImage(
+    'assets/icons/level-2.png',
+  );
+  static const AssetGenImage quizimagelevelthree = AssetGenImage(
+    'assets/icons/level-3.png',
+  );
 
 
 

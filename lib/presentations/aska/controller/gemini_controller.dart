@@ -1,26 +1,27 @@
 // import 'dart:convert';
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
+import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:path/path.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../domain/use_cases/get_mistral.dart';
 
 class GeminiController extends GetxController {
-
   final TextEditingController promptController = TextEditingController();
   final responseText = ''.obs;
   final isLoading = false.obs;
   final isSpeaking = false.obs;
   final isTypingStarted = false.obs;
-  final isResponseReady = false.obs; 
-  
+  final isResponseReady = false.obs;
+
   late final GenerativeModel model;
   final MistralUseCase useCase;
   final FlutterTts flutterTts = FlutterTts();
-  
+
   static const MethodChannel _speechChannel = MethodChannel(
     'com.example.getx_practice_app/speech_Text',
   );
@@ -40,6 +41,11 @@ class GeminiController extends GetxController {
     final prompt = promptController.text.trim();
     if (prompt.isEmpty) {
       Utils().toastMessage("Enter text to generate");
+      return;
+    }
+    final hasInternet = await Utils.isConnectedToInternet();
+    if (!hasInternet) {
+      Get.dialog(const NoInternetDialog(), barrierDismissible: false);
       return;
     }
 
@@ -66,8 +72,7 @@ class GeminiController extends GetxController {
     }
   }
 
-
-String _generatePromptWithLimit(String prompt) {
+  String _generatePromptWithLimit(String prompt) {
     final lines = prompt.split('\n').length;
     final words = prompt.split(RegExp(r'\s+')).length;
     final chars = prompt.length;
@@ -96,7 +101,6 @@ String _generatePromptWithLimit(String prompt) {
     return text.substring(0, maxChars).trim() + '...';
   }
 
-
   void startAnimation() {
     isTypingStarted.value = true;
   }
@@ -104,12 +108,16 @@ String _generatePromptWithLimit(String prompt) {
   void copyPromptText() {
     Utils.copyTextFrom(text: promptController.text);
   }
-  
+
   void copyResponseText() {
     Utils.copyTextFrom(text: responseText.value);
   }
 
   Future<void> startMicInput({String languageISO = 'en-US'}) async {
+
+    final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
+    if (!hasInternet) return;
+    
     try {
       final result = await _speechChannel.invokeMethod('getTextFromSpeech', {
         'languageISO': languageISO,

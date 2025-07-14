@@ -1,4 +1,5 @@
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
+import 'package:ai_checker_translator/core/common_widgets/back_to_home_wrapper.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/keyboard_dismiss_wrapper.dart';
 import 'package:ai_checker_translator/core/common_widgets/life_cycle_mixin.dart';
@@ -40,7 +41,8 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
     final bottomInset = mediaQuery.viewInsets.bottom;
     final screenHeight = mediaQuery.size.height;
     
-    return KeyboardDismissWrapper(
+    return BackToHomeWrapper(
+      child: KeyboardDismissWrapper(
       child: Scaffold(
       appBar: CommonAppbarWidget(),
       body: Stack(
@@ -171,7 +173,8 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
         ],
       ),
       
-      )
+        )
+      ),
     );
   }
 }

@@ -6,12 +6,17 @@ import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart
 import 'package:ai_checker_translator/presentations/home/view/home_view.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
+import 'package:panara_dialogs/panara_dialogs.dart';
+import '../../core/theme/app_colors.dart';
 import '../aska/controller/gemini_controller.dart';
 
 class BottomNavExample extends StatefulWidget {
   const BottomNavExample({super.key});
+
+  static final GlobalKey<_BottomNavExampleState> bottomNavKey =
+      GlobalKey<_BottomNavExampleState>();
 
   @override
   State<BottomNavExample> createState() => _BottomNavExampleState();
@@ -24,14 +29,6 @@ class _BottomNavExampleState extends State<BottomNavExample> {
   int selectedIndex = 2;
   int previousIndex = 3;
   Key animatedKey = UniqueKey();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  
 
   final List<String> images = [
     Assets.askai.path,
@@ -49,30 +46,62 @@ class _BottomNavExampleState extends State<BottomNavExample> {
     "Translator",
   ];
 
+  void goToHome() {
+    setState(() {
+      selectedIndex = 2;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // FocusScope.of(context).unfocus();
     final bool isTranslatorPage = selectedIndex == 4;
-      
+
     final List<Widget> screens = [
       AskAiScreen(key: animatedKey),
       ParaphraseView(),
-      HomeView(),
+      HomeView(), // no need for showExitDialog flag
       AiDictionaryPage(key: animatedKey),
       Container(),
     ];
 
-    return Scaffold(
-      body: IndexedStack(index: selectedIndex, children: screens),
-      bottomNavigationBar:
-          isTranslatorPage
-              ? null
-              : Container(
+    return WillPopScope(
+      onWillPop: () async {
+        if (selectedIndex != 2) {
+          geminiAiCorrectionController.resetController();
+          geminicontroller.resetData();
+          FocusScope.of(context).unfocus();
+          setState(() => selectedIndex = 2);
+          return false;
+        }
+        FocusScope.of(context).unfocus();
+        PanaraConfirmDialog.show(
+          context,
+          title: "Exit App",
+          message: "Do you really want to exit the app?",
+          confirmButtonText: "Exit",
+          cancelButtonText: "No",
+          onTapCancel: () => Navigator.of(context).pop(),
+          onTapConfirm: () {
+            Navigator.of(context).pop();
+            SystemNavigator.pop();
+          },
+          panaraDialogType: PanaraDialogType.custom,
+          color: kMintGreen,
+          barrierDismissible: false,
+        );
+        return false;
+      },
+      child: Scaffold(
+        body: IndexedStack(index: selectedIndex, children: screens),
+        bottomNavigationBar:
+            isTranslatorPage
+                ? null
+                : Container(
                 margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
-                ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
                 decoration: BoxDecoration(
                   color: const Color(0xffF9DEDF),
                   borderRadius: BorderRadius.circular(20),
@@ -90,33 +119,27 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                     final isSelected = selectedIndex == index;
                     return GestureDetector(
                       onTap: () {
-                        FocusScope.of(
-                          context,
-                        ).unfocus(); 
+                          FocusScope.of(context).unfocus();
 
                         final wasOnCorrection = selectedIndex == 3;
 
-                        if (index == 4) {
-                          FocusScope.of(context).unfocus();
-                          // Translator screen
-                          Get.to(() => const AiTranslatorBottomNav())!.then((
-                            _,
-                          ) {
+                          if (index == 4) {
+                            Get.to(() => const AiTranslatorBottomNav())!.then((
+                              _,
+                            ) {
                             geminicontroller.resetData();
                             setState(() {
                               previousIndex = selectedIndex;
                               selectedIndex = 2;
 
-                              // 💡 Reset if previously on correction
                               if (wasOnCorrection) {
                                 geminiAiCorrectionController.resetController();
                               }
 
-                              // Reset key for re-render if needed
                               if (previousIndex == 0 || previousIndex == 3) {
-                                animatedKey = UniqueKey();
-                                // FocusScope.of(context).unfocus();
+                                  animatedKey = UniqueKey();
                               }
+
                               if (index == 3 || previousIndex == 3) {
                                 FocusScope.of(context).unfocus();
                               }
@@ -128,20 +151,16 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                               previousIndex = selectedIndex;
                               selectedIndex = index;
 
-                              // 💡 Only reset when leaving "AI Correction" tab
                               if (wasOnCorrection) {
                                 geminiAiCorrectionController.resetController();
                               }
 
-                              // Reset other controllers as needed
                               if (previousIndex == 0) {
                                 geminiAiCorrectionController.resetController();
                                 geminicontroller.resetData();
                               }
 
-                              // Force rebuild for animated screens
-                              if (index == 0 || index == 3) {
-                                // geminiAiCorrectionController.resetController();
+                                if (index == 0 || index == 3) {
                                 animatedKey = UniqueKey();
                               }
 
@@ -151,46 +170,41 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                             });
                           }
                         }
-                      },
-
+                        },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           isSelected
                               ? ColorFiltered(
-                                colorFilter: ColorFilter.mode(
-                                  Color(0xFF006400),
-                                  BlendMode.srcIn,
-                                ),
-                                child: Image.asset(
-                                  images[index],
-                                  height: isSelected ? 28 : 24,
-                                  width: isSelected ? 28 : 24,
-                                ),
-                              )
+                                  colorFilter: const ColorFilter.mode(
+                                    Color(0xFF006400),
+                                    BlendMode.srcIn,
+                                  ),
+                                  child: Image.asset(
+                                    images[index],
+                                    height: 28,
+                                    width: 28,
+                                  ),
+                                )
                               : Image.asset(
-                                images[index],
-                                height: isSelected ? 28 : 24,
-                                width: isSelected ? 28 : 24,
-                              ),
+                                  images[index],
+                                  height: 24,
+                                  width: 24,
+                                ),
                           const SizedBox(height: 4),
                           SizedBox(
                             width: 60,
                             child: Text(
                               labels[index],
-                              overflow:
-                                  isSelected
-                                      ? TextOverflow.visible
-                                      : TextOverflow.ellipsis,
+                                overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 12,
-                                color:
-                                    isSelected
-                                        ? Color(0xFF006400)
-                                        : Color(0xFF228B22),
-                                fontWeight: FontWeight.normal,
+                                  color:
+                                      isSelected
+                                          ? const Color(0xFF006400)
+                                          : const Color(0xFF228B22),
                               ),
                             ),
                           ),
@@ -200,6 +214,7 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                   }),
                 ),
               ),
+      ),
     );
   }
 }

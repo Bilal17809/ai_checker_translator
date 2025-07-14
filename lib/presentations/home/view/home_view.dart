@@ -1,13 +1,15 @@
+import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
+import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
+import 'package:ai_checker_translator/presentations/bottom_nav_bar/bottom_nav_bar.dart';
+import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/custom_drawer.dart';
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
-import 'package:ai_checker_translator/presentations/bottom_nav_bar/bottom_nav_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:panara_dialogs/panara_dialogs.dart';
 import '../../aska/controller/gemini_controller.dart';
 import '../widgets/feature_card_widget.dart';
 import '../widgets/grammar_test_card_widget.dart';
@@ -20,43 +22,13 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-
   final geminicontroller = Get.find<GeminiController>();
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // FocusScope.of(context).unfocus();
-  }
-
-
-  @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) {
-        FocusScope.of(context).unfocus();
-        if (didPop) return;
-        PanaraConfirmDialog.show(
-          context,
-          title: "Exit App",
-          message: "Do you really want to exit the app?",
-          confirmButtonText: "Exit",
-          cancelButtonText: "No",
-          onTapCancel: () => Navigator.of(context).pop(),
-          onTapConfirm: () {
-            Navigator.of(context).pop();
-            SystemNavigator.pop();
-          },
-          panaraDialogType: PanaraDialogType.custom,
-          color: kMintGreen,
-          barrierDismissible: false,
-        );
-      },
-      child: Scaffold(
+    return Scaffold(
       appBar: CommonAppbarWidget(),
-        drawer: CustomDrawer(),
+      drawer: CustomDrawer(),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Padding(
@@ -75,18 +47,17 @@ class _HomeViewState extends State<HomeView> {
                       showActionButton: false,
                     ),
                     const SizedBox(height: 16),
-      
+
                     /// Row 1
                     Expanded(
                       child: Row(
                         children: [
                           Expanded(
                             child: FeatureCardWidget(
-                                OnTap: () {
-                                  geminiAiCorrectionController
-                                      .resetController();
-                                  Get.toNamed(RoutesName.aidictionary);
-                                },
+                              OnTap: () {
+                                geminiAiCorrectionController.resetController();
+                                Get.to(() => AiDictionaryPage());
+                              },
                               image: Assets.aicorrectionicon.path,
                               title: "Ai corrector",
                               subtitle: "Grammar Checker",
@@ -96,7 +67,7 @@ class _HomeViewState extends State<HomeView> {
                           Expanded(
                             child: FeatureCardWidget(
                               OnTap:
-                                  () => Get.toNamed(RoutesName.paraphraseview),
+                                  () => Get.to(() => ParaphraseView()),
                               image: Assets.paraphrasericon.path,
                               title: "Paraphraser",
                             ),
@@ -105,7 +76,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                     const SizedBox(height: 16),
-      
+
                     /// Row 2
                     Expanded(
                       child: Row(
@@ -113,9 +84,9 @@ class _HomeViewState extends State<HomeView> {
                           Expanded(
                             child: FeatureCardWidget(
                               OnTap:
-                                    () => Get.toNamed(
-                                      RoutesName.learngrammarscreen,
-                                    ),
+                                  () => Get.toNamed(
+                                    RoutesName.learngrammarscreen,
+                                  ),
                               image: Assets.learngrammaricon.path,
                               title: "Learn Grammar",
                             ),
@@ -123,10 +94,10 @@ class _HomeViewState extends State<HomeView> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: FeatureCardWidget(
-                                OnTap: () {
-                                  geminicontroller.resetData();
-                                  Get.toNamed(RoutesName.askaiscreen);
-                                },
+                              OnTap: () {
+                                geminicontroller.resetData();
+                                Get.to(() => AskAiScreen());
+                              },
                               image: Assets.askaiicon.path,
                               title: "Ask Ai",
                               subtitle: "Assistant",
@@ -136,7 +107,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                     const SizedBox(height: 16),
-      
+
                     /// Bottom Grammar Test
                     GrammarTestCardWidget(
                       icon: Assets.bottombannericon.path,
@@ -145,8 +116,8 @@ class _HomeViewState extends State<HomeView> {
                           "Begins the English Grammar Test to improve your grammar skills.",
                       showActionButton: true,
                       actionButtonText: "Let’s Go",
-                        onActionPressed:
-                            () => Get.toNamed(RoutesName.quizzesCategoryScreen),
+                      onActionPressed:
+                          () => Get.toNamed(RoutesName.quizzesCategoryScreen),
                     ),
                   ],
                 ),
@@ -154,7 +125,6 @@ class _HomeViewState extends State<HomeView> {
             ),
           );
         },
-      ),
       ),
     );
   }

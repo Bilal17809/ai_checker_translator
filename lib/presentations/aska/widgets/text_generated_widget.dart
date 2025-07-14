@@ -45,21 +45,19 @@ class _GeneratedTextWidgetState extends State<GeneratedTextWidget> {
             ),
           ],
         ),
+      
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Expanded(
-              child: ClipOval(
-                clipBehavior: Clip.none,
-                child: Scrollbar(
+              child: Scrollbar(
+                controller: _scrollController,
+                thumbVisibility: true,
+                child: SingleChildScrollView(
                   controller: _scrollController,
-                  thumbVisibility: true,
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: _buildContent(),
-                    ),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: _buildContent(),
                   ),
                 ),
               ),

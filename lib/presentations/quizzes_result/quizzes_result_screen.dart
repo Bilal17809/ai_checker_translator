@@ -139,7 +139,7 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
 
                 SizedBox(width: 08),
                 Button(
-                  buttonTitle: "Result",
+                  buttonTitle: "Preview",
                   onPressed: () async {
                     detailcontroller.isResultMode.value = true;
                     resultController.retakeQuiz(

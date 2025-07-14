@@ -1,5 +1,6 @@
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/common_widgets/life_cycle_mixin.dart';
+import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/widgets/translator_button.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +10,6 @@ import 'package:ai_checker_translator/presentations/ai_translator/widgets/Langua
 import 'package:ai_checker_translator/presentations/ai_translator/widgets/translation_history_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_widgets.dart';
-
-// import '../controller/translator_controller.dart';
 
 class AiTranslatorPage extends StatefulWidget {
   AiTranslatorPage({super.key});
@@ -43,7 +42,6 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
         title: Text("Translator", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
-      // drawer: Drawer(),
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Stack(
@@ -92,43 +90,25 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
                         bottomRight: Radius.circular(16),
                       ),
                       controller: controller.controller,
+                      iconButtons: [],
                       footerButtons: [
                         TranslatorButton(
-                          onTap: () {
+                          onTap: () async {
                             final inputText = controller.controller.text;
                             if (inputText.isNotEmpty) {
                               controller.translate(inputText);
                               controller.onTranslateButtonPressed();
                               controller.speakText();
                               FocusScope.of(context).unfocus();
-                              print("Translated");
                             } else {
                               FocusScope.of(context).unfocus();
                               Utils().toastMessage(
                                 "Please enter text to translate.",
                               );
-                              print("Empty input. Nothing to translate.");
                             }
                           },
-                        ),
-                      ],
+)
 
-                      iconButtons: [
-                        // IconButton(
-                        //   onPressed: controller.copyText,
-                        //   icon: Icon(Icons.copy, color: kMediumGreen2),
-                        // ),
-                        // IconButton(
-                        //   onPressed: controller.clearData,
-                        //   icon: Icon(Icons.delete, color: kMediumGreen2),
-                        // ),
-                        // IconButton(
-                        //   onPressed: controller.speakText,
-                        //   icon: Icon(
-                        //     Icons.volume_up_rounded,
-                        //     color: kMediumGreen2,
-                        //   ),
-                        // ),
                       ],
                       showFooter: true,
                     );
@@ -137,8 +117,6 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
                 ],
               ),
             ),
-
-            /// Scrollable Translation History at bottom
             Positioned(
               bottom: bottomInset,
               left: 0,
@@ -151,13 +129,15 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
                   showOnlyFavourites: false,
                   deleteFromFavouritesOnly: false,
                   overrideSpeakAndCopy: false,
-                )
+                  showSourceText: false, // ✅ source hidden
+                ),
+
               ),
             ),
+        
           ],
         ),
       ),
     );
   }
 }
-

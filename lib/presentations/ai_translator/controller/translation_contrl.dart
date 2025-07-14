@@ -1,25 +1,15 @@
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
+import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translator/translator.dart';
-/*
->>>>>>>>>>>>>>> improve <<<<<<<<<<<<<<<<<<<
-if you already languages define in laguage_controller.dart
-then why you define here ????????? make this code short and
-readable
-*/
 
-/*
->>>>>>>>>>>>>>> improve <<<<<<<<<<<<<<<<<<<
-create separate class name local_storage just call sharepenece
-here if there is no need then don't create the function for each
-*/
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>> unnecessary comment is very very annoying
 class TranslationController extends GetxController {
+
   RxString selectedLanguage1 = "English".obs;
   RxString selectedLanguage2 = "Spanish".obs;
   RxString translatedText = "".obs;
@@ -28,27 +18,24 @@ class TranslationController extends GetxController {
   final pitch = 0.5.obs;
   final speed = 0.5.obs;
   final isSpeechPlaying = false.obs;
+  RxBool hasInternet = true.obs;
 
-  final RxList<String> favouriteTranslations = <String>[].obs;
+  final RxList<Map<String, dynamic>> favouriteTranslations =
+      <Map<String, dynamic>>[].obs;
   static const _favouritesKey = 'favourite_translations';
 
-  final RxList<String> translationHistory = <String>[].obs;
+  final RxList<Map<String, dynamic>> translationHistory =
+      <Map<String, dynamic>>[].obs;
   static const _historyKey = 'translation_history';
 
   @override
   void onInit() {
     super.onInit();
+    Utils.monitorInternet();
+    Utils.isConnectedToInternet();
     loadHistory();
-    loadFavourites(); // Add this
+    loadFavourites();
   }
-
-  @override
-  void onClose() {
-
-    super.onClose();
-  }
-
- 
 
   TextEditingController controller = TextEditingController();
   final translator = GoogleTranslator();
@@ -181,11 +168,8 @@ class TranslationController extends GetxController {
   MethodChannel('com.example.getx_practice_app/speech_Text');
 
   Future<void> startSpeechToText(String languageISO) async {
-    print("Translation Screen selected language Code ------------${languageISO} ----------");
-
     try {
       isListening.value = true;
-      print("Starting speech recognition for language: $languageISO");
       final result = await _methodChannel.invokeMethod('getTextFromSpeech', {'languageISO': languageISO});
 
       if (result != null && result.isNotEmpty) {
@@ -193,7 +177,7 @@ class TranslationController extends GetxController {
         await handleUserActionTranslate(result);
       }
     } on PlatformException catch (e) {
-      print("####################### Error in Speech-to-Text: ${e.message}");
+      print("Error in Speech-to-Text: ${e.message}");
     } finally {
       isListening.value = false;
     }
@@ -201,75 +185,47 @@ class TranslationController extends GetxController {
 
   Future<void> speakText() async {
     try {
-      // Set the TTS engine (optional for Android)
       await flutterTts.stop();
       await flutterTts.setEngine('com.google.android.tts');
-
-      // Language map with corresponding locales
-      // final Map<String, String> languageCodes = {
-      //   'Urdu': 'ur-PK',
-      //   'Hindi': 'hi-IN',
-      //   'Punjabi': 'pa-IN',
-      //   'Marathi': 'mr-IN',
-      //   'Arabic': 'ar',
-      //   'English': 'en-US',
-      // };
-
-      // Get the selected language code, default to English if not found
-      String selectedLanguageCode = languageCodes[selectedLanguage2.value] ?? 'en-US';
-
-      // Set the selected language
+      String selectedLanguageCode =
+          languageCodes[selectedLanguage2.value] ?? 'en-US';
       await flutterTts.setLanguage(selectedLanguageCode);
-
-      // Set pitch and speech rate
       await flutterTts.setPitch(pitch.value);
       await flutterTts.setSpeechRate(speed.value);
 
-      // Speak the translated text
       if (translatedText.value.isNotEmpty) {
         await flutterTts.speak(translatedText.value);
-        print("############# Speaking in $selectedLanguageCode: ${translatedText.value}");
-      } else {
-        // Utils().toastMessage("Error\nNo text available to speak.");
       }
     } catch (e) {
-      print("########## Error in TTS: ${e.toString()}");
-      Utils().toastMessage(
-        "############# Error \n TTS failed: ${e.toString()}",
-      );
-    }
-  }
-  static const MethodChannel _channel = MethodChannel('com.example.getx_practice_app/tts');
-
-  Future<void> speakUsingNative(String text, String languageCode) async {
-    try {
-      await _channel.invokeMethod('speakText', {'text': text, 'language': languageCode});
-    } on PlatformException catch (e) {
-      print("Error: ${e.message}");
+      Utils().toastMessage("Error: ${e.toString()}");
     }
   }
 
   Future<void> handleUserActionTranslate(String text) async {
+
+    final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
+    if (!hasInternet) return;
       await translate(text);
       await speakText();
   }
 
   void onTranslateButtonPressed() async {
-
     final textToTranslate = controller.text;
     if (textToTranslate.isEmpty) {
       Utils().toastMessage("Please enter text to translate.");
       return;
     }
   }
-
-  Future<void> translate(String text) async {
+Future<void> translate(String text) async {
     if (text.isEmpty) {
       translatedText.value = "Please enter text to translate.";
       return;
     }
 
-    isLoading.value = true; // Show loading indicator
+    final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
+    if (!hasInternet) return;
+
+    isLoading.value = true;
     try {
       final sourceLang = languageCodes[selectedLanguage1.value] ?? 'en';
       final targetLang = languageCodes[selectedLanguage2.value] ?? 'es';
@@ -279,11 +235,14 @@ class TranslationController extends GetxController {
         from: sourceLang,
         to: targetLang,
       );
-      translatedText.value = result.text;
 
+      translatedText.value = result.text;
       addToHistory(text, result.text);
-      // await saveToPrefs();
-      // await speakText();
+
+   
+      Future.delayed(const Duration(milliseconds: 20), () {
+        speakText();
+      });
 
     } catch (e) {
       translatedText.value = "Translation failed: ${e.toString()}";
@@ -292,26 +251,21 @@ class TranslationController extends GetxController {
     }
   }
 
-  // Method to clear the input and output text
+
   void clearData() {
     controller.clear();
     translatedText.value = "";
     speakText();
-
   }
 
-  // New function to copy text to clipboard
   void copyTranslatedText() {
     Utils.copyTextFrom(text: translatedText.value);
-    }
+  }
 
   void copyTextEditingControllerText() {
     Utils.copyTextFrom(text: controller.text);
   }
-  
 
-
-  // Reset the language and clear data
   void resetData() {
     selectedLanguage1.value = 'English';
     selectedLanguage2.value = 'French';
@@ -320,45 +274,21 @@ class TranslationController extends GetxController {
     clearPrefs();
   }
 
-  // double _mapSpeedToDisplayValue(double value) {
-  //   return _mapPitchToDisplayValue(value); // Use the same logic for speed as pitch
-  // }
-  //
-  // double _mapDisplayValueToSpeed(double displayValue) {
-  //   return _mapDisplayValueToPitch(displayValue);
-  // }
-  //
-  // double _mapPitchToDisplayValue(double value) {
-  //   return 0.1 + (value * 0.9);
-  // }
-  //
-  // double _mapDisplayValueToPitch(double displayValue) {
-  //   return (displayValue - 0.1) / 0.9;
-  // }
-
   String getFlagEmoji(String countryCode) {
     return countryCode.toUpperCase().codeUnits.map((char) {
       return String.fromCharCode(char + 127397);
     }).join();
-
-    
   }
 
-void swapLanguages() {
-    // Swap selected languages
+  void swapLanguages() {
     final tempLang = selectedLanguage1.value;
     selectedLanguage1.value = selectedLanguage2.value;
     selectedLanguage2.value = tempLang;
 
-    // Swap input and translated text
     final tempText = controller.text;
     controller.text = translatedText.value;
     translatedText.value = tempText;
-
-    // // Translate again using new source/target
-    // // if (controller.text.isNotEmpty) {
-    // //   translate(controller.text);
-    // }
+   
   }
 
   Future<void> saveToPrefs() async {
@@ -371,7 +301,6 @@ void swapLanguages() {
     final prefs = await SharedPreferences.getInstance();
     controller.text = prefs.getString('inputText') ?? '';
     translatedText.value = prefs.getString('translatedText') ?? '';
-    print("save");
   }
 
   Future<void> clearPrefs() async {
@@ -380,40 +309,61 @@ void swapLanguages() {
     await prefs.remove('translatedText');
   }
 
-
   void addToHistory(String original, String translated) async {
     final sourceLang = selectedLanguage1.value;
     final targetLang = selectedLanguage2.value;
     final sourceFlag = getFlagEmoji(languageFlags[sourceLang] ?? 'US');
     final targetFlag = getFlagEmoji(languageFlags[targetLang] ?? 'ES');
 
-    final entry =
-        "$sourceFlag $sourceLang\n$original\n||\n$targetFlag $targetLang\n$translated";
+    final entry = {
+      'id': DateTime.now().millisecondsSinceEpoch.toString(),
+      'source': "$sourceFlag $sourceLang\n$original",
+      'target': "$targetFlag $targetLang\n$translated",
+    };
 
     translationHistory.insert(0, entry);
     saveHistory();
   }
 
-
   Future<void> saveHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('translationHistory', translationHistory);
+    final historyList =
+        translationHistory
+            .map((e) => "${e['id']}|${e['source']}||${e['target']}")
+            .toList();
+    await prefs.setStringList(_historyKey, historyList);
   }
 
   Future<void> loadHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    translationHistory.value = prefs.getStringList('translationHistory') ?? [];
+    final historyList = prefs.getStringList(_historyKey) ?? [];
+
+    translationHistory.value =
+        historyList.map((entry) {
+          final parts = entry.split('|');
+          final id = parts[0];
+          final content = parts.sublist(1).join('|');
+          final contentParts = content.split('||');
+
+          return {
+            'id': id,
+            'source': contentParts[0],
+            'target': contentParts.length > 1 ? contentParts[1] : "",
+          };
+        }).toList();
   }
 
   void clearHistory() async {
     translationHistory.clear();
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('translationHistory');
+    await prefs.remove(_historyKey);
   }
 
-  void deleteHistoryItem(int index) async {
+void deleteHistoryItem(int index) async {
+    if (index >= 0 && index < translationHistory.length) {
     translationHistory.removeAt(index);
     saveHistory();
+    }
     flutterTts.stop();
   }
 
@@ -422,60 +372,69 @@ void swapLanguages() {
       await flutterTts.stop();
       await flutterTts.setPitch(pitch.value);
       await flutterTts.setSpeechRate(speed.value);
-
-      // Use selectedLanguage2's language code
       final langCode = languageCodes[selectedLanguage2.value] ?? 'en-US';
       await flutterTts.setLanguage(langCode);
 
       if (text.trim().isNotEmpty) {
         await flutterTts.speak(text.trim());
-      } else {
-        Utils().toastMessage("No translated text available to speak.");
       }
     } catch (e) {
-      Utils().toastMessage("Error speaking text: ${e.toString()}");
+      Utils().toastMessage("Error: ${e.toString()}");
     }
   }
 
-
-  
-
-
-// Save Favourite
-  void addToFavourites(String item) async {
-    if (!favouriteTranslations.contains(item)) {
+  // Save Favourite
+  void addToFavourites(Map<String, dynamic> item) {
+    if (!favouriteTranslations.any((fav) => fav['id'] == item['id'])) {
       favouriteTranslations.insert(0, item);
-      await saveFavourites();
+      saveFavourites();
     }
   }
 
   // Remove Favourite
-  void removeFromFavourites(String item) async {
-    favouriteTranslations.remove(item);
+  void removeFromFavourites(Map<String, dynamic> item) async {
+    favouriteTranslations.removeWhere((fav) => fav['id'] == item['id']);
     await saveFavourites();
   }
 
   // Check if favourite
-  bool isFavourite(String item) {
-    return favouriteTranslations.contains(item);
+  bool isFavourite(Map<String, dynamic> item) {
+    return favouriteTranslations.any((fav) => fav['id'] == item['id']);
   }
 
   // Save to SharedPreferences
   Future<void> saveFavourites() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(_favouritesKey, favouriteTranslations);
+    final favList =
+        favouriteTranslations
+            .map((e) => "${e['id']}|${e['source']}||${e['target']}")
+            .toList();
+    await prefs.setStringList(_favouritesKey, favList);
   }
 
   // Load from SharedPreferences
   Future<void> loadFavourites() async {
     final prefs = await SharedPreferences.getInstance();
-    favouriteTranslations.value = prefs.getStringList(_favouritesKey) ?? [];
+    final favList = prefs.getStringList(_favouritesKey) ?? [];
+
+    favouriteTranslations.value =
+        favList.map((entry) {
+          final parts = entry.split('|');
+          final id = parts[0];
+          final content = parts.sublist(1).join('|');
+          final contentParts = content.split('||');
+
+          return {
+            'id': id,
+            'source': contentParts[0],
+            'target': contentParts.length > 1 ? contentParts[1] : "",
+          };
+        }).toList();
   }
 
-  void deleteFromFavouritesOnly(String item) async {
-    favouriteTranslations.remove(item);
-    await saveFavourites(); // already exists in your controller
+  void deleteFromFavouritesOnly(Map<String, dynamic> item) async {
+    favouriteTranslations.removeWhere((fav) => fav['id'] == item['id']);
+    await saveFavourites();
   }
 
 }
-

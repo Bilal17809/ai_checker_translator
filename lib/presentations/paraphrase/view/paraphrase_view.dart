@@ -1,3 +1,4 @@
+import 'package:ai_checker_translator/core/common_widgets/back_to_home_wrapper.dart';
 import 'package:ai_checker_translator/core/common_widgets/textform_field.dart';
 import 'package:ai_checker_translator/core/theme/app_styles.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/controller/paraphrase_controller.dart';
@@ -15,7 +16,8 @@ class ParaphraseView extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
+    return BackToHomeWrapper(
+      child: Scaffold(
       backgroundColor: kWhiteF7,
       body: Stack(
         children: [
@@ -159,6 +161,7 @@ class ParaphraseView extends StatelessWidget {
           ),
         ],
       ),
+      )
     );
   }
 }
