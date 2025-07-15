@@ -75,15 +75,12 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                           ),
                           Align(
                             alignment: Alignment.centerLeft,
-                            child: IconButton(
+                            child: BackButton(
                               onPressed: () {
-                                Navigator.pop(context);
+                                Get.back();
                               },
-                              icon: const Icon(
-                                Icons.arrow_back_ios_new_outlined,
-                                color: Colors.white,
-                              ),
-                            ),
+                              color: kWhite,
+                            )
                           ),
                         ],
                       ),

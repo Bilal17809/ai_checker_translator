@@ -185,7 +185,11 @@ class TranslationController extends GetxController {
     }
   }
 
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  void stopTTS() {
+    audioPlayer.stop();
+  }
+
+  final AudioPlayer audioPlayer = AudioPlayer();
   Future<void> speakText() async {
     final text = translatedText.value.trim();
     if (text.isEmpty) return;
@@ -207,8 +211,8 @@ class TranslationController extends GetxController {
 
       if (response.statusCode == 200) {
         // If the request is successful, play the audio
-        await _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(url)));
-        _audioPlayer.play();
+        await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(url)));
+        audioPlayer.play();
       } else {
         print('Failed to load TTS audio');
       }
@@ -469,6 +473,12 @@ void deleteHistoryItem(int index) async {
   void deleteFromFavouritesOnly(Map<String, dynamic> item) async {
     favouriteTranslations.removeWhere((fav) => fav['id'] == item['id']);
     await saveFavourites();
+  }
+
+  @override
+  void onClose() {
+    audioPlayer.stop();
+    super.onClose();
   }
 
 }

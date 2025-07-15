@@ -166,6 +166,13 @@ void copyPromptText() {
     Utils.copyTextFrom(text: textCheckPromptController.text);
 }
 
+@override
+  void onClose() {
+    grammarResponseText.close();
+    textCheckPromptController.dispose();
+    super.onClose();
+  }
+
   void resetController() {
     
     grammarResponseText.value = '';

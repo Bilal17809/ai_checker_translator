@@ -1,4 +1,5 @@
 
+import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/keyboard_dismiss_wrapper.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/controller/quizzeslevel_controller.dart';
@@ -52,57 +53,53 @@ class _QuizessCategoryScreenState extends State<QuizessCategoryScreen> {
       FocusScope.of(context).unfocus();
     });
     return KeyboardDismissWrapper(
-      child: Scaffold(
-      backgroundColor: kWhiteF7,
-      appBar: AppBar(
-          iconTheme: IconThemeData(color: kWhite),
-        title: Text("Quizzes", style: TextStyle(color: Colors.white)),
-        backgroundColor: kMintGreen,
-        centerTitle: true,
-      ),
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: Obx(() {
-            if (categoriesController.isLoading.value) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: kWhiteF7,
+          appBar: CommonAppBar(appBarTitle: "Quizzes"),
+          body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: Obx(() {
+              if (categoriesController.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            if (categoriesController.grammarCategories.isEmpty) {
-              return const Center(child: Text("No categories found"));
-            }
+              if (categoriesController.grammarCategories.isEmpty) {
+                return const Center(child: Text("No categories found"));
+              }
 
-            return GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 18,
-                crossAxisSpacing: 18,
-                childAspectRatio: 3 / 3,
-              ),
-              itemCount: categoriesController.grammarCategories.length,
-              itemBuilder: (context, index) {
-                final item = categoriesController.grammarCategories[index];
-                final title = item.title.trim();
+              return GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 18,
+                  crossAxisSpacing: 18,
+                  childAspectRatio: 3 / 3,
+                ),
+                itemCount: categoriesController.grammarCategories.length,
+                itemBuilder: (context, index) {
+                  final item = categoriesController.grammarCategories[index];
+                  final title = item.title.trim();
 
-                return QuizzessGrammarWidget(
-                  icon: item.icons,
-                  grammarTitle: title,
-                  quizNumber: "Quiz: ${item.quizCount}",
-                  onTap: () {
-                    quizzeslevelController.fetchLevelsByCategory(
-                      item.title,
-                    ); // Map format
-                    Get.to(
-                      () => const QuizLevelScreen(),
-                      arguments: item,
-                    ); // Passing map to next screen
-                  },
-                );
-              },
-            );
-          }),
+                  return QuizzessGrammarWidget(
+                    icon: item.icons,
+                    grammarTitle: title,
+                    quizNumber: "Quiz: ${item.quizCount}",
+                    onTap: () {
+                      quizzeslevelController.fetchLevelsByCategory(item.title,
+                      );
+                      Get.to(
+                        () => const QuizLevelScreen(),
+                        arguments: item,
+                      ); // Passing map to next screen
+                    },
+                  );
+                },
+              );
+            }),
+          ),
         ),
       )
     );

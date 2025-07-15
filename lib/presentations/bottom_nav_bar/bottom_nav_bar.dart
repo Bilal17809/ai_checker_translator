@@ -96,128 +96,139 @@ class _BottomNavExampleState extends State<BottomNavExample> {
         );
         return false;
       },
-      child: Scaffold(
-        body: IndexedStack(index: selectedIndex, children: screens),
-        bottomNavigationBar:
-            isTranslatorPage
-                ? null
-                : Container(
-                margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 10,
-                  ),
-                decoration: BoxDecoration(
-                  color: const Color(0xffF9DEDF),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 6,
-                      offset: const Offset(0, 6),
+      child: SafeArea(
+        child: Scaffold(
+          body: IndexedStack(index: selectedIndex, children: screens),
+          bottomNavigationBar:
+              isTranslatorPage
+                  ? null
+                  : Container(
+                    margin: const EdgeInsets.only(
+                      left: 10,
+                      right: 10,
+                      bottom: 10,
                     ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: List.generate(images.length, (index) {
-                    final isSelected = selectedIndex == index;
-                    return GestureDetector(
-                      onTap: () {
-                          geminiAiCorrectionController.resetController();
-                          hideKeyboardProperly(); 
-
-                        final wasOnCorrection = selectedIndex == 3;
-
-                          if (index == 4) {
-                            Get.to(() => const AiTranslatorBottomNav())!.then((
-                              _,
-                            ) {
-                              hideKeyboardProperly(); 
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xffF9DEDF),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 6,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: List.generate(images.length, (index) {
+                        final isSelected = selectedIndex == index;
+                        return GestureDetector(
+                          onTap: () {
                             geminicontroller.resetData();
-                            setState(() {
-                              previousIndex = selectedIndex;
-                              selectedIndex = 2;
+                            geminiAiCorrectionController.resetController();
+                            hideKeyboardProperly();
 
-                                if (selectedIndex == 3) {
-                                geminiAiCorrectionController.resetController();
+                            final wasOnCorrection = selectedIndex == 3;
+
+                            if (index == 4) {
+                              Get.to(() => const AiTranslatorBottomNav())!.then(
+                                (_) {
+                                  hideKeyboardProperly();
+                                  geminicontroller.resetData();
+                                  setState(() {
+                                    previousIndex = selectedIndex;
+                                    selectedIndex = 2;
+
+                                    if (selectedIndex == 3) {
+                                      geminiAiCorrectionController
+                                          .resetController();
+                                    }
+
+                                    if (previousIndex == 0 ||
+                                        previousIndex == 3) {
+                                      animatedKey = UniqueKey();
+                                    }
+                                  });
+                                },
+                              );
+                            } else {
+                              if (selectedIndex != index) {
+                                setState(() {
+                                  previousIndex = selectedIndex;
+                                  selectedIndex = index;
+
+                                  if (wasOnCorrection) {
+                                    geminiAiCorrectionController
+                                        .resetController();
+                                  }
+
+                                  if (previousIndex == 0) {
+                                    geminiAiCorrectionController
+                                        .resetController();
+                                    geminicontroller.resetData();
+                                  }
+
+                                  if (index == 0 || index == 3) {
+                                    animatedKey = UniqueKey();
+                                  }
+
+                                  if (previousIndex == 3) {
+                                    geminiAiCorrectionController
+                                        .resetController();
+                                  }
+                                });
                               }
-
-                              if (previousIndex == 0 || previousIndex == 3) {
-
-                                  animatedKey = UniqueKey();
-                                }
-                            });
-                          });
-                        } else {
-                          if (selectedIndex != index) {
-                            setState(() {
-                              previousIndex = selectedIndex;
-                              selectedIndex = index;
-
-                              if (wasOnCorrection) {
-                                geminiAiCorrectionController.resetController();
-                              }
-
-                              if (previousIndex == 0) {
-                                geminiAiCorrectionController.resetController();
-                                geminicontroller.resetData();
-                              }
-
-                                if (index == 0 || index == 3) {
-                                animatedKey = UniqueKey();
-                              }
-
-                              if (previousIndex == 3) {
-                                geminiAiCorrectionController.resetController();
-                              }
-                            });
-                          }
-                        }
-                        },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          isSelected
-                              ? ColorFiltered(
-                                  colorFilter: const ColorFilter.mode(
-                                    Color(0xFF006400),
-                                    BlendMode.srcIn,
-                                  ),
-                                  child: Image.asset(
+                            }
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              isSelected
+                                  ? ColorFiltered(
+                                    colorFilter: const ColorFilter.mode(
+                                      Color(0xFF006400),
+                                      BlendMode.srcIn,
+                                    ),
+                                    child: Image.asset(
+                                      images[index],
+                                      height: 28,
+                                      width: 28,
+                                    ),
+                                  )
+                                  : Image.asset(
                                     images[index],
-                                    height: 28,
-                                    width: 28,
+                                    height: 24,
+                                    width: 24,
                                   ),
-                                )
-                              : Image.asset(
-                                  images[index],
-                                  height: 24,
-                                  width: 24,
+                              const SizedBox(height: 4),
+                              SizedBox(
+                                width: 60,
+                                child: Text(
+                                  labels[index],
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color:
+                                        isSelected
+                                            ? const Color(0xFF006400)
+                                            : const Color(0xFF228B22),
+                                  ),
                                 ),
-                          const SizedBox(height: 4),
-                          SizedBox(
-                            width: 60,
-                            child: Text(
-                              labels[index],
-                                overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 12,
-                                  color:
-                                      isSelected
-                                          ? const Color(0xFF006400)
-                                          : const Color(0xFF228B22),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  }),
+                        );
+                      }),
+                    ),
                 ),
-              ),
+        ),
       ),
     );
   }

@@ -39,169 +39,175 @@ class _TopicPhrasesScreenState extends State<TopicPhrasesScreen>
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      backgroundColor: kWhiteF7,
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Container(
-                height: height * 0.20,
-                decoration: const BoxDecoration(
-                  color: kMintGreen,
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(20),
-                    bottomLeft: Radius.circular(20),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: kWhiteF7,
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                Container(
+                  height: height * 0.20,
+                  decoration: const BoxDecoration(
+                    color: kMintGreen,
+                    borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(20),
+                      bottomLeft: Radius.circular(20),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10, left: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            BackButton(
+                              onPressed: () {
+                                Get.back();
+                              },
+                              color: kWhite,
+                            ),
+                            const Spacer(),
+                            const Text(
+                              "Phrases Example",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Spacer(),
+                            const SizedBox(width: 48),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 25, left: 16),
+              ],
+            ),
+
+            /// 🟦 Main Content Card
+            Positioned(
+              top: height * 0.12,
+              left: 12,
+              right: 12,
+              bottom: 0,
+              child: Obx(() {
+                final phraseList = controller.topicPharseList;
+                // final currentPage = controller.currentPageIndex.value;
+
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (phraseList.isEmpty) {
+                  return const Center(child: Text("No phrases available"));
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 06,
+                    vertical: 20,
+                  ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          BackIconButton(
-                            onTap: () {
-                              Get.back();
-                            },
-                          ),
-                          const Spacer(),
-                          const Text(
-                            "Phrases Example",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const Spacer(),
-                          const SizedBox(width: 48),
-                        ],
+                      /// PageView of phrases
+                      Expanded(
+                        child: PageView.builder(
+                          controller: controller.pageController,
+                          onPageChanged: (index) {
+                            controller.currentPageIndex.value = index;
+                          },
+                          itemCount: phraseList.length,
+                          itemBuilder: (context, index) {
+                            final phrase = phraseList[index];
+                            return PhrassesExampleWidget(
+                              copy: () {
+                                controller.speakExplanationText(
+                                  phrase.explaination,
+                                );
+                              },
+                              speakonTap: () {
+                                controller.copyExplanation(phrase.explaination);
+                              },
+                              phrase: phrase.sentence,
+                              explanation: phrase.explaination,
+                            );
+                          },
+                        ),
                       ),
+
+                      Obx(() {
+                        final currentPage = controller.currentPageIndex.value;
+                        final phraseList = controller.topicPharseList;
+
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            /// ⬅️ Previous Button
+                            CircleAvatar(
+                              backgroundColor:
+                                  currentPage == 0
+                                      ? Colors.grey[300]
+                                      : kMintGreen,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  size: 18,
+                                ),
+                                color: Colors.white,
+                                onPressed:
+                                    currentPage == 0
+                                        ? null
+                                        : () => controller.goToPage(
+                                          currentPage - 1,
+                                        ),
+                              ),
+                            ),
+                            const SizedBox(width: 30),
+
+                            /// 📄 Page Count
+                            Text(
+                              "${currentPage + 1} / ${phraseList.length}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            const SizedBox(width: 30),
+
+                            /// ➡️ Next Button
+                            CircleAvatar(
+                              backgroundColor:
+                                  currentPage == phraseList.length - 1
+                                      ? Colors.grey[300]
+                                      : kMintGreen,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 18,
+                                ),
+                                color: Colors.white,
+                                onPressed:
+                                    currentPage == phraseList.length - 1
+                                        ? null
+                                        : () {
+                                          controller.flutterTts.stop();
+                                          controller.goToPage(currentPage + 1);
+                                        },
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
                     ],
                   ),
-                ),
-              ),
-            ],
-          ),
-
-          /// 🟦 Main Content Card
-          Positioned(
-            top: height * 0.12,
-            left: 12,
-            right: 12,
-            bottom: 0,
-            child: Obx(() {
-              final phraseList = controller.topicPharseList;
-              // final currentPage = controller.currentPageIndex.value;
-
-              if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (phraseList.isEmpty) {
-                return const Center(child: Text("No phrases available"));
-              }
-
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 06,
-                  vertical: 20,
-                ),
-                child: Column(
-                  children: [
-                    /// PageView of phrases
-                    Expanded(
-                      child: PageView.builder(
-                        controller: controller.pageController,
-                        onPageChanged: (index) {
-                          controller.currentPageIndex.value = index;
-                        },
-                        itemCount: phraseList.length,
-                        itemBuilder: (context, index) {
-                          final phrase = phraseList[index];
-                          return PhrassesExampleWidget(
-                            copy: () {
-                              controller.speakExplanationText(
-                                phrase.explaination,
-                              );
-                            },
-                            speakonTap: () {
-                              controller.copyExplanation(phrase.explaination);
-                            },
-                            phrase: phrase.sentence,
-                            explanation: phrase.explaination,
-                          );
-                        },
-                      ),
-                    ),
-
-                    Obx(() {
-                      final currentPage = controller.currentPageIndex.value;
-                      final phraseList = controller.topicPharseList;
-
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          /// ⬅️ Previous Button
-                          CircleAvatar(
-                            backgroundColor:
-                                currentPage == 0
-                                    ? Colors.grey[300]
-                                    : kMintGreen,
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.arrow_back_ios_new_rounded,
-                                size: 18,
-                              ),
-                              color: Colors.white,
-                              onPressed:
-                                  currentPage == 0
-                                      ? null
-                                      : () =>
-                                          controller.goToPage(currentPage - 1),
-                            ),
-                          ),
-                          const SizedBox(width: 30),
-
-                          /// 📄 Page Count
-                          Text(
-                            "${currentPage + 1} / ${phraseList.length}",
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-
-                          const SizedBox(width: 30),
-
-                          /// ➡️ Next Button
-                          CircleAvatar(
-                            backgroundColor:
-                                currentPage == phraseList.length - 1
-                                    ? Colors.grey[300]
-                                    : kMintGreen,
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.arrow_forward_ios,
-                                size: 18,
-                              ),
-                              color: Colors.white,
-                              onPressed:
-                                  currentPage == phraseList.length - 1
-                                      ? null
-                                      : () {
-                                        controller.flutterTts.stop();
-                                        controller.goToPage(currentPage + 1);
-                                      },
-                            ),
-                          ),
-                        ],
-                      );
-                    }),
-                  ],
-                ),
-              );
-            }),
-          ),
-        ],
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

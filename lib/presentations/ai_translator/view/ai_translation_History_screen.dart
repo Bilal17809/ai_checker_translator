@@ -1,4 +1,4 @@
-
+import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/widgets/translation_history_widget.dart';
 import 'package:flutter/material.dart';
@@ -13,30 +13,22 @@ class AiTranslationHistoryScreen extends StatefulWidget {
 class _AiTranslationHistoryScreenState extends State<AiTranslationHistoryScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: kWhite),
-        backgroundColor: kMintGreen,
-        title: Text("Favourite",style: TextStyle(color: kWhite),),
-      ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: CommonAppBar(appBarTitle: "Favourite"),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                
-              TranslationHistoryWidget(
-  showFavouriteIcon: true,
-  showOnlyFavourites: true,
-  deleteFromFavouritesOnly: true,
-  overrideSpeakAndCopy: false,
-  showSourceText: true, 
-),
-
-              ],
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: SizedBox.expand(
+            child: TranslationHistoryWidget(
+              showFavouriteIcon: true,
+              showOnlyFavourites: true,
+              deleteFromFavouritesOnly: true,
+              overrideSpeakAndCopy: false,
+              showSourceText: true,
             ),
           ),
         ),
+      ),
     );
   }
 }

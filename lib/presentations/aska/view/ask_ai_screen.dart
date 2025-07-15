@@ -52,145 +52,151 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
 
     return BackToHomeWrapper(
       child: KeyboardDismissWrapper(
-      child: Scaffold(
-        appBar: CommonAppbarWidget(),
-        body: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AnimatedTypingText(
-                      key: widget.key,
-                      text: "Ask AI (Writting Assistant)",
-                      charDuration: Duration(milliseconds: 50),
-                      style: context.textTheme.bodyLarge!.copyWith(
-                        color: kBlue,
-                    
-                      ),
-                 
-                    ),
-                    const SizedBox(height: 10),
-                      ValueListenableBuilder<TextEditingValue>(
-                        valueListenable: controller.promptController,
-                        builder: (context, value, _) {
-                          return AssistantInputBox(
-                            contentPadding: const EdgeInsets.fromLTRB(
-                              06,
-                              0,
-                              22,
-                              00,
-                            ),
-                            readOnly: false,
-                            hintText: "Type here or paste your content",
-                            controller: controller.promptController,
-                            iconButtons: [],
-                            showClearIcon: value.text.isNotEmpty,
-                            footerButtons: [
-                              IconButton(
-                                onPressed:
-                                    () => controller.startMicInput(
-                                      languageISO: 'en-US',
-                                    ),
-                                icon: const Icon(
-                                  Icons.mic,
-                                  size: 20,
-                                  color: kMintGreen,
-                                ),
+        child: SafeArea(
+          child: Scaffold(
+            appBar: CommonAppbarWidget(),
+            body: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 20,
+                  ),
+                  child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AnimatedTypingText(
+                          key: widget.key,
+                          text: "Ask AI (Writting Assistant)",
+                          charDuration: Duration(milliseconds: 50),
+                          style: context.textTheme.bodyLarge!.copyWith(
+                            color: kBlue,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        ValueListenableBuilder<TextEditingValue>(
+                          valueListenable: controller.promptController,
+                          builder: (context, value, _) {
+                            return AssistantInputBox(
+                              contentPadding: const EdgeInsets.fromLTRB(
+                                06,
+                                0,
+                                22,
+                                00,
                               ),
-                              const Spacer(),
-                              IconButton(
-                                onPressed: controller.copyPromptText,
-                                icon: const Icon(
-                                  Icons.copy,
-                                  size: 20,
-                                  color: kMintGreen,
+                              readOnly: false,
+                              hintText: "Type here or paste your content",
+                              controller: controller.promptController,
+                              iconButtons: [],
+                              showClearIcon: value.text.isNotEmpty,
+                              footerButtons: [
+                                IconButton(
+                                  onPressed:
+                                      () => controller.startMicInput(
+                                        languageISO: 'en-US',
+                                      ),
+                                  icon: const Icon(
+                                    Icons.mic,
+                                    size: 20,
+                                    color: kMintGreen,
+                                  ),
+                                ),
+                                const Spacer(),
+                                IconButton(
+                                  onPressed: controller.copyPromptText,
+                                  icon: const Icon(
+                                    Icons.copy,
+                                    size: 20,
+                                    color: kMintGreen,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+
+                        const SizedBox(height: 10),
+                        Text.rich(
+                          TextSpan(
+                            text: "Daily Limits Remaining = 10 ",
+                            style: const TextStyle(fontSize: 12),
+                            children: [
+                              TextSpan(
+                                text: "Go Premium",
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
-                          );
-                        },
-),
-
-                    const SizedBox(height: 10),
-                    Text.rich(
-                      TextSpan(
-                        text: "Daily Limits Remaining = 10 ",
-                        style: const TextStyle(fontSize: 12),
-                        children: [
-                          TextSpan(
-                            text: "Go Premium",
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Obx(
-                      () => SizedBox(
-                        height: 48,
-                        child: ElevatedButton(
-                            onPressed: () async {
-                            controller.flutterTts.stop();
-                              await controller.generate();
-                            FocusScope.of(context).unfocus();
-                          },
-                          style: AppTheme.elevatedButtonStyle.copyWith(
-                            backgroundColor: MaterialStateProperty.all(
-                              kMintGreen,
-                            ),
-                          ),
-                          child:
-                              controller.isLoading.value
-                                  ? const Center(
-                                    child: SizedBox(
-                                      height: 50,
-                                      child: CircularProgressIndicator(
-                                        color: kWhite,
-                                      ),
-                                    ),
-                                  )
-                                  : const Text('Generate'),
                         ),
-                      ),
+                        const SizedBox(height: 10),
+                        Obx(
+                          () => SizedBox(
+                            height: 48,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                controller.flutterTts.stop();
+                                await controller.generate();
+                                FocusScope.of(context).unfocus();
+                              },
+                              style: AppTheme.elevatedButtonStyle.copyWith(
+                                backgroundColor: MaterialStateProperty.all(
+                                  kMintGreen,
+                                ),
+                              ),
+                              child:
+                                  controller.isLoading.value
+                                      ? const Center(
+                                        child: SizedBox(
+                                          height: 50,
+                                          child: CircularProgressIndicator(
+                                            color: kWhite,
+                                          ),
+                                        ),
+                                      )
+                                      : const Text('Generate'),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 300),
+                      ],
                     ),
-                    const SizedBox(height: 300),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            Positioned(
-              bottom: bottomInset,
-              left: 0,
-              right: 0,
-              top: screenHeight * 0.46,
-              child: Obx(
-                () =>
-                    controller.responseText.isEmpty
-                        ? const SizedBox()
-                        : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: SingleChildScrollView(
-                            child: GeneratedTextWidget(
-                              onTapCopy: controller.copyResponseText,
-                              onTapShare:
-                                  () => Share.share(
-                                    controller.responseText.value,
-                                  ),
-                              onTapstartSpeak: controller.speakGeneratedText,
-                              text: controller.responseText.value,
+                Positioned(
+                  bottom: bottomInset,
+                  left: 0,
+                  right: 0,
+                  top: screenHeight * 0.46,
+                  child: Obx(
+                    () =>
+                        controller.responseText.isEmpty
+                            ? const SizedBox()
+                            : Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              child: SingleChildScrollView(
+                                child: GeneratedTextWidget(
+                                  onTapCopy: controller.copyResponseText,
+                                  onTapShare:
+                                      () => Share.share(
+                                        controller.responseText.value,
+                                      ),
+                                  onTapstartSpeak:
+                                      controller.speakGeneratedText,
+                                  text: controller.responseText.value,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-              ),
+                  ),
+                ),
+              ],
             ),
-          ],
         ),
       ),
       )

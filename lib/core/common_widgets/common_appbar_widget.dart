@@ -1,13 +1,14 @@
+
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
-import 'package:ai_checker_translator/extension/extension.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/utils.dart';
 
 class CommonAppbarWidget extends StatelessWidget
     implements PreferredSizeWidget {
   const CommonAppbarWidget({super.key});
 
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
 
   @override
   Widget build(BuildContext context) {
@@ -57,17 +58,35 @@ class CommonAppbarWidget extends StatelessWidget
       ),
     );
   }
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
+
 
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String appBarTitle;
+
   const CommonAppBar({super.key, required this.appBarTitle});
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Widget build(BuildContext context) {
+    return AppBar(
+      iconTheme: IconThemeData(color: kWhite),
+      backgroundColor: kMintGreen,
+      centerTitle: true,
+      title: Text(
+        appBarTitle,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      elevation: 0,
+    );
+  }
 
   @override
-  Widget build(BuildContext context) {
-    return AppBar(title: Row(children: [BackButton(), Text(appBarTitle)]));
-  }
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
+

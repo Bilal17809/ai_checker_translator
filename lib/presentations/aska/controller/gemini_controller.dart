@@ -181,6 +181,7 @@ class GeminiController extends GetxController {
 
   @override
   void onClose() {
+    responseText.close();
     promptController.dispose();
     flutterTts.stop();
     super.onClose();

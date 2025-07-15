@@ -1,3 +1,4 @@
+import 'dart:io';
 
 import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
@@ -63,32 +64,35 @@ class Utils {
 
   static final RxBool hasInternet = true.obs;
 
-  static void monitorInternet() {
+static void monitorInternet() {
     Connectivity().onConnectivityChanged.listen((
       List<ConnectivityResult> results,
-    ) {
-      bool isConnected =
-          results.isNotEmpty && !results.contains(ConnectivityResult.none);
-
-      if (!hasInternet.value && isConnected) {
+    ) async {
+      bool isActuallyOnline = await isConnectedToInternet();
+      if (!hasInternet.value && isActuallyOnline) {
         Utils().toastMessage("Your internet connection has been restored");
       }
-      hasInternet.value = isConnected;
+      hasInternet.value = isActuallyOnline;
     });
   }
 
-  static Future<bool> isConnectedToInternet() async {
-    final results = await Connectivity().checkConnectivity();
-    return results.isNotEmpty && !results.contains(ConnectivityResult.none);
+static Future<bool> isConnectedToInternet() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } catch (_) {
+      return false;
+    }
   }
 
-  static Future<bool> checkAndShowNoInternetDialogIfOffline() async {
-    final bool hasInternet = await Utils.isConnectedToInternet();
-    if (!hasInternet) {
+static Future<bool> checkAndShowNoInternetDialogIfOffline() async {
+    final bool online = await isConnectedToInternet();
+    if (!online) {
       Get.dialog(const NoInternetDialog(), barrierDismissible: false);
     }
-    return hasInternet;
+    return online;
   }
+
 
   // static Future<void> playCorrectSound() async {
   //   await _player.stop();
@@ -108,7 +112,7 @@ class Utils {
 
     // Set the audio source from an asset
     await _player.setAudioSource(
-      AudioSource.asset('sounds/correctanswer.mp3'),
+      AudioSource.asset('assets/sounds/correctanswer.mp3'),
     );
 
     // Play the audio
@@ -117,7 +121,7 @@ class Utils {
   static Future<void> playWrongSound() async {
     await _player.stop();
     await _player.setAudioSource(
-      AudioSource.asset('sounds/wronganswer.mp3'),
+      AudioSource.asset('assets/sounds/wronganswer.mp3'),
     );
     await _player.play();
   }

@@ -1,3 +1,4 @@
+import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,53 +28,48 @@ class RuleDetailScreen extends StatelessWidget {
           categoriesController.learnedMap[catId]?.contains(ruleId) ?? false;
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Explanation", style: TextStyle(color: kWhite)),
-        centerTitle: true,
-        backgroundColor: kMintGreen,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 26),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title ?? '',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              SelectableText(
-                definition ?? '',
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 20),
-
-              // ✅ Learn/Unlearn Toggle Button
-              if (catId != null && ruleId != null)
-                Obx(
-                  () => ElevatedButton.icon(
-                    onPressed: () {
-                      categoriesController.toggleLearnedRule(catId, ruleId);
-                      isLearned.value = !isLearned.value;
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isLearned.value ? kMintGreen : Colors.grey,
-                      foregroundColor: Colors.white,
-                    ),
-                    icon: Icon(
-                      isLearned.value
-                          ? Icons.done_all : Icons.done,
-                    ),
-                    label: Text(isLearned.value ? "Learn it" : "Unlearn"),
+    return SafeArea(
+      child: Scaffold(
+        appBar: CommonAppBar(appBarTitle: "Explaination"),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 26),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title ?? '',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-            ],
+                const SizedBox(height: 10),
+                SelectableText(
+                  definition ?? '',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 20),
+
+                // ✅ Learn/Unlearn Toggle Button
+                if (catId != null && ruleId != null)
+                  Obx(
+                    () => ElevatedButton.icon(
+                      onPressed: () {
+                        categoriesController.toggleLearnedRule(catId, ruleId);
+                        isLearned.value = !isLearned.value;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            isLearned.value ? kMintGreen : Colors.grey,
+                        foregroundColor: Colors.white,
+                      ),
+                      icon: Icon(isLearned.value ? Icons.done_all : Icons.done),
+                      label: Text("Learn it"),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

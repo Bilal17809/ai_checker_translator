@@ -54,160 +54,164 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
 
     return BackToHomeWrapper(
       child: KeyboardDismissWrapper(
-        child: Scaffold(
-          appBar: CommonAppbarWidget(),
-          body: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
-                ),
-                child: SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Hi i'm Ai Corrector",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+        child: SafeArea(
+          child: Scaffold(
+            appBar: CommonAppbarWidget(),
+            body: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 20,
+                  ),
+                  child: SingleChildScrollView(
+                    physics: NeverScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Hi i'm Ai Corrector",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      AnimatedTypingText(
-                        key: widget.key,
-                        text:
-                            "I can correct your grammar, spelling, punctuation, and more",
-                        charDuration: Duration(milliseconds: 50),
-                        style: context.textTheme.bodySmall!.copyWith(
-                          color: kBlue,
+                        AnimatedTypingText(
+                          key: widget.key,
+                          text:
+                              "I can correct your grammar, spelling, punctuation, and more",
+                          charDuration: Duration(milliseconds: 50),
+                          style: context.textTheme.bodySmall!.copyWith(
+                            color: kBlue,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 14),
-                      ValueListenableBuilder<TextEditingValue>(
-                        valueListenable: controller.textCheckPromptController,
-                        builder: (context, value, _) {
-                          return AssistantInputBox(
-                            contentPadding: const EdgeInsets.fromLTRB(
-                              6,
-                              0,
-                              22,
-                              0,
-                            ),
-                            hintText: "Type here or paste your content",
-                            controller: controller.textCheckPromptController,
-                            iconButtons: [],
-                            showClearIcon: value.text.isNotEmpty,
-                            footerButtons: [
-                              IconButton(
-                                onPressed: () {
-                                  controller.startMicInput(
-                                    languageISO: 'en-US',
-                                  );
-                                },
-                                icon: const Icon(
-                                  Icons.mic,
-                                  size: 20,
-                                  color: kMintGreen,
-                                ),
+                        const SizedBox(height: 14),
+                        ValueListenableBuilder<TextEditingValue>(
+                          valueListenable: controller.textCheckPromptController,
+                          builder: (context, value, _) {
+                            return AssistantInputBox(
+                              contentPadding: const EdgeInsets.fromLTRB(
+                                6,
+                                0,
+                                22,
+                                0,
                               ),
-                              const Spacer(),
-                              IconButton(
-                                onPressed: controller.copyPromptText,
-                                icon: const Icon(
-                                  Icons.copy,
-                                  size: 20,
-                                  color: kMintGreen,
+                              hintText: "Type here or paste your content",
+                              controller: controller.textCheckPromptController,
+                              iconButtons: [],
+                              showClearIcon: value.text.isNotEmpty,
+                              footerButtons: [
+                                IconButton(
+                                  onPressed: () {
+                                    controller.startMicInput(
+                                      languageISO: 'en-US',
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.mic,
+                                    size: 20,
+                                    color: kMintGreen,
+                                  ),
+                                ),
+                                const Spacer(),
+                                IconButton(
+                                  onPressed: controller.copyPromptText,
+                                  icon: const Icon(
+                                    Icons.copy,
+                                    size: 20,
+                                    color: kMintGreen,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+
+                        const SizedBox(height: 10),
+                        Text.rich(
+                          TextSpan(
+                            text: "Daily Limits Remaining = 10 ",
+                            style: const TextStyle(fontSize: 12),
+                            children: [
+                              TextSpan(
+                                text: "Go Premium",
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
-                          );
-                        },
-                      ),
-
-                      const SizedBox(height: 10),
-                      Text.rich(
-                        TextSpan(
-                          text: "Daily Limits Remaining = 10 ",
-                          style: const TextStyle(fontSize: 12),
-                          children: [
-                            TextSpan(
-                              text: "Go Premium",
-                              style: const TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-
-                      Obx(
-                        () => SizedBox(
-                          height: 48,
-                          // width: 100,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              controller.generate();
-                              FocusScope.of(context).unfocus();
-                            },
-                            style: AppTheme.elevatedButtonStyle.copyWith(
-                              backgroundColor: MaterialStateProperty.all(
-                                kMintGreen,
-                              ),
-                            ),
-                            child:
-                                controller.isLoading.value
-                                    ? const Center(
-                                      child: CircularProgressIndicator(
-                                        color: kWhite,
-                                      ),
-                                    )
-                                    : const Text('Generate'),
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 10),
 
-                      const SizedBox(height: 300),
-                    ],
+                        Obx(
+                          () => SizedBox(
+                            height: 48,
+                            // width: 100,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                controller.generate();
+                                FocusScope.of(context).unfocus();
+                              },
+                              style: AppTheme.elevatedButtonStyle.copyWith(
+                                backgroundColor: MaterialStateProperty.all(
+                                  kMintGreen,
+                                ),
+                              ),
+                              child:
+                                  controller.isLoading.value
+                                      ? const Center(
+                                        child: CircularProgressIndicator(
+                                          color: kWhite,
+                                        ),
+                                      )
+                                      : const Text('Generate'),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 300),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Positioned(
-                bottom: bottomInset,
-                left: 0,
-                right: 0,
-                top: screenHeight * 0.48,
-                child: Obx(
-                  () =>
-                      controller.grammarResponseText.isEmpty
-                          ? const SizedBox()
-                          : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: SingleChildScrollView(
-                              child: GeneratedTextWidget(
-                                onTapShare: () {
-                                  Share.share(
-                                    controller.grammarResponseText.value,
-                                  );
-                                },
-                                onTapCopy: () {
-                                  controller.copyResponseText();
-                                },
-                                onTapstartSpeak: () {
-                                  controller.speakGeneratedText();
-                                },
-                                text: controller.grammarResponseText.value,
+                Positioned(
+                  bottom: bottomInset,
+                  left: 0,
+                  right: 0,
+                  top: screenHeight * 0.48,
+                  child: Obx(
+                    () =>
+                        controller.grammarResponseText.isEmpty
+                            ? const SizedBox()
+                            : Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              child: SingleChildScrollView(
+                                child: GeneratedTextWidget(
+                                  onTapShare: () {
+                                    Share.share(
+                                      controller.grammarResponseText.value,
+                                    );
+                                  },
+                                  onTapCopy: () {
+                                    controller.copyResponseText();
+                                  },
+                                  onTapstartSpeak: () {
+                                    controller.speakGeneratedText();
+                                  },
+                                  text: controller.grammarResponseText.value,
+                                ),
                               ),
                             ),
-                          ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

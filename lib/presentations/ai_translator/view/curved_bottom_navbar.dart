@@ -39,55 +39,57 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
 
         return false;
       },
-      child: Scaffold(
-        body: _pages[_page],
-        bottomNavigationBar: CurvedNavigationBar(
-          animationDuration: const Duration(milliseconds: 200),
-          index: _page,
-          height: 60,
-          backgroundColor: Colors.transparent,
-          color: kMintGreen,
-          buttonBackgroundColor: kMintGreen,
-          items: <Widget>[
-            Icon(Icons.clear, color: Colors.white),
-            Icon(Icons.mic, size: 46, color: Colors.white),
-            Image.asset(
-              Assets.aitranslationhistoryicon.path,
-              color: kWhite,
-              height: 30,
-            ),
-          ],
-          onTap: (index) async {
-            if (index == 0) {
-              controller.translationHistory.clear();
-              controller.flutterTts.stop();
-              // Utils().toastMessage("History cleared!");
-              return;
-            }
-            if (index == 1) {
-              final hasInternet = await Utils.isConnectedToInternet();
-
-              if (!hasInternet) {
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (_) => const NoInternetDialog(),
-                );
+      child: SafeArea(
+        child: Scaffold(
+          body: _pages[_page],
+          bottomNavigationBar: CurvedNavigationBar(
+            animationDuration: const Duration(milliseconds: 200),
+            index: _page,
+            height: 60,
+            backgroundColor: Colors.transparent,
+            color: kMintGreen,
+            buttonBackgroundColor: kMintGreen,
+            items: <Widget>[
+              Icon(Icons.clear, color: Colors.white),
+              Icon(Icons.mic, size: 46, color: Colors.white),
+              Image.asset(
+                Assets.aitranslationhistoryicon.path,
+                color: kWhite,
+                height: 30,
+              ),
+            ],
+            onTap: (index) async {
+              if (index == 0) {
+                controller.translationHistory.clear();
+                controller.flutterTts.stop();
+                // Utils().toastMessage("History cleared!");
                 return;
               }
+              if (index == 1) {
+                final hasInternet = await Utils.isConnectedToInternet();
 
-              controller.clearData();
+                if (!hasInternet) {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => const NoInternetDialog(),
+                  );
+                  return;
+                }
 
-              final selectedLanguageCode =
-                  '${controller.languageCodes[controller.selectedLanguage1.value]}-US';
+                controller.clearData();
 
-              controller.startSpeechToText(selectedLanguageCode);
-            }
-            setState(() {
-              _page = index;
-            });
-          },
+                final selectedLanguageCode =
+                    '${controller.languageCodes[controller.selectedLanguage1.value]}-US';
 
+                controller.startSpeechToText(selectedLanguageCode);
+              }
+              setState(() {
+                _page = index;
+              });
+            },
+        
+          ),
         ),
       ),
     );
