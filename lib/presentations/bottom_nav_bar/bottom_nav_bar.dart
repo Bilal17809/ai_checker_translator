@@ -14,7 +14,6 @@ import '../aska/controller/gemini_controller.dart';
 
 class BottomNavExample extends StatefulWidget {
   const BottomNavExample({super.key});
-
   static final GlobalKey<_BottomNavExampleState> bottomNavKey =
       GlobalKey<_BottomNavExampleState>();
 
@@ -52,6 +51,12 @@ class _BottomNavExampleState extends State<BottomNavExample> {
     });
   }
 
+
+  void hideKeyboardProperly() {
+    FocusScope.of(context).unfocus();
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isTranslatorPage = selectedIndex == 4;
@@ -59,7 +64,7 @@ class _BottomNavExampleState extends State<BottomNavExample> {
     final List<Widget> screens = [
       AskAiScreen(key: animatedKey),
       ParaphraseView(),
-      HomeView(), // no need for showExitDialog flag
+      HomeView(),
       AiDictionaryPage(key: animatedKey),
       Container(),
     ];
@@ -67,13 +72,13 @@ class _BottomNavExampleState extends State<BottomNavExample> {
     return WillPopScope(
       onWillPop: () async {
         if (selectedIndex != 2) {
+          hideKeyboardProperly();
           geminiAiCorrectionController.resetController();
           geminicontroller.resetData();
-          FocusScope.of(context).unfocus();
           setState(() => selectedIndex = 2);
           return false;
         }
-        FocusScope.of(context).unfocus();
+        hideKeyboardProperly();
         PanaraConfirmDialog.show(
           context,
           title: "Exit App",
@@ -119,7 +124,8 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                     final isSelected = selectedIndex == index;
                     return GestureDetector(
                       onTap: () {
-                          FocusScope.of(context).unfocus();
+                          geminiAiCorrectionController.resetController();
+                          hideKeyboardProperly(); 
 
                         final wasOnCorrection = selectedIndex == 3;
 
@@ -127,22 +133,20 @@ class _BottomNavExampleState extends State<BottomNavExample> {
                             Get.to(() => const AiTranslatorBottomNav())!.then((
                               _,
                             ) {
+                              hideKeyboardProperly(); 
                             geminicontroller.resetData();
                             setState(() {
                               previousIndex = selectedIndex;
                               selectedIndex = 2;
 
-                              if (wasOnCorrection) {
+                                if (selectedIndex == 3) {
                                 geminiAiCorrectionController.resetController();
                               }
 
                               if (previousIndex == 0 || previousIndex == 3) {
-                                  animatedKey = UniqueKey();
-                              }
 
-                              if (index == 3 || previousIndex == 3) {
-                                FocusScope.of(context).unfocus();
-                              }
+                                  animatedKey = UniqueKey();
+                                }
                             });
                           });
                         } else {

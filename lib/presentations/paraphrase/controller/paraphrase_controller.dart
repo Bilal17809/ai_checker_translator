@@ -27,7 +27,7 @@ class ParaphraseController extends GetxController {
     'com.example.getx_practice_app/speech_Text',
   );
 
-  // ✅ PageView logic for TopicPhrasesScreen
+
   final pageController = PageController();
   var currentPageIndex = 0.obs;
 
@@ -37,7 +37,6 @@ class ParaphraseController extends GetxController {
     fetchTopics();
   }
 
-  // 🔍 Search logic
   void searchTopics(String query) {
     if (query.trim().isEmpty) {
       filteredTopics.value = topicsList;
@@ -66,7 +65,7 @@ class ParaphraseController extends GetxController {
     }
   }
 
-  // 📥 Fetch phrases by topic ID
+
   Future<void> fetchTopicPhrasebyTopicId(int topicId) async {
     isLoading.value = true;
     try {
@@ -126,7 +125,6 @@ class ParaphraseController extends GetxController {
       isSpeaking.value = false;
     }
   }
-
   void copyExplanation(String explanation) {
     Utils.copyTextFrom(text: explanation);
   }

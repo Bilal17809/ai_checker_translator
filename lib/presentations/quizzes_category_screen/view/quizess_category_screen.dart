@@ -8,6 +8,7 @@ import 'package:ai_checker_translator/presentations/quizzes_category_screen/cont
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/widget/quizzess_grammar_widget.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class QuizessCategoryScreen extends StatefulWidget {
@@ -18,6 +19,26 @@ class QuizessCategoryScreen extends StatefulWidget {
 }
 
 class _QuizessCategoryScreenState extends State<QuizessCategoryScreen> {
+
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).unfocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    Future.delayed(Duration(milliseconds: 10), () {
+      SystemChannels.textInput.invokeMethod('TextInput.hide');
+    });
+    super.dispose();
+  }
+
+  
   
  final categoriesController = Get.find<CategoriesController>();
   final quizDetailController = Get.find<QuizDetailController>();

@@ -11,6 +11,7 @@ class BackToHomeWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        FocusScope.of(context).unfocus(); 
         BottomNavExample.bottomNavKey.currentState?.goToHome();
         return true;
       },

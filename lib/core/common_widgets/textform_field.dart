@@ -30,6 +30,7 @@ class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField({
     super.key,
     required this.hintText,
+  
     this.textDirection,
     this.readOnly = false,
     this.controller,
@@ -58,6 +59,7 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autofocus: false,
       readOnly: readOnly,
       controller: controller,
       focusNode: focusNode,
@@ -72,6 +74,7 @@ class CustomTextFormField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         
+        
       
         // hintMaxLines: hintMaxLine,
         maintainHintHeight: true,
@@ -82,7 +85,7 @@ class CustomTextFormField extends StatelessWidget {
         enabledBorder: enabledBorder ?? InputBorder.none,
         contentPadding:
             contentPadding ??
-            const EdgeInsets.symmetric(horizontal: 02, vertical: 16),
+            const EdgeInsets.symmetric(horizontal: 02, vertical: 12),
       ),
       
     );

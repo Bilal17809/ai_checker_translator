@@ -27,6 +27,16 @@ class AskAiScreen extends StatefulWidget {
 class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
   final GeminiController controller = Get.find<GeminiController>();
 
+  
+  @override
+  void dispose() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    Future.delayed(Duration(milliseconds: 10), () {
+      SystemChannels.textInput.invokeMethod('TextInput.hide');
+    });
+    super.dispose();
+  }
+
   @override
   void onAppPause() {
     controller.flutterTts.stop();
@@ -64,35 +74,47 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                  
                     ),
                     const SizedBox(height: 10),
-                    AssistantInputBox(
-                      readOnly: false,
-                      hintText: "Type here or paste your content",
-                      controller: controller.promptController,
-                      iconButtons: [],
-                      showClearIcon: true,
-                      footerButtons: [
-                        IconButton(
-                          onPressed:
-                              () => controller.startMicInput(
-                                languageISO: 'en-US',
+                      ValueListenableBuilder<TextEditingValue>(
+                        valueListenable: controller.promptController,
+                        builder: (context, value, _) {
+                          return AssistantInputBox(
+                            contentPadding: const EdgeInsets.fromLTRB(
+                              06,
+                              0,
+                              22,
+                              00,
+                            ),
+                            readOnly: false,
+                            hintText: "Type here or paste your content",
+                            controller: controller.promptController,
+                            iconButtons: [],
+                            showClearIcon: value.text.isNotEmpty,
+                            footerButtons: [
+                              IconButton(
+                                onPressed:
+                                    () => controller.startMicInput(
+                                      languageISO: 'en-US',
+                                    ),
+                                icon: const Icon(
+                                  Icons.mic,
+                                  size: 20,
+                                  color: kMintGreen,
+                                ),
                               ),
-                          icon: const Icon(
-                            Icons.mic,
-                            size: 20,
-                            color: kMintGreen,
-                          ),
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          onPressed: controller.copyPromptText,
-                          icon: const Icon(
-                            Icons.copy,
-                            size: 20,
-                            color: kMintGreen,
-                          ),
-                        ),
-                      ],
-                    ),
+                              const Spacer(),
+                              IconButton(
+                                onPressed: controller.copyPromptText,
+                                icon: const Icon(
+                                  Icons.copy,
+                                  size: 20,
+                                  color: kMintGreen,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+),
+
                     const SizedBox(height: 10),
                     Text.rich(
                       TextSpan(

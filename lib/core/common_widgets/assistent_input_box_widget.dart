@@ -18,7 +18,7 @@ class AssistantInputBox extends StatefulWidget {
   final double? customHeight;
   final List<Widget>? footerButtons;
   final bool showClearIcon;
-
+  final EdgeInsetsGeometry? contentPadding;
   const AssistantInputBox({
     super.key,
     required this.controller,
@@ -33,6 +33,8 @@ class AssistantInputBox extends StatefulWidget {
     this.customHeight,
     this.footerButtons,
     this.showClearIcon = false,
+    this.contentPadding
+
   });
 
   @override
@@ -40,29 +42,28 @@ class AssistantInputBox extends StatefulWidget {
 }
 
 class _AssistantInputBoxState extends State<AssistantInputBox> {
-  late int currentLength;
-
-  @override
-  void initState() {
-    super.initState();
-    currentLength = widget.controller.text.length;
-    widget.controller.addListener(_updateLength);
-  }
-
-  void _updateLength() {
-    setState(() {
-      currentLength = widget.controller.text.length;
-    });
-  }
-
-  @override
-  void dispose() {
-    widget.controller.removeListener(_updateLength);
-    super.dispose();
-  }
-
   final TranslationController controller = Get.put(TranslationController());
   final ScrollController _scrollController = ScrollController();
+  late int currentLength;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   currentLength = widget.controller.text.length;
+  //   // widget.controller.addListener(_updateLength);
+  // }
+
+  // // void _updateLength() {
+  // //   setState(() {
+  // //     currentLength = widget.controller.text.length;
+  // //   });
+  // // }
+
+  // // @override
+  // // void dispose() {
+  // //   widget.controller.removeListener(_updateLength);
+  // //   super.dispose();
+  // // }
 
   @override
   Widget build(BuildContext context) {
@@ -70,17 +71,19 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
       children: [
         Container(
           height:
-          widget.customHeight ?? MediaQuery.of(context).size.height * 0.24,
-          padding: const EdgeInsets.symmetric(horizontal: 04, vertical: 00),
+              widget.customHeight ?? MediaQuery.of(context).size.height * 0.24,
+          padding: const EdgeInsets.symmetric(horizontal: 4),
           decoration: roundedDecoration.copyWith(
             border: Border.all(color: kMintGreen, width: 2),
             borderRadius: widget.borderRadius,
           ),
           child: Column(
-            
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 10),
+              // Padding added to avoid overlap with clear button
+              const SizedBox(height: 10),
+
+              // Scrollable TextField
               Expanded(
                 child: ClipRRect(
                   borderRadius: widget.borderRadius,
@@ -89,7 +92,7 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
                     thumbVisibility: true,
                     child: SingleChildScrollView(
                       controller: _scrollController,
-                      
+                      padding: const EdgeInsets.only(top: 0),
                       child: CustomTextFormField(
                         readOnly: widget.readOnly,
                         textDirection: widget.textDirection,
@@ -98,14 +101,19 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
                         hintText: widget.hintText,
                         border: InputBorder.none,
                         suffixIcon: null,
-                        maxLines: null, // important to allow vertical scroll
+                        maxLines: null,
                         keyboardType: TextInputType.multiline,
+                        contentPadding:
+                            widget.contentPadding ??
+                            EdgeInsets.symmetric(horizontal: 02, vertical: 12),
                       ),
                     ),
                   ),
                 ),
               ),
-              if (widget.showFooter) ...[
+
+              // Footer buttons
+              if (widget.showFooter)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,22 +121,21 @@ class _AssistantInputBoxState extends State<AssistantInputBox> {
                     if (widget.footerButtons != null) ...widget.footerButtons!,
                   ],
                 ),
-              ],
             ],
           ),
         ),
 
-        // Clear icon
+        // Clear Button at top-right
         if (widget.showClearIcon && widget.controller.text.isNotEmpty)
           Positioned(
             top: 00,
-            right: 8,
+            right: 00,
             child: IconButton(
               icon: const Icon(Icons.close, size: 18),
               onPressed: () {
-                setState(() {
+               
                   widget.controller.clear();
-                });
+               
               },
             ),
           ),
