@@ -1,13 +1,12 @@
-import 'dart:io';
 
 import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
  
 
 
@@ -62,50 +61,65 @@ class Utils {
 
 
 
-static final RxBool hasInternet = true.obs;
+  static final RxBool hasInternet = true.obs;
 
-static void monitorInternet() {
+  static void monitorInternet() {
     Connectivity().onConnectivityChanged.listen((
       List<ConnectivityResult> results,
-    ) async {
-      // Try pinging a server to confirm internet availability
-      bool isActuallyOnline = await isConnectedToInternet();
+    ) {
+      bool isConnected =
+          results.isNotEmpty && !results.contains(ConnectivityResult.none);
 
-      if (!hasInternet.value && isActuallyOnline) {
+      if (!hasInternet.value && isConnected) {
         Utils().toastMessage("Your internet connection has been restored");
       }
-
-      hasInternet.value = isActuallyOnline;
+      hasInternet.value = isConnected;
     });
   }
 
-static Future<bool> isConnectedToInternet() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } catch (_) {
-      return false;
-    }
+  static Future<bool> isConnectedToInternet() async {
+    final results = await Connectivity().checkConnectivity();
+    return results.isNotEmpty && !results.contains(ConnectivityResult.none);
   }
 
-static Future<bool> checkAndShowNoInternetDialogIfOffline() async {
-    final bool online = await isConnectedToInternet();
-    if (!online) {
+  static Future<bool> checkAndShowNoInternetDialogIfOffline() async {
+    final bool hasInternet = await Utils.isConnectedToInternet();
+    if (!hasInternet) {
       Get.dialog(const NoInternetDialog(), barrierDismissible: false);
     }
-    return online;
+    return hasInternet;
   }
 
+  // static Future<void> playCorrectSound() async {
+  //   await _player.stop();
+  //   await _player.play(AssetSource('sounds/correctanswer.mp3'));
+  // }
+  //
+  // static Future<void> playWrongSound() async {
+  //   await _player.stop();
+  //   await _player.play(AssetSource('sounds/wronganswer.mp3'));
+  // }
 
+  // It's good practice to ensure resources are disposed when no longer needed.
+  // You might call this in a dispose method of your stateful widget or similar.
   static Future<void> playCorrectSound() async {
+    // You can stop the player if it's currently playing something else
     await _player.stop();
-    await _player.play(AssetSource('sounds/correctanswer.mp3'));
-  }
 
+    // Set the audio source from an asset
+    await _player.setAudioSource(
+      AudioSource.asset('sounds/correctanswer.mp3'),
+    );
+
+    // Play the audio
+    await _player.play();
+  }
   static Future<void> playWrongSound() async {
     await _player.stop();
-    await _player.play(AssetSource('sounds/wronganswer.mp3'));
+    await _player.setAudioSource(
+      AudioSource.asset('sounds/wronganswer.mp3'),
+    );
+    await _player.play();
   }
-   
 
 }

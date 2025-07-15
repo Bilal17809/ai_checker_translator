@@ -1,10 +1,10 @@
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
-import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translator/translator.dart';
 
@@ -15,8 +15,10 @@ class TranslationController extends GetxController {
   RxString translatedText = "".obs;
   RxBool isListening = false.obs;
   RxBool isLoading = false.obs;
-  final pitch = 0.5.obs;
-  final speed = 0.5.obs;
+  final pitch = 1.0.obs; // Default to a higher pitch
+  final speed = 1.0.obs; // Default to a slightly faster speed
+  // final pitch = 0.3.obs;
+  // final speed = 0.3.obs;
   final isSpeechPlaying = false.obs;
   RxBool hasInternet = true.obs;
 
@@ -183,23 +185,55 @@ class TranslationController extends GetxController {
     }
   }
 
+  final AudioPlayer _audioPlayer = AudioPlayer();
   Future<void> speakText() async {
-    try {
-      await flutterTts.stop();
-      await flutterTts.setEngine('com.google.android.tts');
-      String selectedLanguageCode =
-          languageCodes[selectedLanguage2.value] ?? 'en-US';
-      await flutterTts.setLanguage(selectedLanguageCode);
-      await flutterTts.setPitch(pitch.value);
-      await flutterTts.setSpeechRate(speed.value);
+    final text = translatedText.value.trim();
+    if (text.isEmpty) return;
 
-      if (translatedText.value.isNotEmpty) {
-        await flutterTts.speak(translatedText.value);
+    final targetLangCode = languageCodes[selectedLanguage2.value] ?? 'es'; // Default to Spanish
+    final encodedText = Uri.encodeComponent(text);
+
+    // Google TTS API URL
+    final url = 'https://translate.google.com/translate_tts?ie=UTF-8'
+        '&client=tw-ob'
+        '&q=$encodedText'
+        '&tl=$targetLangCode'
+        '&ttsspeed=${speed.value}'
+        '&pitch=${pitch.value}';
+        // '&total=1&idx=0&textlen=${text.length}';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // If the request is successful, play the audio
+        await _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(url)));
+        _audioPlayer.play();
+      } else {
+        print('Failed to load TTS audio');
       }
     } catch (e) {
-      Utils().toastMessage("Error: ${e.toString()}");
+      print('Error in fetching TTS audio: $e');
     }
   }
+
+  // Future<void> speakText() async {
+  //   try {
+  //     await flutterTts.stop();
+  //     await flutterTts.setEngine('com.google.android.tts');
+  //     String selectedLanguageCode =
+  //         languageCodes[selectedLanguage2.value] ?? 'en-US';
+  //     await flutterTts.setLanguage(selectedLanguageCode);
+  //     await flutterTts.setPitch(pitch.value);
+  //     await flutterTts.setSpeechRate(speed.value);
+  //
+  //     if (translatedText.value.isNotEmpty) {
+  //       await flutterTts.speak(translatedText.value);
+  //     }
+  //   } catch (e) {
+  //     Utils().toastMessage("Error: ${e.toString()}");
+  //   }
+  // }
 
   Future<void> handleUserActionTranslate(String text) async {
 
@@ -239,7 +273,7 @@ Future<void> translate(String text) async {
       translatedText.value = result.text;
       addToHistory(text, result.text);
 
-   
+
       Future.delayed(const Duration(milliseconds: 20), () {
         speakText();
       });
@@ -288,7 +322,7 @@ Future<void> translate(String text) async {
     final tempText = controller.text;
     controller.text = translatedText.value;
     translatedText.value = tempText;
-   
+
   }
 
   Future<void> saveToPrefs() async {
