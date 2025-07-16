@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ai_checker_translator/core/theme/app_styles.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
@@ -104,6 +106,7 @@ class TranslationHistoryWidget extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               if (showFavouriteIcon)
+                                // if(Platform.io)
                                 Obx(
                                   () => IconButton(
                                     onPressed: () {
@@ -131,36 +134,17 @@ class TranslationHistoryWidget extends StatelessWidget {
                                   ),
                                 ),
                               IconButton(
-                                onPressed: () {
-                                  String textToSpeak = '';
-
-                                  // Determine the text to speak based on your existing logic
-                                  if (overrideSpeakAndCopy) {
-                                    final lines = targetText.split('\n');
-                                    textToSpeak = lines.length > 1
-                                        ? lines.sublist(1).join('\n').trim()
-                                        : targetText;
-                                  } else {
-                                    final translatedLines = targetText.split('\n');
-                                    textToSpeak = translatedLines.length > 1
-                                        ? translatedLines.sublist(1).join('\n').trim() // trim here
-                                        : targetText.trim(); // trim here
-                                  }
-
-                                  // Assign the determined text to your translatedText ValueNotifier
-                                  // This is crucial because your speakText() function reads from translatedText.value
-                                  controller.translatedText.value = textToSpeak;
-
-                                  // Call your custom speakText function
-                                  if (textToSpeak.isNotEmpty) {
-                                    controller.speakText();
-                                  }
-                                },
+                                onPressed:
+                                    () => controller.speakFromHistoryCard(
+                                      targetText,
+                                    ),
                                 icon: const Icon(
                                   Icons.volume_up,
                                   color: kMintGreen,
                                 ),
                               ),
+
+
                               // IconButton(
                               //   onPressed: () {
                               //     if (overrideSpeakAndCopy) {

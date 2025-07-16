@@ -1,7 +1,6 @@
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/common_widgets/life_cycle_mixin.dart';
-import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/widgets/translator_button.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +28,13 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
     controller.flutterTts.stop();
     controller.controller.clear();
     FocusScope.of(context).unfocus();
+  }
+
+  @override
+  void dispose() {
+    controller.audioPlayer.stop();
+    // controller.flutterTts.stop();
+    super.dispose();
   }
 
   @override
@@ -70,10 +76,11 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
                         textColor: Colors.teal,
                         icons: [Icons.copy, Icons.close],
                         onIconTaps: [
-                          () => controller.audioPlayer.stop(),
                           () => controller.copyTextEditingControllerText(),
-                          () => controller.clearData(),
-                          
+                          () {
+                            // controller.audioPlayer.stop();
+                            controller.clearData();
+                          } 
                         ],
                       ),
                     ),
@@ -101,8 +108,6 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
                               final inputText = controller.controller.text;
                               if (inputText.isNotEmpty) {
                                 controller.translate(inputText);
-                                controller.onTranslateButtonPressed();
-                                controller.speakText();
                                 FocusScope.of(context).unfocus();
                               } else {
                                 FocusScope.of(context).unfocus();
@@ -132,7 +137,7 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
                     showOnlyFavourites: false,
                     deleteFromFavouritesOnly: false,
                     overrideSpeakAndCopy: false,
-                    showSourceText: false, // ✅ source hidden
+                    showSourceText: false,
                   ),
                 ),
               ),

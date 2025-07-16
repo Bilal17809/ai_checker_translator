@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
+import 'package:ai_checker_translator/presentations/ai_translator/widgets/VoiceTranslatorDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -6,9 +9,15 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:translator/translator.dart';
 
 class TranslationController extends GetxController {
+
+
+  final SpeechToText _speech = SpeechToText();
+
+  final RxString recognizedText = ''.obs;
 
   RxString selectedLanguage1 = "English".obs;
   RxString selectedLanguage2 = "Spanish".obs;
@@ -65,7 +74,6 @@ class TranslationController extends GetxController {
     'Thai': 'th',
     'Indonesian': 'id',
     'Tagalog': 'tl',
-    'Hebrew': 'he',
     'Swedish': 'sv',
     'Norwegian': 'no',
     'Danish': 'da',
@@ -114,7 +122,6 @@ class TranslationController extends GetxController {
     'Greek': 'GR',
     'Gujarati': 'IN',
     'Haitian Creole': 'HT',
-    'Hebrew': 'IL',
     'Hindi': 'IN',
     'Hungarian': 'HU',
     'Icelandic': 'IS',
@@ -158,6 +165,7 @@ class TranslationController extends GetxController {
     'Vietnamese': 'VN',
     'Welsh': 'GB',
     'Yiddish': 'IL',
+  
   };
 
   final List<String> _rtlLanguages = ['ar', 'he', 'ur', 'fa'];
@@ -185,41 +193,111 @@ class TranslationController extends GetxController {
     }
   }
 
+
+
+  //for ios
+  Future<void> startSpeechToTex(String languageISO) async {
+    try {
+      recognizedText.value = '';
+
+      // ✅ Show custom dialog (you can conditionally restrict to iOS later)
+      showDialog(
+        context: Get.context!,
+        barrierDismissible: false,
+        builder:
+            (_) => IOSVoiceDialog(
+              isListening: isListening,
+              recognizedText: recognizedText,
+              onCancel: () {
+                _speech.stop();
+                isListening.value = false;
+                Navigator.of(Get.context!).pop();
+              },
+              onRetry: () async {
+                if (_speech.isListening) {
+                  await _speech.stop();
+                }
+                isListening.value = false;
+                await Future.delayed(const Duration(milliseconds: 300));
+                startSpeechToTex(languageISO); // 🔁 retry mic
+              },
+            ),
+      );
+
+      final isAvailable = await _speech.initialize(
+        onStatus: (status) {
+          print("Speech status: $status");
+          if (status == 'done' || status == 'notListening') {
+            isListening.value = false;
+          }
+        },
+        onError: (error) {
+          print("Speech error: ${error.errorMsg}");
+          isListening.value = false;
+        },
+      );
+
+      if (isAvailable) {
+        isListening.value = true;
+
+        await _speech.listen(
+          localeId: languageISO, // e.g. 'en_US', 'ur_PK'
+          listenMode: ListenMode.confirmation,
+          partialResults: false,
+          onResult: (result) async {
+            final spoken = result.recognizedWords.trim();
+            if (spoken.isNotEmpty) {
+              recognizedText.value = spoken;
+              controller.text = spoken;
+              await handleUserActionTranslate(spoken);
+              isListening.value = false;
+            }
+          },
+        );
+      } else {
+        print("Speech not available");
+        isListening.value = false;
+      }
+    } catch (e) {
+      print("Speech exception: $e");
+      isListening.value = false;
+    }
+  }
+
+  //...................................
   void stopTTS() {
     audioPlayer.stop();
   }
 
   final AudioPlayer audioPlayer = AudioPlayer();
-  Future<void> speakText() async {
+
+Future<void> speakText({String? langCodeOverride}) async {
     final text = translatedText.value.trim();
     if (text.isEmpty) return;
 
-    final targetLangCode = languageCodes[selectedLanguage2.value] ?? 'es'; // Default to Spanish
+    final langCode =
+        langCodeOverride ?? languageCodes[selectedLanguage2.value] ?? 'es'; 
+
     final encodedText = Uri.encodeComponent(text);
 
-    // Google TTS API URL
-    final url = 'https://translate.google.com/translate_tts?ie=UTF-8'
+    final url =
+        'https://translate.google.com/translate_tts?ie=UTF-8'
         '&client=tw-ob'
         '&q=$encodedText'
-        '&tl=$targetLangCode'
+        '&tl=$langCode'
         '&ttsspeed=${speed.value}'
         '&pitch=${pitch.value}';
-        // '&total=1&idx=0&textlen=${text.length}';
 
     try {
-      final response = await http.get(Uri.parse(url));
-
-      if (response.statusCode == 200) {
-        // If the request is successful, play the audio
-        await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(url)));
-        audioPlayer.play();
-      } else {
-        print('Failed to load TTS audio');
-      }
+      await audioPlayer.stop();
+      await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(url)));
+      await audioPlayer.play();
     } catch (e) {
-      print('Error in fetching TTS audio: $e');
+      print('❌ Error in fetching TTS audio: $e');
     }
   }
+
+
 
   // Future<void> speakText() async {
   //   try {
@@ -291,6 +369,7 @@ Future<void> translate(String text) async {
 
 
   void clearData() {
+    audioPlayer.stop();
     controller.clear();
     translatedText.value = "";
     speakText();
@@ -326,7 +405,8 @@ Future<void> translate(String text) async {
     final tempText = controller.text;
     controller.text = translatedText.value;
     translatedText.value = tempText;
-
+    audioPlayer.stop();
+    clearData();
   }
 
   Future<void> saveToPrefs() async {
@@ -357,6 +437,7 @@ Future<void> translate(String text) async {
       'id': DateTime.now().millisecondsSinceEpoch.toString(),
       'source': "$sourceFlag $sourceLang\n$original",
       'target': "$targetFlag $targetLang\n$translated",
+      'targetLang': targetLang, 
     };
 
     translationHistory.insert(0, entry);
@@ -480,5 +561,28 @@ void deleteHistoryItem(int index) async {
     audioPlayer.stop();
     super.onClose();
   }
+
+  @override
+  void dispose() {
+    audioPlayer.stop();
+    audioPlayer.dispose();
+    super.dispose();
+  }
+
+  void speakFromHistoryCard(String targetText) {
+    final lines = targetText.split('\n');
+    final langLine = lines.isNotEmpty ? lines.first : '';
+    final actualText =
+        lines.length > 1 ? lines.sublist(1).join('\n').trim() : targetText;
+    final languageName =
+        langLine.replaceAll(RegExp(r'[^\u0600-\u06FF\w\s]'), '').trim();
+    final langCode =
+        languageCodes[languageName] ?? languageCodes[selectedLanguage2.value]!;
+    translatedText.value = actualText;
+    if (actualText.isNotEmpty) {
+      speakText(langCodeOverride: langCode);
+    }
+  }
+
 
 }

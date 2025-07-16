@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 
-import '../controller/translator_controller.dart';
-
 class LanguageWidget extends StatelessWidget {
   const LanguageWidget({super.key});
 
@@ -21,7 +19,7 @@ class LanguageWidget extends StatelessWidget {
             context: context,
             selectedLang: controller.selectedLanguage1.value,
             onTap: () {
-              controller.flutterTts.stop();
+              controller.audioPlayer.stop();
               _showLanguagePicker(
                 context,
                 controller.languageCodes.keys.toList(),
@@ -47,7 +45,7 @@ class LanguageWidget extends StatelessWidget {
             context: context,
             selectedLang: controller.selectedLanguage2.value,
             onTap: () {
-              controller.flutterTts.stop();
+              controller.audioPlayer.stop();
               _showLanguagePicker(
                 context,
                 controller.languageCodes.keys.toList(),

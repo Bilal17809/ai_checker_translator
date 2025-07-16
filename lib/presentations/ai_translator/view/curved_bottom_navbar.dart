@@ -61,7 +61,8 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
             onTap: (index) async {
               if (index == 0) {
                 controller.translationHistory.clear();
-                controller.flutterTts.stop();
+                controller.audioPlayer.stop();
+
                 // Utils().toastMessage("History cleared!");
                 return;
               }
@@ -78,11 +79,14 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
                 }
 
                 controller.clearData();
+                // controller.audioPlayer.stop();
 
                 final selectedLanguageCode =
                     '${controller.languageCodes[controller.selectedLanguage1.value]}-US';
 
-                controller.startSpeechToText(selectedLanguageCode);
+                controller.startSpeechToTex('en_US');
+
+                // controller.startSpeechToText(selectedLanguageCode);
               }
               setState(() {
                 _page = index;
