@@ -1,6 +1,8 @@
+import 'dart:io';
 
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
+import 'package:ai_checker_translator/core/common_widgets/voicedialog_for_ios.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
@@ -9,7 +11,6 @@ import 'package:ai_checker_translator/presentations/ai_translator/view/ai_transl
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 
 class AiTranslatorBottomNav extends StatefulWidget {
   const AiTranslatorBottomNav({super.key});
@@ -24,7 +25,7 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
   final List<Widget> _pages = [
     const Center(child: Text("Share Page")),
     AiTranslatorPage(),
-    AiTranslationHistoryScreen()
+    AiTranslationHistoryScreen(),
   ];
   final controller = Get.put(TranslationController());
 
@@ -32,7 +33,6 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-       
         Get.back();
         FocusScope.of(context).unfocus();
         controller.controller.clear();
@@ -84,15 +84,28 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
                 final selectedLanguageCode =
                     '${controller.languageCodes[controller.selectedLanguage1.value]}-US';
 
-                controller.startSpeechToTex('en_US');
+                // controller.startSpeechToTex('en_US');
 
-                // controller.startSpeechToText(selectedLanguageCode);
+                if (Platform.isAndroid) {
+                  controller.startSpeechToText(selectedLanguageCode);
+                } else {
+                  VoiceDialogHelper().showVoiceInputDialog(
+                    context: context,
+                    onResult: (detectedText) {
+                      controller.controller.value = TextEditingValue(
+                        text: detectedText,
+                      );
+                      controller.translate(detectedText);
+                    },
+                    languageCode: selectedLanguageCode,
+                  );
+                }
               }
+
               setState(() {
                 _page = index;
               });
             },
-        
           ),
         ),
       ),

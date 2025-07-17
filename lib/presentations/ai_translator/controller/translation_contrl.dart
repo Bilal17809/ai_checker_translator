@@ -1,7 +1,5 @@
-import 'dart:io';
 
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/widgets/VoiceTranslatorDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -17,7 +15,10 @@ class TranslationController extends GetxController {
 
   final SpeechToText _speech = SpeechToText();
 
-  final RxString recognizedText = ''.obs;
+
+  late final AudioPlayer audioPlayer;
+
+  // final RxString recognizedText = ''.obs;
 
   RxString selectedLanguage1 = "English".obs;
   RxString selectedLanguage2 = "Spanish".obs;
@@ -42,6 +43,7 @@ class TranslationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    audioPlayer = AudioPlayer();
     Utils.monitorInternet();
     Utils.isConnectedToInternet();
     loadHistory();
@@ -195,89 +197,111 @@ class TranslationController extends GetxController {
 
 
 
+
+
+
+
+
   //for ios
-  Future<void> startSpeechToTex(String languageISO) async {
-    try {
-      recognizedText.value = '';
+  // Future<void> startSpeechToTex(String languageISO) async {
+  //   try {
+  //     recognizedText.value = '';
 
-      // ✅ Show custom dialog (you can conditionally restrict to iOS later)
-      showDialog(
-        context: Get.context!,
-        barrierDismissible: false,
-        builder:
-            (_) => IOSVoiceDialog(
-              isListening: isListening,
-              recognizedText: recognizedText,
-              onCancel: () {
-                _speech.stop();
-                isListening.value = false;
-                Navigator.of(Get.context!).pop();
-              },
-              onRetry: () async {
-                if (_speech.isListening) {
-                  await _speech.stop();
-                }
-                isListening.value = false;
-                await Future.delayed(const Duration(milliseconds: 300));
-                startSpeechToTex(languageISO); // 🔁 retry mic
-              },
-            ),
-      );
+  //     // Show custom dialog
+  //     bool dialogOpen = true;
+  //     showDialog(
+  //       context: Get.context!,
+  //       barrierDismissible: false,
+  //       builder:
+  //           (_) => IOSVoiceDialog(
+  //             isListening: isListening,
+  //             recognizedText: recognizedText,
+  //             onCancel: () {
+  //               _speech.stop();
+  //               isListening.value = false;
+  //               dialogOpen = false;
+  //               if (Get.isDialogOpen!) Get.back();
+  //             },
+  //             onRetry: () async {
+  //               await _speech.stop();
+  //               isListening.value = false;
+  //               recognizedText.value = '';
+  //               await Future.delayed(const Duration(milliseconds: 300));
+  //               startSpeechToTex(languageISO);
+  //             },
+  //           ),
+  //     );
 
-      final isAvailable = await _speech.initialize(
-        onStatus: (status) {
-          print("Speech status: $status");
-          if (status == 'done' || status == 'notListening') {
-            isListening.value = false;
-          }
-        },
-        onError: (error) {
-          print("Speech error: ${error.errorMsg}");
-          isListening.value = false;
-        },
-      );
+  //     final isAvailable = await _speech.initialize(
+  //       onStatus: (status) {
+  //         print("Speech status: $status");
+  //         if (status == 'done' || status == 'notListening') {
+  //           isListening.value = false;
+  //         }
+  //       },
+  //       onError: (error) {
+  //         print("Speech error: ${error.errorMsg}");
+  //         isListening.value = false;
+  //         if (dialogOpen && Get.isDialogOpen!) Get.back();
+  //       },
+  //     );
 
-      if (isAvailable) {
-        isListening.value = true;
+  //     if (isAvailable) {
+  //       isListening.value = true;
 
-        await _speech.listen(
-          localeId: languageISO, // e.g. 'en_US', 'ur_PK'
-          listenMode: ListenMode.confirmation,
-          partialResults: false,
-          onResult: (result) async {
-            final spoken = result.recognizedWords.trim();
-            if (spoken.isNotEmpty) {
-              recognizedText.value = spoken;
-              controller.text = spoken;
-              await handleUserActionTranslate(spoken);
-              isListening.value = false;
-            }
-          },
-        );
-      } else {
-        print("Speech not available");
-        isListening.value = false;
-      }
-    } catch (e) {
-      print("Speech exception: $e");
-      isListening.value = false;
-    }
-  }
+  //       await _speech.listen(
+  //         localeId: languageISO,
+  //         partialResults: true,
+  //         onResult: (result) async {
+  //           // Update text in real-time
+  //           recognizedText.value = result.recognizedWords;
 
+  //           // Check if final result
+  //           if (result.finalResult) {
+  //           final spoken = result.recognizedWords.trim();
+  //             if (spoken.isNotEmpty) {
+  //             controller.text = spoken;
+  //             await handleUserActionTranslate(spoken);
+  //             isListening.value = false;
+              
+  //               // Auto-close after processing with delay
+  //               Future.delayed(const Duration(milliseconds: 1000), () {
+  //                 if (dialogOpen && Get.isDialogOpen!) {
+  //                   Get.back();
+  //                   dialogOpen = false;
+  //                 }
+  //               });
+  //             }
+  //           }
+  //         },
+  //       );
+  //     } else {
+  //       print("Speech not available");
+  //       isListening.value = false;
+  //       if (dialogOpen && Get.isDialogOpen!) {
+  //         Get.back();
+  //         dialogOpen = false;
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print("Speech exception: $e");
+  //     isListening.value = false;
+  //     if (Get.isDialogOpen!) Get.back();
+  //   }
+  // }
   //...................................
   void stopTTS() {
     audioPlayer.stop();
   }
 
-  final AudioPlayer audioPlayer = AudioPlayer();
+
 
 Future<void> speakText({String? langCodeOverride}) async {
     final text = translatedText.value.trim();
     if (text.isEmpty) return;
 
     final langCode =
-        langCodeOverride ?? languageCodes[selectedLanguage2.value] ?? 'es'; 
-
+        langCodeOverride ?? languageCodes[selectedLanguage2.value] ?? 'es';
     final encodedText = Uri.encodeComponent(text);
 
     final url =
@@ -289,7 +313,11 @@ Future<void> speakText({String? langCodeOverride}) async {
         '&pitch=${pitch.value}';
 
     try {
+      if (audioPlayer.playing) {
       await audioPlayer.stop();
+        await Future.delayed(Duration(milliseconds: 100));
+      }
+
       await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(url)));
       await audioPlayer.play();
     } catch (e) {
@@ -332,6 +360,9 @@ Future<void> speakText({String? langCodeOverride}) async {
       return;
     }
   }
+
+
+  
 Future<void> translate(String text) async {
     if (text.isEmpty) {
       translatedText.value = "Please enter text to translate.";

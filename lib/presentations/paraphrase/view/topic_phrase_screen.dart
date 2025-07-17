@@ -193,8 +193,8 @@ class _TopicPhrasesScreenState extends State<TopicPhrasesScreen>
                                     currentPage == phraseList.length - 1
                                         ? null
                                         : () {
-                                          // controller.flutterTts.stop();
-                                          controller.isSpeaking.value = false;
+                                          controller.flutterTts.stop();
+                                          // controller.isSpeaking.value = false;
                                           controller.goToPage(currentPage + 1);
                                         },
                               ),

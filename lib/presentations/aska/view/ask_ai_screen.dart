@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/back_to_home_wrapper.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/keyboard_dismiss_wrapper.dart';
 import 'package:ai_checker_translator/core/common_widgets/life_cycle_mixin.dart';
+import 'package:ai_checker_translator/core/common_widgets/voicedialog_for_ios.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_theme.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/animation_controller.dart';
@@ -94,9 +97,25 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                               footerButtons: [
                                 IconButton(
                                   onPressed:
-                                      () => controller.startMicInput(
+                                      () {
+                                    if (Platform.isAndroid) {
+                                      controller.startMicInput(
                                         languageISO: 'en-US',
-                                      ),
+                                      );
+                                    } else {
+                                      VoiceDialogHelper().showVoiceInputDialog(
+                                        context: context,
+                                        languageCode: 'en-US',
+                                        onResult: (detectedText) {
+                                          controller
+                                              .promptController
+                                              .value = TextEditingValue(
+                                            text: detectedText,
+                                          );
+                                        },
+                                      );
+                                    }
+                                  },
                                   icon: const Icon(
                                     Icons.mic,
                                     size: 20,
