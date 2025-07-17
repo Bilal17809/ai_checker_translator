@@ -15,6 +15,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
 import '../../aska/widgets/text_generated_widget.dart';
 
 class AiDictionaryPage extends StatefulWidget {
@@ -30,7 +32,11 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
   final GeminiAiCorrectionController controller =
       Get.find<GeminiAiCorrectionController>();
 
-      
+  @override
+  void initState() {
+        Get.find<InterstitialAdController>().checkAndShowAd();
+        super.initState();
+  }
 
   @override
   void onAppPause() {
@@ -229,9 +235,16 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
                 ),
               ],
             ),
+            bottomNavigationBar:
+            Get.find<InterstitialAdController>().isAdReady
+                ? SizedBox()
+                : Obx(() {
+              return Get.find<BannerAdController>().getBannerAdWidget('ad1');
+            }),
           ),
         ),
       ),
+
     );
   }
 }

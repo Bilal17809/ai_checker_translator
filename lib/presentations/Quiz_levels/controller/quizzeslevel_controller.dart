@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../../ads_manager/interstitial_ads.dart';
 import '../../../data/models/categories_model.dart';
 import '../../../data/services/quizzes_repo.dart';
 
@@ -16,6 +17,7 @@ class QuizzeslevelController extends GetxController {
 
   @override
   void onInit() {
+    Get.find<InterstitialAdController>().checkAndShowAd();
     super.onInit();
     // fetchLevelsByCategory will be called after category selection
   }

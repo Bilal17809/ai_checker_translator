@@ -2,8 +2,11 @@ import 'dart:async';
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:get/get.dart';
 
+import '../../../ads_manager/splash_interstitial.dart';
+
 class SplashController extends GetxController {
-  
+  final SplashInterstitialAdController splashAd = Get.put(SplashInterstitialAdController());
+
   RxBool isLoading = true.obs;
   RxBool showButton = false.obs;
   RxBool initializingControllers = false.obs;
@@ -12,6 +15,7 @@ class SplashController extends GetxController {
 
   @override
   void onInit() {
+    splashAd.loadInterstitialAd();
     super.onInit();
     startAnimations();
   }
@@ -33,13 +37,14 @@ class SplashController extends GetxController {
   Future<void> initializeAppControllers() async {
     if (initializingControllers.value) return;
     initializingControllers.value = true;
-
-    await Future.delayed(const Duration(seconds: 2)); // Simulate initialization
-    
+    await Future.delayed(const Duration(seconds: 2));
     navigateToHome();
   }
 
-  void navigateToHome() {
+  void navigateToHome() async{
+    // if (splashAd.isAdReady) {
+    //   await splashAd.showInterstitialAd();
+    // }
     Get.offNamed(RoutesName.bottomNevBar);
   }
 

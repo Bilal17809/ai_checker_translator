@@ -1,3 +1,4 @@
+import 'package:ai_checker_translator/ads_manager/native_ads.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_styles.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
@@ -7,6 +8,8 @@ import 'package:ai_checker_translator/presentations/quizzes_category_screen/mode
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
 import '../../../core/common_widgets/app_core_colors.dart';
 import '../../../core/common_widgets/icon_buttons.dart';
 import '../../../core/constant/constant.dart';
@@ -28,6 +31,7 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
   @override
   void initState() {
     super.initState();
+    Get.find<InterstitialAdController>().showInterstitialAd();
     category = Get.arguments as GrammarCategoryModel;
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -78,25 +82,6 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-//                     Align(
-                    //                       alignment: Alignment.centerLeft,
-                    //                       child: BackButton(
-                    //                         onPressed: () {
-                    //                           try {
-                    //                             if (Navigator.canPop(context)) {
-                    //                               Navigator.pop(context);
-                    //                             } else {
-                    //                               Get.back();
-                    //                             }
-                    //                           } catch (e) {
-                    //                             print("Back navigation failed: $e");
-                    //                             Get.back(); // fallback
-                    //                           }
-                    //                         },
-                    //                         color: kWhite,
-                    // ),
-
-                    // ),
                     Center(
                       child: Text(
                         categoryTitle,
@@ -132,174 +117,189 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                 );
               }
 
-              return ListView.builder(
-                padding: EdgeInsets.only(top: 120, left: 10, right: 10),
-                itemCount: quizzeslevelController.filteredCategoriesList.length,
-                itemBuilder: (context, index) {
-                  final item =
-                      quizzeslevelController.filteredCategoriesList[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: kBodyHp,
-                      vertical: 10,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: GestureDetector(
-                        onTap: () async {
-                          controller.resetQuiz();
-                          final catId = item.catID;
-                          if (catId != null) {
-                            await controller.fetchQuizzesByCategoryId(catId);
-                            Get.toNamed(
-                              '/quizzes_scren',
-                              arguments: {
-                                'title': item.catName,
-                                'category': category.title.trim(),
-                                'catId': catId,
-                              },
-                            );
-                          }
-                        },
-                        child: Container(
-                          decoration: roundedDecoration.copyWith(
-                            color: Color(0xFF388E3C).withOpacity(0.9),
-                            //const Color(0xFF4CAF50).withOpacity(0.9),
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      padding: EdgeInsets.only(top: 120, left: 10, right: 10),
+                      itemCount: quizzeslevelController.filteredCategoriesList.length,
+                      itemBuilder: (context, index) {
+                        final item =
+                            quizzeslevelController.filteredCategoriesList[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: kBodyHp,
+                            vertical: 10,
                           ),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                top: -30,
-                                left: -40,
-                                child: Container(
-                                  width: 80,
-                                  height: 80,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: RadialGradient(
-                                      colors: [
-                                        const Color(
-                                          0xff00AB3F,
-                                        ).withOpacity(0.5),
-                                        Colors.transparent,
-                                      ],
-                                      radius: 0.6,
-                                    ),
-                                  ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: GestureDetector(
+                              onTap: () async {
+                                controller.resetQuiz();
+                                final catId = item.catID;
+                                if (catId != null) {
+                                  await controller.fetchQuizzesByCategoryId(catId);
+                                  Get.toNamed(
+                                    '/quizzes_scren',
+                                    arguments: {
+                                      'title': item.catName,
+                                      'category': category.title.trim(),
+                                      'catId': catId,
+                                    },
+                                  );
+                                }
+                              },
+                              child: Container(
+                                decoration: roundedDecoration.copyWith(
+                                  color: Color(0xFF388E3C).withOpacity(0.9),
+                                  //const Color(0xFF4CAF50).withOpacity(0.9),
                                 ),
-                              ),
-                              // Background circle 2
-                              Positioned(
-                                top: 70,
-                                right: 145,
-                                child: Container(
-                                  width: 27,
-                                  height: 27,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color(0xffFFBB00).withOpacity(0.5),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                top: 70,
-                                right: 130,
-                                child: Container(
-                                  width: 27,
-                                  height: 27,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color(0xffFF7F50).withOpacity(0.5),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                top: 70,
-                                right: 110,
-                                child: Container(
-                                  width: 27,
-                                  height: 27,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color(0xFF2E7D32).withOpacity(0.5),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: -20,
-                                right: -30,
-                                child: Container(
-                                  width: 100,
-                                  height: 100,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: RadialGradient(
-                                      colors: [
-                                        const Color(
-                                          0xFF66BB6A,
-                                        ).withOpacity(0.4),
-                                        Colors.transparent,
-                                      ],
-                                      radius: 0.5,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                top: 2,
-                                right: 12,
-                                bottom: 2,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.asset(
-                                    levelImages[index % levelImages.length]
-                                        .path,
-                                    width: 110,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: kBodyHp,
-                                  vertical: kBodyHp,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
+                                child: Stack(
                                   children: [
-                                    Text(
-                                      item.catName ?? '',
-                                      style: context.textTheme.titleSmall
-                                          ?.copyWith(color: kWhite),
+                                    Positioned(
+                                      top: -30,
+                                      left: -40,
+                                      child: Container(
+                                        width: 80,
+                                        height: 80,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: RadialGradient(
+                                            colors: [
+                                              const Color(
+                                                0xff00AB3F,
+                                              ).withOpacity(0.5),
+                                              Colors.transparent,
+                                            ],
+                                            radius: 0.6,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    const SizedBox(height: 12),
-                                    _Progress(
-                                      levelId: item.catID ?? 0,
-                                      totalQuestions: 10,
+                                    // Background circle 2
+                                    Positioned(
+                                      top: 70,
+                                      right: 145,
+                                      child: Container(
+                                        width: 27,
+                                        height: 27,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color(0xffFFBB00).withOpacity(0.5),
+                                        ),
+                                      ),
                                     ),
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      "Total Question 10",
-                                      style: context.textTheme.bodySmall
-                                          ?.copyWith(color: kWhite),
+                                    Positioned(
+                                      top: 70,
+                                      right: 130,
+                                      child: Container(
+                                        width: 27,
+                                        height: 27,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color(0xffFF7F50).withOpacity(0.5),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 70,
+                                      right: 110,
+                                      child: Container(
+                                        width: 27,
+                                        height: 27,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color(0xFF2E7D32).withOpacity(0.5),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: -20,
+                                      right: -30,
+                                      child: Container(
+                                        width: 100,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: RadialGradient(
+                                            colors: [
+                                              const Color(
+                                                0xFF66BB6A,
+                                              ).withOpacity(0.4),
+                                              Colors.transparent,
+                                            ],
+                                            radius: 0.5,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 2,
+                                      right: 12,
+                                      bottom: 2,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.asset(
+                                          levelImages[index % levelImages.length]
+                                              .path,
+                                          width: 110,
+                                          height: 100,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: kBodyHp,
+                                        vertical: kBodyHp,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            item.catName ?? '',
+                                            style: context.textTheme.titleSmall
+                                                ?.copyWith(color: kWhite),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          _Progress(
+                                            levelId: item.catID ?? 0,
+                                            totalQuestions: 10,
+                                          ),
+                                          const SizedBox(height: 12),
+                                          Text(
+                                            "Total Question 10",
+                                            style: context.textTheme.bodySmall
+                                                ?.copyWith(color: kWhite),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  if(!Get.find<InterstitialAdController>().isAdReady)
+                  Get.find<NativeAdController>().nativeAdWidget(),
+                ],
               );
             }),
-          ],
+    ],
         ),
+        // bottomNavigationBar:
+        // Get.find<InterstitialAdController>().isAdReady
+        //     ? SizedBox()
+        //     : Obx(() {
+        //   return Get.find<BannerAdController>().getBannerAdWidget('ad6');
+        // }),
       ),
     );
   }

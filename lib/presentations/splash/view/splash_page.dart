@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../../ads_manager/splash_interstitial.dart';
+
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -19,14 +21,6 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
 
   final SplashController controller = Get.put(SplashController());
-  @override
-  void initState() {
-    super.initState();
-    // Timer(const Duration(seconds: 3), () {
-    //   Get.offNamed(RoutesName.bottomNevBar);
-    // });
-  }
-
   @override
   Widget build(BuildContext context) {
     final hiegt = MediaQuery.of(context).size.height;
@@ -96,7 +90,9 @@ class _SplashPageState extends State<SplashPage> {
                           height: hiegt * 0.06,
                           width: width * 0.4,
                           child: ElevatedButton(
-                            onPressed: controller.initializeAppControllers,
+                            onPressed: () async{
+                              controller.initializeAppControllers();
+                            },
                             style: AppTheme.elevatedButtonStyle,
                             child: FittedBox(
                               fit: BoxFit.scaleDown,

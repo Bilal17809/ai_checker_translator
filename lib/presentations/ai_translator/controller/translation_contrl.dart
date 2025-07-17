@@ -25,10 +25,8 @@ class TranslationController extends GetxController {
   RxString translatedText = "".obs;
   RxBool isListening = false.obs;
   RxBool isLoading = false.obs;
-  final pitch = 1.0.obs; // Default to a higher pitch
-  final speed = 1.0.obs; // Default to a slightly faster speed
-  // final pitch = 0.3.obs;
-  // final speed = 0.3.obs;
+  final pitch = 1.0.obs;
+  final speed = 1.0.obs;
   final isSpeechPlaying = false.obs;
   RxBool hasInternet = true.obs;
 
@@ -177,7 +175,7 @@ class TranslationController extends GetxController {
   }
 
   static const MethodChannel _methodChannel =
-  MethodChannel('com.example.getx_practice_app/speech_Text');
+  MethodChannel('com.modernschool.aigrammar.learnenglish/speech_Text');
 
 
 
@@ -262,25 +260,6 @@ Future<void> speakText({String? langCodeOverride}) async {
 
     return chunks;
   }
-
-
-  // Future<void> speakText() async {
-  //   try {
-  //     await flutterTts.stop();
-  //     await flutterTts.setEngine('com.google.android.tts');
-  //     String selectedLanguageCode =
-  //         languageCodes[selectedLanguage2.value] ?? 'en-US';
-  //     await flutterTts.setLanguage(selectedLanguageCode);
-  //     await flutterTts.setPitch(pitch.value);
-  //     await flutterTts.setSpeechRate(speed.value);
-  //
-  //     if (translatedText.value.isNotEmpty) {
-  //       await flutterTts.speak(translatedText.value);
-  //     }
-  //   } catch (e) {
-  //     Utils().toastMessage("Error: ${e.toString()}");
-  //   }
-  // }
 
   Future<void> handleUserActionTranslate(String text) async {
 

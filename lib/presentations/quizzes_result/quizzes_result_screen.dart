@@ -1,3 +1,4 @@
+import 'package:ai_checker_translator/ads_manager/splash_interstitial.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
@@ -11,6 +12,9 @@ import 'package:ai_checker_translator/presentations/quizzes_result/widgets/progr
 import 'package:ai_checker_translator/presentations/quizzes_result/widgets/score_circle_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../ads_manager/banner_ads.dart';
+import '../../ads_manager/interstitial_ads.dart';
 
 class QuizResultScreen extends StatefulWidget {
   QuizResultScreen({super.key});
@@ -35,14 +39,6 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double? score = Get.arguments['score'] ?? 0.0;
-    final int correct = Get.arguments['correct'] ?? 0;
-    final int wrong = Get.arguments['wrong'] ?? 0;
-    final int total = Get.arguments['total'] ?? 1;
-    final int catId = Get.arguments['catId'] ?? 1;
-    final String title = Get.arguments['title'] ?? "";
-    final String category = Get.arguments['category'] ?? "";
-   
     return SafeArea(
       child: Scaffold(
         appBar: CommonAppBar(appBarTitle: "Result"),
@@ -126,6 +122,7 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
                   Button(
                     buttonTitle: "Retake",
                     onPressed: () async {
+                      Get.find<SplashInterstitialAdController>().showInterstitialAd();
                       detailcontroller.resetQuiz();
                       resultController.retakeQuiz(
                         catId: args.catId,
@@ -139,6 +136,7 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
                   Button(
                     buttonTitle: "Preview",
                     onPressed: () async {
+                      Get.find<SplashInterstitialAdController>().showInterstitialAd();
                       detailcontroller.isResultMode.value = true;
                       resultController.retakeQuiz(
                         catId: args.catId,
@@ -152,6 +150,13 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
             ],
           ),
         ),
+        bottomNavigationBar:
+        Get.find<InterstitialAdController>().isAdReady ||
+            Get.find<SplashInterstitialAdController>().isAdReady
+            ? SizedBox()
+            : Obx(() {
+          return Get.find<BannerAdController>().getBannerAdWidget('ad9');
+        }),
       ),
     );
   }
