@@ -1,10 +1,6 @@
 
 import 'dart:async';
-import 'package:ai_checker_translator/core/routes/routes_name.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/utils.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class VoiceDialogHelper {
@@ -74,7 +70,7 @@ class VoiceDialogHelper {
                 color: Colors.transparent,
                 child: Center(
                   child: GestureDetector(
-                    onTap: () {}, // Prevent inner tap dismiss
+                    onTap: () {}, 
                     child: AlertDialog(
                       backgroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
@@ -121,7 +117,7 @@ class VoiceDialogHelper {
                           ),
                           const SizedBox(height: 10),
                           const Text(
-                            "English (United States)", // You can also pass displayLangName
+                            "English (United States)",
                             style: TextStyle(color: Colors.grey, fontSize: 12),
                           ),
                           const SizedBox(height: 10),

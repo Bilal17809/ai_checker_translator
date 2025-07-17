@@ -1,7 +1,4 @@
-// ⬇️ Add this in controller first if not already done
-// RxInt currentPage = 0.obs;
 
-import 'package:ai_checker_translator/core/common_widgets/icon_buttons.dart';
 import 'package:ai_checker_translator/core/common_widgets/life_cycle_mixin.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/widget/phrasses_example_widget.dart';

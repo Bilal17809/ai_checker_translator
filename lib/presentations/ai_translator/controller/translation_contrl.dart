@@ -179,6 +179,8 @@ class TranslationController extends GetxController {
   static const MethodChannel _methodChannel =
   MethodChannel('com.example.getx_practice_app/speech_Text');
 
+
+
   Future<void> startSpeechToText(String languageISO) async {
     try {
       isListening.value = true;
@@ -195,101 +197,6 @@ class TranslationController extends GetxController {
     }
   }
 
-
-
-
-
-
-
-
-  //for ios
-  // Future<void> startSpeechToTex(String languageISO) async {
-  //   try {
-  //     recognizedText.value = '';
-
-  //     // Show custom dialog
-  //     bool dialogOpen = true;
-  //     showDialog(
-  //       context: Get.context!,
-  //       barrierDismissible: false,
-  //       builder:
-  //           (_) => IOSVoiceDialog(
-  //             isListening: isListening,
-  //             recognizedText: recognizedText,
-  //             onCancel: () {
-  //               _speech.stop();
-  //               isListening.value = false;
-  //               dialogOpen = false;
-  //               if (Get.isDialogOpen!) Get.back();
-  //             },
-  //             onRetry: () async {
-  //               await _speech.stop();
-  //               isListening.value = false;
-  //               recognizedText.value = '';
-  //               await Future.delayed(const Duration(milliseconds: 300));
-  //               startSpeechToTex(languageISO);
-  //             },
-  //           ),
-  //     );
-
-  //     final isAvailable = await _speech.initialize(
-  //       onStatus: (status) {
-  //         print("Speech status: $status");
-  //         if (status == 'done' || status == 'notListening') {
-  //           isListening.value = false;
-  //         }
-  //       },
-  //       onError: (error) {
-  //         print("Speech error: ${error.errorMsg}");
-  //         isListening.value = false;
-  //         if (dialogOpen && Get.isDialogOpen!) Get.back();
-  //       },
-  //     );
-
-  //     if (isAvailable) {
-  //       isListening.value = true;
-
-  //       await _speech.listen(
-  //         localeId: languageISO,
-  //         partialResults: true,
-  //         onResult: (result) async {
-  //           // Update text in real-time
-  //           recognizedText.value = result.recognizedWords;
-
-  //           // Check if final result
-  //           if (result.finalResult) {
-  //           final spoken = result.recognizedWords.trim();
-  //             if (spoken.isNotEmpty) {
-  //             controller.text = spoken;
-  //             await handleUserActionTranslate(spoken);
-  //             isListening.value = false;
-              
-  //               // Auto-close after processing with delay
-  //               Future.delayed(const Duration(milliseconds: 1000), () {
-  //                 if (dialogOpen && Get.isDialogOpen!) {
-  //                   Get.back();
-  //                   dialogOpen = false;
-  //                 }
-  //               });
-  //             }
-  //           }
-  //         },
-  //       );
-  //     } else {
-  //       print("Speech not available");
-  //       isListening.value = false;
-  //       if (dialogOpen && Get.isDialogOpen!) {
-  //         Get.back();
-  //         dialogOpen = false;
-  //       }
-  //     }
-  //   } catch (e) {
-  //     print("Speech exception: $e");
-  //     isListening.value = false;
-  //     if (Get.isDialogOpen!) Get.back();
-  //   }
-  // }
-  //...................................
   void stopTTS() {
     audioPlayer.stop();
   }
@@ -302,29 +209,59 @@ Future<void> speakText({String? langCodeOverride}) async {
 
     final langCode =
         langCodeOverride ?? languageCodes[selectedLanguage2.value] ?? 'es';
-    final encodedText = Uri.encodeComponent(text);
-
-    final url =
-        'https://translate.google.com/translate_tts?ie=UTF-8'
-        '&client=tw-ob'
-        '&q=$encodedText'
-        '&tl=$langCode'
-        '&ttsspeed=${speed.value}'
-        '&pitch=${pitch.value}';
+    const maxLength = 200;
 
     try {
       if (audioPlayer.playing) {
       await audioPlayer.stop();
-        await Future.delayed(Duration(milliseconds: 100));
+        await Future.delayed(const Duration(milliseconds: 100));
       }
 
+      final chunks =
+          text.length <= maxLength ? [text] : _splitText(text, maxLength);
+
+      for (final chunk in chunks) {
+        final url = _buildTTSUrl(chunk, langCode);
       await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(url)));
       await audioPlayer.play();
+        await audioPlayer.playerStateStream.firstWhere(
+          (state) => state.processingState == ProcessingState.completed,
+        );
+      }
     } catch (e) {
       print('❌ Error in fetching TTS audio: $e');
     }
   }
 
+  String _buildTTSUrl(String text, String langCode) {
+    final encoded = Uri.encodeComponent(text);
+    return 'https://translate.google.com/translate_tts?ie=UTF-8'
+        '&client=tw-ob'
+        '&q=$encoded'
+        '&tl=$langCode'
+        '&ttsspeed=${speed.value}'
+        '&pitch=${pitch.value}';
+  }
+
+  List<String> _splitText(String text, int maxLength) {
+    final words = text.split(' ');
+    final chunks = <String>[];
+    var buffer = StringBuffer();
+
+    for (final word in words) {
+      if ((buffer.length + word.length + 1) < maxLength) {
+        buffer.write('$word ');
+      } else {
+        chunks.add(buffer.toString().trim());
+        buffer.clear();
+        buffer.write('$word ');
+    }
+  }
+
+    if (buffer.isNotEmpty) chunks.add(buffer.toString().trim());
+
+    return chunks;
+  }
 
 
   // Future<void> speakText() async {
@@ -600,20 +537,26 @@ void deleteHistoryItem(int index) async {
     super.dispose();
   }
 
-  void speakFromHistoryCard(String targetText) {
+void speakFromHistoryCard(String targetText) {
     final lines = targetText.split('\n');
     final langLine = lines.isNotEmpty ? lines.first : '';
     final actualText =
         lines.length > 1 ? lines.sublist(1).join('\n').trim() : targetText;
+
+    // Extract language name safely
     final languageName =
         langLine.replaceAll(RegExp(r'[^\u0600-\u06FF\w\s]'), '').trim();
-    final langCode =
-        languageCodes[languageName] ?? languageCodes[selectedLanguage2.value]!;
+    final langCode = languageCodes[languageName];
+
+    // Set translated text
     translatedText.value = actualText;
+
     if (actualText.isNotEmpty) {
+      // Only pass langCode if not null
       speakText(langCodeOverride: langCode);
     }
   }
+
 
 
 }
