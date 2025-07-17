@@ -202,38 +202,56 @@ class TranslationController extends GetxController {
   }
 
 
-
 Future<void> speakText({String? langCodeOverride}) async {
     final text = translatedText.value.trim();
     if (text.isEmpty) return;
 
     final langCode =
-        langCodeOverride ?? languageCodes[selectedLanguage2.value] ?? 'es';
+        langCodeOverride ?? languageCodes[selectedLanguage2.value] ?? 'en';
     const maxLength = 200;
 
     try {
+      // Stop any ongoing playback
       if (audioPlayer.playing) {
       await audioPlayer.stop();
-        await Future.delayed(const Duration(milliseconds: 100));
+        await Future.delayed(
+          const Duration(milliseconds: 100),
+        ); // slight buffer
       }
 
+      // Split the text if too long
       final chunks =
           text.length <= maxLength ? [text] : _splitText(text, maxLength);
 
       for (final chunk in chunks) {
         final url = _buildTTSUrl(chunk, langCode);
-      await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(url)));
-      await audioPlayer.play();
+
+        try {
+          await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(url)));
+          await audioPlayer.play();
+
+          // Wait for this chunk to finish
         await audioPlayer.playerStateStream.firstWhere(
           (state) => state.processingState == ProcessingState.completed,
         );
+
+          // Optionally add delay between chunks
+          await Future.delayed(const Duration(milliseconds: 200));
+        } catch (e) {
+          print('❌ Error while playing chunk: $e');
+          break;
       }
+      }
+
+      // All chunks played, ensure player is stopped
+      await audioPlayer.stop();
     } catch (e) {
       print('❌ Error in fetching TTS audio: $e');
     }
   }
 
-  String _buildTTSUrl(String text, String langCode) {
+
+String _buildTTSUrl(String text, String langCode) {
     final encoded = Uri.encodeComponent(text);
     return 'https://translate.google.com/translate_tts?ie=UTF-8'
         '&client=tw-ob'
@@ -243,7 +261,7 @@ Future<void> speakText({String? langCodeOverride}) async {
         '&pitch=${pitch.value}';
   }
 
-  List<String> _splitText(String text, int maxLength) {
+List<String> _splitText(String text, int maxLength) {
     final words = text.split(' ');
     final chunks = <String>[];
     var buffer = StringBuffer();
@@ -258,10 +276,13 @@ Future<void> speakText({String? langCodeOverride}) async {
     }
   }
 
-    if (buffer.isNotEmpty) chunks.add(buffer.toString().trim());
+    if (buffer.isNotEmpty) {
+      chunks.add(buffer.toString().trim());
+    }
 
     return chunks;
   }
+
 
 
   // Future<void> speakText() async {
