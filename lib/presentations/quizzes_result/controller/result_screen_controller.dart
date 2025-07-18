@@ -3,10 +3,17 @@
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:get/get.dart';
 
+import '../../../ads_manager/interstitial_ads.dart';
+
 class ResultController extends GetxController {
   final QuizDetailController detailController = Get.find();
 
   /// 📦 Retake the quiz: reset + refetch + navigate
+  @override
+  void onInit() {
+    super.onInit();
+    Get.find<InterstitialAdController>().checkAndShowAd();
+  }
   Future<void> retakeQuiz({
     required int catId,
     required String title,

@@ -17,6 +17,8 @@ import 'package:get/get.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
 import '../controller/gemini_controller.dart';
 import '../widgets/text_generated_widget.dart';
 
@@ -32,6 +34,12 @@ class AskAiScreen extends StatefulWidget {
 class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
   final GeminiController controller = Get.find<GeminiController>();
 
+
+  @override
+  void initState() {
+    Get.find<InterstitialAdController>().checkAndShowAd();
+    super.initState();
+  }
   
   @override
   void dispose() {
@@ -222,6 +230,12 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                 ),
               ],
             ),
+            bottomNavigationBar:
+            Get.find<InterstitialAdController>().isAdReady
+                ? SizedBox()
+                : Obx(() {
+              return Get.find<BannerAdController>().getBannerAdWidget('ad3');
+            }),
         ),
       ),
       )
