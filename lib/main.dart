@@ -20,6 +20,7 @@ void main() async{
   MobileAds.instance.initialize();
   Get.put(AppOpenAdController());
   Get.put(BannerAdController());
+  Get.put(LargeBannerAdController());
   Get.put(InterstitialAdController());
   Get.put(NativeAdController());
   initializeOneSignal();

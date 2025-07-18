@@ -101,7 +101,6 @@ class SplashInterstitialAdController extends GetxController {
     if (_interstitialAd != null) {
       _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
-          print("### Ad Dismissed");
           Get.find<AppOpenAdController>().setInterstitialAdDismissed();
           ad.dispose();
           isAdReady = false;

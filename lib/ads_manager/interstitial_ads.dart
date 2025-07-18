@@ -3,11 +3,15 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import 'appOpen_ads.dart';
+
 class InterstitialAdController extends GetxController {
   InterstitialAd? _interstitialAd;
   bool isAdReady = false;
   int screenVisitCount = 0;
   int adTriggerCount = 3;
+  bool _interstitialAdShown = false;
+
 
   @override
   void onInit() {
@@ -84,18 +88,20 @@ class InterstitialAdController extends GetxController {
 
   void showInterstitialAd() {
     if (_interstitialAd != null) {
+      _interstitialAdShown = true;
       _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
-          print("### Ad Dismissed, resetting visit count.");
-          screenVisitCount = 0;
+          Get.find<AppOpenAdController>().setInterstitialAdDismissed();
+          _interstitialAdShown = false;
           ad.dispose();
           isAdReady = false;
+          screenVisitCount = 0;
           loadInterstitialAd();
           update();
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
-          print("### Ad failed to show: $error");
-          screenVisitCount = 0; // ✅ Reset on failure too
+          _interstitialAdShown = false;
+          screenVisitCount = 0;
           ad.dispose();
           isAdReady = false;
           loadInterstitialAd();

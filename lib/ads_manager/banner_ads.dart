@@ -31,8 +31,6 @@ class BannerAdController extends GetxController {
       );
 
       await remoteConfig.fetchAndActivate();
-
-      // Use platform-specific Remote Config key
       String bannerKey;
       if (Platform.isAndroid) {
         bannerKey = 'BannerAd';
@@ -113,7 +111,7 @@ class BannerAdController extends GetxController {
         right: false,
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300, width: 2),
+            border: Border.all(color: Colors.grey.shade100, width: 2),
             borderRadius: BorderRadius.circular(2),
           ),
           height: _ads[key]!.size.height.toDouble(),
@@ -128,8 +126,8 @@ class BannerAdController extends GetxController {
         left: false,
         right: false,
         child: Shimmer.fromColors(
-          baseColor: bgColor,
-          highlightColor:Colors.transparent,
+          baseColor: kWhiteEF,
+          highlightColor: Colors.grey.shade100,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
@@ -145,4 +143,132 @@ class BannerAdController extends GetxController {
       );
     }
   }
+}
+
+class LargeBannerAdController extends GetxController {
+  final Map<String, BannerAd> _ads = {};
+  final Map<String, RxBool> _adLoaded = {};
+  RxBool isAdEnabled = true.obs;
+  @override
+  void onInit() {
+    super.onInit();
+    fetchRemoteConfig();
+  }
+  Future<void> fetchRemoteConfig() async {
+    try {
+      final remoteConfig = FirebaseRemoteConfig.instance;
+
+      await remoteConfig.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(seconds: 10),
+        minimumFetchInterval: const Duration(minutes: 1),
+      ));
+      await remoteConfig.fetchAndActivate();
+      bool bannerAdsEnabled = remoteConfig.getBool('BannerAd');
+      isAdEnabled.value = bannerAdsEnabled;
+
+      if (bannerAdsEnabled) {
+        loadBannerAd('ad14');
+      }
+    } catch (e) {
+      print('Error fetching Remote Config: $e');
+    }
+  }
+  void loadBannerAd(String key) {
+    if (_ads.containsKey(key)) {
+      _ads[key]!.dispose();
+    }
+    final screenWidth = Get.context!.mediaQuerySize.width.toInt();
+
+    final bannerAd = BannerAd(
+      adUnitId:'ca-app-pub-5405847310750111/4925853534',
+      size:AdSize(height:70,width:screenWidth),
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          _adLoaded[key] = true.obs;
+          print("Banner Ad Loaded for key: $key");
+        },
+        onAdFailedToLoad: (ad, error) {
+          _adLoaded[key] = false.obs;
+          print("Ad failed to load for key $key: ${error.message}");
+        },
+      ),
+    );
+
+    bannerAd.load();
+    _ads[key] = bannerAd;
+  }
+
+  @override
+  void onClose() {
+    for (final ad in _ads.values) {
+      ad.dispose();
+    }
+    super.onClose();
+  }
+  Widget getBannerAdWidget(String key) {
+    final screenWidth = MediaQuery.of(Get.context!).size.width;
+    final shimmerAspectRatio = 60 / 8; // adjust if needed
+    final shimmerHeight = screenWidth / shimmerAspectRatio;
+
+    if (isAdEnabled.value &&
+        _ads.containsKey(key) &&
+        _adLoaded[key]?.value == true) {
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.grey.shade200,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(2),
+        ),
+        height: _ads[key]!.size.height.toDouble(),
+        width: double.infinity,
+        child: AdWidget(ad: _ads[key]!),
+      );
+    } else {
+      return Shimmer.fromColors(
+        baseColor: kWhiteEF,
+        highlightColor: Colors.grey.shade100,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Shimmer Image
+              Container(
+                width: double.infinity,
+                height: shimmerHeight,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              const SizedBox(height: 8),
+              // First Text Line
+              Container(
+                width: screenWidth * 0.6,
+                height: screenWidth * 0.03,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              const SizedBox(height: 8),
+              // Second Text Line
+              Container(
+                width: screenWidth * 0.4,
+                height: screenWidth * 0.03,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
 }

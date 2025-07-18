@@ -11,7 +11,6 @@ import 'package:get/get.dart';
 import '../../../ads_manager/banner_ads.dart';
 import '../../../ads_manager/interstitial_ads.dart';
 import '../../../core/common_widgets/app_core_colors.dart';
-import '../../../core/common_widgets/icon_buttons.dart';
 import '../../../core/constant/constant.dart';
 
 class QuizLevelScreen extends StatefulWidget {
@@ -286,20 +285,20 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                       },
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
-                  if(!Get.find<InterstitialAdController>().isAdReady)
-                  Get.find<NativeAdController>().nativeAdWidget(),
+                  // SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  // if(!Get.find<InterstitialAdController>().isAdReady)
+                  // Get.find<NativeAdController>().nativeAdWidget(),
                 ],
               );
             }),
     ],
         ),
-        // bottomNavigationBar:
-        // Get.find<InterstitialAdController>().isAdReady
-        //     ? SizedBox()
-        //     : Obx(() {
-        //   return Get.find<BannerAdController>().getBannerAdWidget('ad6');
-        // }),
+        bottomNavigationBar:
+        Get.find<InterstitialAdController>().isAdReady
+            ? SizedBox()
+            : Obx(() {
+          return Get.find<BannerAdController>().getBannerAdWidget('ad6');
+        }),
       ),
     );
   }

@@ -42,9 +42,9 @@ class SplashController extends GetxController {
   }
 
   void navigateToHome() async{
-    // if (splashAd.isAdReady) {
-    //   await splashAd.showInterstitialAd();
-    // }
+    if (splashAd.isAdReady) {
+      await splashAd.showInterstitialAd();
+    }
     Get.offNamed(RoutesName.bottomNevBar);
   }
 

@@ -135,7 +135,8 @@ class TranslationHistoryWidget extends StatelessWidget {
                                 ),
                               IconButton(
                                 onPressed:
-                                    () => controller.speakFromHistoryCard(
+                                    () =>
+                                        controller.speakFromHistoryCard(
                                       targetText,
                                     ),
                                 icon: const Icon(
