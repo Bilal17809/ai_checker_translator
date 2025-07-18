@@ -1,11 +1,14 @@
-
+import 'dart:io';
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
+import 'package:ai_checker_translator/presentations/subscription/subscription_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../presentations/premium_screen/premium_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -19,7 +22,7 @@ class CustomDrawer extends StatelessWidget {
             children: [
               DrawerHeader(
                 decoration: const BoxDecoration(
-              color: kMintGreen),
+                    color: kMintGreen),
                 child: Row(
                   children: [
                     ClipOval(
@@ -41,23 +44,22 @@ class CustomDrawer extends StatelessWidget {
             ],
           ),
 
-         
+
           DrawerTile(
             icon: Icons.privacy_tip,
             title: 'Privacy Policy',
-            onTap: () {
-              Navigator.pop(context);
-              // Navigate or handle
-            },
+            onTap: privacy,
           ),
           DrawerTile(
             icon: Icons.star,
             title: 'Rate Us',
             onTap: () {
+              rateUs();
               Navigator.pop(context);
-         
+
             },
           ),
+
           DrawerTile(
             icon: Icons.favorite,
             title: "favourite",
@@ -65,14 +67,12 @@ class CustomDrawer extends StatelessWidget {
               Get.toNamed(RoutesName.aitranslationHistoryScreen);
             },
           ),
-          DrawerTile(
-            icon: Icons.more,
-            title: "More App",
-            onTap: () {
-              Get.toNamed(RoutesName.premiumscreen);
-            },
-          ),
-
+          DrawerTile(icon: Icons.more, title: "More App", onTap: () {
+            moreApp();
+          }),
+          DrawerTile(icon: Icons.workspace_premium, title: "Ads Free", onTap: () {
+            Get.to(PremiumScreen());
+          }),
         ],
       ),
     );
@@ -103,5 +103,48 @@ class DrawerTile extends StatelessWidget {
       title: Text(title),
       onTap: onTap,
     );
+  }
+}
+
+void privacy() async {
+  const androidUrl = 'https://modernmobileschool.blogspot.com/2017/07/modern-school-privacy-policy.html';
+  const iosUrl = 'https://asadarmantech.blogspot.com';
+
+  final url = Platform.isIOS ? iosUrl : androidUrl;
+
+  if (await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
+void rateUs() async {
+  const androidUrl =
+      'https://play.google.com/store/apps/details?id=com.modernschool.aigrammar.learnenglish';
+  const iosUrl =
+      'https://apps.apple.com/us/app/Estonia Weather Forecast/6748671693';
+
+  final url = Platform.isIOS ? iosUrl : androidUrl;
+
+  if (await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
+void moreApp() async {
+  const androidUrl =
+      'https://play.google.com/store/apps/developer?id=Modern+School';
+  const iosUrl =
+      'https://apps.apple.com/us/developer/muhammad-asad-arman/id1487950157?see-all=i-phonei-pad-apps';
+
+  final url = Platform.isIOS ? iosUrl : androidUrl;
+
+  if (await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  } else {
+    throw 'Could not launch $url';
   }
 }
