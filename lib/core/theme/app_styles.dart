@@ -89,6 +89,13 @@ const TextStyle labelSmallStyle = TextStyle(
 );
 //decoration
 
+//for premium screen
+final BoxDecoration premiumscreenroundecoration = BoxDecoration(
+  borderRadius: BorderRadius.circular(10),
+  color: greyColor.withOpacity(0.14),
+);
+
+
 final BoxDecoration roundedDecorationWithShadow = BoxDecoration(
   color: Colors.white,
   borderRadius: BorderRadius.circular(10),

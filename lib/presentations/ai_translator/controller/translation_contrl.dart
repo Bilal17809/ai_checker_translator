@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -25,10 +25,8 @@ class TranslationController extends GetxController {
   RxString translatedText = "".obs;
   RxBool isListening = false.obs;
   RxBool isLoading = false.obs;
-  final pitch = 1.0.obs; // Default to a higher pitch
-  final speed = 1.0.obs; // Default to a slightly faster speed
-  // final pitch = 0.3.obs;
-  // final speed = 0.3.obs;
+  final pitch = 1.0.obs;
+  final speed = 1.0.obs; 
   final isSpeechPlaying = false.obs;
   RxBool hasInternet = true.obs;
 
@@ -211,15 +209,12 @@ Future<void> speakText({String? langCodeOverride}) async {
     const maxLength = 200;
 
     try {
-      // Stop any ongoing playback
       if (audioPlayer.playing) {
       await audioPlayer.stop();
         await Future.delayed(
           const Duration(milliseconds: 100),
-        ); // slight buffer
+        ); 
       }
-
-      // Split the text if too long
       final chunks =
           text.length <= maxLength ? [text] : _splitText(text, maxLength);
 
@@ -230,20 +225,15 @@ Future<void> speakText({String? langCodeOverride}) async {
           await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(url)));
           await audioPlayer.play();
 
-          // Wait for this chunk to finish
         await audioPlayer.playerStateStream.firstWhere(
           (state) => state.processingState == ProcessingState.completed,
-        );
-
-          // Optionally add delay between chunks
+          );
           await Future.delayed(const Duration(milliseconds: 200));
         } catch (e) {
           print('❌ Error while playing chunk: $e');
           break;
       }
       }
-
-      // All chunks played, ensure player is stopped
       await audioPlayer.stop();
     } catch (e) {
       print('❌ Error in fetching TTS audio: $e');
@@ -282,26 +272,6 @@ List<String> _splitText(String text, int maxLength) {
 
     return chunks;
   }
-
-
-
-  // Future<void> speakText() async {
-  //   try {
-  //     await flutterTts.stop();
-  //     await flutterTts.setEngine('com.google.android.tts');
-  //     String selectedLanguageCode =
-  //         languageCodes[selectedLanguage2.value] ?? 'en-US';
-  //     await flutterTts.setLanguage(selectedLanguageCode);
-  //     await flutterTts.setPitch(pitch.value);
-  //     await flutterTts.setSpeechRate(speed.value);
-  //
-  //     if (translatedText.value.isNotEmpty) {
-  //       await flutterTts.speak(translatedText.value);
-  //     }
-  //   } catch (e) {
-  //     Utils().toastMessage("Error: ${e.toString()}");
-  //   }
-  // }
 
   Future<void> handleUserActionTranslate(String text) async {
 
@@ -563,17 +533,13 @@ void speakFromHistoryCard(String targetText) {
     final langLine = lines.isNotEmpty ? lines.first : '';
     final actualText =
         lines.length > 1 ? lines.sublist(1).join('\n').trim() : targetText;
-
-    // Extract language name safely
     final languageName =
         langLine.replaceAll(RegExp(r'[^\u0600-\u06FF\w\s]'), '').trim();
     final langCode = languageCodes[languageName];
 
-    // Set translated text
     translatedText.value = actualText;
 
     if (actualText.isNotEmpty) {
-      // Only pass langCode if not null
       speakText(langCodeOverride: langCode);
     }
   }

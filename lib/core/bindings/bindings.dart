@@ -3,13 +3,11 @@ import 'package:ai_checker_translator/data/services/paraphrase_repo.dart';
 import 'package:ai_checker_translator/data/services/quizzes_repo.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/controller/quizzeslevel_controller.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/ai_dictioanay_contrl.dart';
-import 'package:ai_checker_translator/presentations/ai_translator/controller/languages_controller.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/controller/paraphrase_controller.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/controller/Categories_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../data/data_source/online_data_sr.dart';
 import '../../data/repositories_imp/repositories_imp.dart';
 import '../../domain/repositories/mistral_repo.dart';
@@ -22,7 +20,6 @@ class AllBindins implements Bindings {
     _initDependencies();
   }
   Future<void> _initDependencies() async {
-    Get.lazyPut<LanguageController>(() => LanguageController());
     Get.lazyPut<MenuController>(() => MenuController());
     Get.lazyPut(() => MistralApiService());
     Get.lazyPut<MistralRepository>(() => MistralRepositoryImpl(Get.find()));

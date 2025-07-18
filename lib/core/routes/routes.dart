@@ -10,6 +10,7 @@ import 'package:ai_checker_translator/presentations/learn_grammaer/view/rules_de
 import 'package:ai_checker_translator/presentations/learn_grammaer/view/rules_screen.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/paraphrase_view.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/view/topic_phrase_screen.dart';
+import 'package:ai_checker_translator/presentations/premium_screen/premium_screen.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/view/quiz_detail_screen.dart';
 import 'package:ai_checker_translator/presentations/quizzes/quizzes_screen.dart';
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/view/quizess_category_screen.dart';
@@ -58,10 +59,7 @@ class Routes {
     GetPage(
       name: RoutesName.paraphraseview,
       page: () {
-        // final args = Get.arguments as Map<String, dynamic>? ?? {};
         return ParaphraseView(
-          //   id: args['id'] ?? 0,
-          //   menuname: args['menuname'] ?? '',
         );
       },
       binding: AllBindins(),
@@ -120,6 +118,12 @@ class Routes {
     GetPage(
       name: RoutesName.aitranslationHistoryScreen,
       page: () => AiTranslationHistoryScreen(),
+      binding: AllBindins(),
+    ),
+
+    GetPage(
+      name: RoutesName.premiumscreen,
+      page: () => PremiumScreen(),
       binding: AllBindins(),
     ),
   ];

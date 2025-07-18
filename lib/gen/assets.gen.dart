@@ -93,6 +93,14 @@ class Assets {
 
 
 
+  static const AssetGenImage premiumscreenpic = AssetGenImage(
+    'assets/images/premiumpic.png',
+  );
+
+  static const AssetGenImage premiumicon = AssetGenImage(
+    'assets/icons/premium icon1.png',
+  );
+
 
   //nav_bar_images
   static const AssetGenImage askai = AssetGenImage(

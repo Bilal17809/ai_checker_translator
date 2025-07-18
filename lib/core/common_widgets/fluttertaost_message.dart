@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
+import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -88,7 +89,15 @@ static Future<bool> isConnectedToInternet() async {
 static Future<bool> checkAndShowNoInternetDialogIfOffline() async {
     final bool online = await isConnectedToInternet();
     if (!online) {
-      Get.dialog(const NoInternetDialog(), barrierDismissible: false);
+      Get.dialog(
+        CustomInfoDialog(
+          title: "No Internet Connection",
+          message: "An internet connection is required. Please try again.",
+          iconPath: Assets.nointernet.path,
+          type: DialogType.internet,
+        ),
+        barrierDismissible: false,
+      );
     }
     return online;
   }

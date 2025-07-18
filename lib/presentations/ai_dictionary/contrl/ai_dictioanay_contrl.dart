@@ -1,4 +1,6 @@
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
+import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
+import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -32,6 +34,7 @@ class GeminiAiCorrectionController extends GetxController {
   final isLoading = false.obs;
   final isSpeaking = false.obs;
   final isTypingStarted = false.obs;
+  final RxInt generateCount = 3.obs;
 
   //start mic input
   Future<void> startMicInput({String languageISO = 'en-US'}) async {
@@ -86,11 +89,26 @@ Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
 
 
   Future<void> generate() async {
+  
+    if (generateCount.value <= 0) {
+      Get.dialog(
+        CustomInfoDialog(
+          title: "Daily Limit Reached",
+          message: "Upgrade to Premium to continue using this feature.",
+          iconPath: Assets.premiumicon.path,
+          type: DialogType.premium,
+        ),
+        barrierDismissible: false,
+      );
+      return;
+    }
+
     final inputeText = textCheckPromptController.text.trim();
     if (inputeText.isEmpty) {
       Utils().toastMessage("Enter text to generate");
       return;
     }
+
     final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
     if (!hasInternet) return;
 
@@ -101,7 +119,6 @@ Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
     try {
       final correctedPrompt = _buildCorrectionPromptWithLimit(inputeText);
 
-      // Optional: control maxTokens if needed
       final result = await useCase(correctedPrompt, maxTokens: 150);
 
       final lineLimited = _limitResponseLines(result, 10);
@@ -109,6 +126,9 @@ Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
 
       grammarResponseText.value = charLimited;
       isTypingStarted.value = true;
+
+      // 👇 Step 2: Decrease limit only after successful result
+      generateCount.value--;
     } catch (e) {
       grammarResponseText.value = "Error: ${e.toString()}";
     } finally {

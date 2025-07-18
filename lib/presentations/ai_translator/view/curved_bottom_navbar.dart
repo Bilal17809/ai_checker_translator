@@ -70,10 +70,15 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
                 final hasInternet = await Utils.isConnectedToInternet();
 
                 if (!hasInternet) {
-                  showDialog(
-                    context: context,
+                  Get.dialog(
+                    CustomInfoDialog(
+                      title: "No Internet Connection",
+                      message:
+                          "An internet connection is required. Please try again.",
+                      iconPath: Assets.nointernet.path,
+                      type: DialogType.internet,
+                    ),
                     barrierDismissible: false,
-                    builder: (_) => const NoInternetDialog(),
                   );
                   return;
                 }

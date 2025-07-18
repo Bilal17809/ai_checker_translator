@@ -65,7 +65,13 @@ class CustomDrawer extends StatelessWidget {
               Get.toNamed(RoutesName.aitranslationHistoryScreen);
             },
           ),
-          DrawerTile(icon: Icons.more, title: "More App", onTap: () {}),
+          DrawerTile(
+            icon: Icons.more,
+            title: "More App",
+            onTap: () {
+              Get.toNamed(RoutesName.premiumscreen);
+            },
+          ),
 
         ],
       ),

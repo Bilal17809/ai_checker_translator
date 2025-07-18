@@ -149,7 +149,8 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
                         const SizedBox(height: 10),
                         Text.rich(
                           TextSpan(
-                            text: "Daily Limits Remaining = 10 ",
+                            text:
+                                "Daily Limits Remaining = ${controller.generateCount.value} ",
                             style: const TextStyle(fontSize: 12),
                             children: [
                               TextSpan(

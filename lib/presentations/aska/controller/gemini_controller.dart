@@ -1,6 +1,7 @@
 // import 'dart:convert';
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
+import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,7 @@ class GeminiController extends GetxController {
   final isSpeaking = false.obs;
   final isTypingStarted = false.obs;
   final isResponseReady = false.obs;
+  final RxInt generateCount = 3.obs;
 
   late final GenerativeModel model;
   final MistralUseCase useCase;
@@ -36,18 +38,28 @@ class GeminiController extends GetxController {
     super.onInit();
     _initTts();
   }
+Future<void> generate() async {
+    if (generateCount.value <= 0) {
+      Get.dialog(
+        CustomInfoDialog(
+          title: "Daily Limit Reached",
+          message: "You've reached your daily limit. Go Premium to continue.",
+          iconPath: Assets.premiumicon.path,
+          type: DialogType.premium,
+        ),
+        barrierDismissible: false,
+      );
+      return;
+    }
 
-  Future<void> generate() async {
     final prompt = promptController.text.trim();
     if (prompt.isEmpty) {
       Utils().toastMessage("Enter text to generate");
       return;
     }
-    final hasInternet = await Utils.isConnectedToInternet();
-    if (!hasInternet) {
-      Get.dialog(const NoInternetDialog(), barrierDismissible: false);
-      return;
-    }
+
+    final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
+    if (!hasInternet) return;
 
     isLoading.value = true;
     isTypingStarted.value = false;
@@ -55,6 +67,9 @@ class GeminiController extends GetxController {
     responseText.value = '';
 
     try {
+ 
+      generateCount.value--;
+
       final limitedPrompt = _generatePromptWithLimit(prompt);
 
       final result = await useCase(limitedPrompt, maxTokens: 200);
@@ -71,6 +86,7 @@ class GeminiController extends GetxController {
       isLoading.value = false;
     }
   }
+
 
   String _generatePromptWithLimit(String prompt) {
     final lines = prompt.split('\n').length;

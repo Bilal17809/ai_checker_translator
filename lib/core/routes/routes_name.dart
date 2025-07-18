@@ -30,5 +30,7 @@ class RoutesName {
   static const String learngrammarscreen = "/learn_grammar_screen";
   static const String rulesscreen = "/rules_screen";
   static const String rulesdetailscreen = "/rules_detail_screen"; 
+
+  static const String premiumscreen = "/premium_screen"; 
   // static const String aiDictionaryPage = 'aiDictionary_page';
 }

@@ -5,9 +5,11 @@ import 'package:ai_checker_translator/core/common_widgets/back_to_home_wrapper.d
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/keyboard_dismiss_wrapper.dart';
 import 'package:ai_checker_translator/core/common_widgets/life_cycle_mixin.dart';
+import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
 import 'package:ai_checker_translator/core/common_widgets/voicedialog_for_ios.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_theme.dart';
+import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/animation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -137,21 +139,25 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                         ),
 
                         const SizedBox(height: 10),
-                        Text.rich(
-                          TextSpan(
-                            text: "Daily Limits Remaining = 10 ",
-                            style: const TextStyle(fontSize: 12),
-                            children: [
-                              TextSpan(
-                                text: "Go Premium",
-                                style: const TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
+                        Obx(
+                          () => Text.rich(
+                            TextSpan(
+                              text:
+                                  "Daily Limits Remaining = ${controller.generateCount.value} ",
+                              style: const TextStyle(fontSize: 12),
+                              children: [
+                                TextSpan(
+                                  text: "Go Premium",
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
+),
+
                         const SizedBox(height: 10),
                         Obx(
                           () => SizedBox(
