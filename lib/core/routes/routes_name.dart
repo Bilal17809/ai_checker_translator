@@ -32,5 +32,7 @@ class RoutesName {
   static const String rulesdetailscreen = "/rules_detail_screen"; 
 
   static const String premiumscreen = "/premium_screen"; 
+
+  static const String termofusescreen = "/term_of_use_screen";
   // static const String aiDictionaryPage = 'aiDictionary_page';
 }

@@ -15,6 +15,7 @@ import 'package:ai_checker_translator/presentations/quizdetail/view/quiz_detail_
 import 'package:ai_checker_translator/presentations/quizzes/quizzes_screen.dart';
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/view/quizess_category_screen.dart';
 import 'package:ai_checker_translator/presentations/splash/view/splash_page.dart';
+import 'package:ai_checker_translator/presentations/term_of_use_screen/term_of_use_screen.dart';
 import 'package:get/get.dart';
 import '../../presentations/Quiz_levels/view/quiz_level_screen.dart';
 import '../bindings/bindings.dart';
@@ -124,6 +125,12 @@ class Routes {
     GetPage(
       name: RoutesName.premiumscreen,
       page: () => PremiumScreen(),
+      binding: AllBindins(),
+    ),
+
+    GetPage(
+      name: RoutesName.termofusescreen,
+      page: () => TermOfUseScreen(),
       binding: AllBindins(),
     ),
   ];

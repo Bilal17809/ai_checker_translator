@@ -1,8 +1,10 @@
+import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_styles.dart';
 import 'package:ai_checker_translator/core/theme/app_theme.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
+import 'package:get/get.dart';
 import 'package:get/get_utils/get_utils.dart';
 
 class PremiumScreen extends StatefulWidget {
@@ -86,52 +88,52 @@ Widget build(BuildContext context) {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            _screenbaners(
-                              hieht: null,
-                              widget: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                        "Free Trial Enabled",
-                                        style: context.textTheme.bodyLarge!
-                                            .copyWith(
-                                          color: kMintGreen,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    Switch(
-                                      value: isSwitch,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          isSwitch = value;
-                                        });
-                                      },
-                                      thumbColor:
-                                          MaterialStateProperty.resolveWith<
-                                              Color>((states) {
-                                        return kMintGreen;
-                                      }),
-                                      trackColor:
-                                          MaterialStateProperty.resolveWith<
-                                              Color>((states) {
-                                        return states.contains(
-                                                MaterialState.selected)
-                                            ? kMintGreen.withOpacity(0.5)
-                                            : kMintGreen.withOpacity(0.3);
-                                      }),
-                                      focusColor: kMintGreen.withOpacity(0.3),
-                                      splashRadius: 20,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                              // _screenbaners(
+                              //   hieht: null,
+                              //   widget: Padding(
+                              //     padding:
+                              //         const EdgeInsets.symmetric(horizontal: 10),
+                              //     child: Row(
+                              //       mainAxisAlignment:
+                              //           MainAxisAlignment.spaceBetween,
+                              //       children: [
+                              //         Flexible(
+                              //           child: Text(
+                              //             "Free Trial Enabled",
+                              //             style: context.textTheme.bodyLarge!
+                              //                 .copyWith(
+                              //               color: kMintGreen,
+                              //               fontWeight: FontWeight.bold,
+                              //             ),
+                              //           ),
+                              //         ),
+                              //         Switch(
+                              //           value: isSwitch,
+                              //           onChanged: (value) {
+                              //             setState(() {
+                              //               isSwitch = value;
+                              //             });
+                              //           },
+                              //           thumbColor:
+                              //               MaterialStateProperty.resolveWith<
+                              //                   Color>((states) {
+                              //             return kMintGreen;
+                              //           }),
+                              //           trackColor:
+                              //               MaterialStateProperty.resolveWith<
+                              //                   Color>((states) {
+                              //             return states.contains(
+                              //                     MaterialState.selected)
+                              //                 ? kMintGreen.withOpacity(0.5)
+                              //                 : kMintGreen.withOpacity(0.3);
+                              //           }),
+                              //           focusColor: kMintGreen.withOpacity(0.3),
+                              //           splashRadius: 20,
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
                             const SizedBox(height: 14),
                             const _DatesWidget(),
                             const SizedBox(height: 14),
@@ -154,8 +156,16 @@ Widget build(BuildContext context) {
                             const SizedBox(height: 8),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                Text("Privacy | Terms"),
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      Get.toNamed(RoutesName.termofusescreen);
+                                    },
+                                    child: Text(
+                                      "Privacy | Terms",
+                                      style: TextStyle(color: kBlue),
+                                    ),
+                                  ),
                                 Text("Cancel Anytime"),
                               ],
                             ),
