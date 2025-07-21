@@ -5,8 +5,11 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../presentations/remove_ads_contrl/remove_ads_contrl.dart';
+
 class AppOpenAdController extends GetxController with WidgetsBindingObserver {
   final RxBool isShowingOpenAd = false.obs;
+  final RemoveAds removeAdsController = Get.put(RemoveAds());
 
   AppOpenAd? _appOpenAd;
   bool _isAdAvailable = false;
@@ -20,11 +23,8 @@ class AppOpenAdController extends GetxController with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      print("App moved to background.");
       _openAppAdEligible = true;
     } else if (state == AppLifecycleState.resumed) {
-      print("App moved to foreground.");
-
       Future.delayed(const Duration(milliseconds: 100), () {
         if (_openAppAdEligible && !_interstitialAdDismissed) {
           showAdIfAvailable();
@@ -46,7 +46,6 @@ class AppOpenAdController extends GetxController with WidgetsBindingObserver {
 
   Future<void> initializeRemoteConfig() async {
     final remoteConfig = FirebaseRemoteConfig.instance;
-
     try {
       await remoteConfig.fetchAndActivate();
       String remoteConfigKey;
@@ -65,14 +64,15 @@ class AppOpenAdController extends GetxController with WidgetsBindingObserver {
   }
 
   void showAdIfAvailable() {
+    if (Platform.isIOS && removeAdsController.isSubscribedGet.value) {
+      return;
+    }
     if (_isAdAvailable && _appOpenAd != null && !isCooldownActive) {
       _appOpenAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdShowedFullScreenContent: (ad) {
-          print('App Open Ad is showing.');
           isShowingOpenAd.value = true;
         },
         onAdDismissedFullScreenContent: (ad) {
-          print('App Open Ad dismissed.');
           _appOpenAd = null;
           _isAdAvailable = false;
           isShowingOpenAd.value = false;
@@ -80,19 +80,16 @@ class AppOpenAdController extends GetxController with WidgetsBindingObserver {
           activateCooldown();
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
-          print('Failed to show App Open Ad: $error');
           _appOpenAd = null;
           _isAdAvailable = false;
           isShowingOpenAd.value = false;
           loadAd();
         },
       );
-
       _appOpenAd!.show();
       _appOpenAd = null;
       _isAdAvailable = false;
     } else {
-      print('No App Open Ad available to show.');
       loadAd();
     }
   }
@@ -115,6 +112,9 @@ class AppOpenAdController extends GetxController with WidgetsBindingObserver {
   }
 
   void loadAd() {
+    if (Platform.isIOS && removeAdsController.isSubscribedGet.value) {
+      return;
+    }
     if (!shouldShowAppOpenAd) return;
     AppOpenAd.load(
       adUnitId: appOpenAdUnitId,
@@ -123,10 +123,8 @@ class AppOpenAdController extends GetxController with WidgetsBindingObserver {
         onAdLoaded: (ad) {
           _appOpenAd = ad;
           _isAdAvailable = true;
-          print('App Open Ad loaded.');
         },
         onAdFailedToLoad: (error) {
-          print('Failed to load App Open Ad: $error');
           _isAdAvailable = false;
         },
       ),
@@ -135,7 +133,6 @@ class AppOpenAdController extends GetxController with WidgetsBindingObserver {
 
   void setInterstitialAdDismissed() {
     _interstitialAdDismissed = true;
-    print("Interstitial Ad dismissed, flag set.");
   }
 
   void setSplashInterstitialFlag(bool shown) {
@@ -144,7 +141,6 @@ class AppOpenAdController extends GetxController with WidgetsBindingObserver {
 
   void maybeShowAppOpenAd() {
     if (_isSplashInterstitialShown) {
-      print("### Skipping AppOpenAd due to splash interstitial.");
       return;
     }
   }

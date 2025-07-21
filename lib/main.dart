@@ -1,10 +1,10 @@
 import 'package:ai_checker_translator/ads_manager/banner_ads.dart';
 import 'package:ai_checker_translator/ads_manager/native_ads.dart';
+import 'package:ai_checker_translator/ads_manager/splash_interstitial.dart';
 import 'package:ai_checker_translator/core/bindings/bindings.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +22,10 @@ void main() async{
   Get.put(BannerAdController());
   Get.put(LargeBannerAdController());
   Get.put(InterstitialAdController());
+  Get.put(SplashInterstitialAdController());
   Get.put(NativeAdController());
   initializeOneSignal();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }
 

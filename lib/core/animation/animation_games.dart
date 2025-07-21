@@ -1,11 +1,9 @@
 import 'package:ai_checker_translator/ads_manager/splash_interstitial.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:ai_checker_translator/presentations/premium_screen/premium_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import '../../presentations/levels/game_leves.dart';
-import '../../presentations/subscription/subscription_view.dart';
 import '../../presentations/word_game/contrl/contrl.dart';
+import '../common_widgets/no_internet_dialog.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_styles.dart';
 
@@ -259,7 +257,7 @@ class _AnimatedCardButtonState extends State<AnimatedCardButton>
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.asset(
-                    'assets/clue.png',
+                    'assets/icons/hint.png',
                     width: 45,
                     height: 45,
                     fit: BoxFit.cover,
@@ -296,28 +294,30 @@ class _AnimatedCardButtonState extends State<AnimatedCardButton>
                 ),
                 GestureDetector(
                   onTap: () {
-                    showCustomDialog(
-                      context: context,
-                      imagePath: "assets/bonus.png",
-                      title: "Get Clue",
-                      message: "Watch an ad to unlock a valuable clue that can help you move forward!",
-                      leftButtonText: "Cancel",
-                      rightButtonText: "Watch Ads",
-                        onRightTap: () async {
+                    Get.dialog(
+                      CustomInfoDialog(
+                        title: "Get Clue",
+                        message: "Watch an ad to unlock a valuable clue that can help you move forward!",
+                        iconPath:"assets/icons/bonus.png",
+                        type: DialogType.premium,
+
+                        onSecondaryPressed: (){
                           Navigator.of(context).pop();
                           if (!splashAd.isAdReady) {
                             showAdNotReadyDialog(context);
                             return;
                           }
                           if (splashAd.isAdReady) {
-                            // splashAd.showAd(onAdComplete: () async {
-                            //   controller.revealPartialCorrectSequence();
-                            // });
+                            splashAd.showInterstitialAdUser(onAdComplete: () async {
+                              controller.revealPartialCorrectSequence();
+                            });
                           }
                           else {
                             showAdNotReadyDialog(context);
                           }
-                        }
+                        },
+                      ),
+                      barrierDismissible: false,
                     );
                   },
                   child: Container(
@@ -345,7 +345,7 @@ class _AnimatedCardButtonState extends State<AnimatedCardButton>
             child: ScaleTransition(
               scale: _scale,
               child: Image.asset(
-                'assets/click.png',
+                'assets/icons/tap.png',
                 width: 35,
                 height: 35,
               ),
@@ -554,7 +554,7 @@ Future<void> showCustomDialog({
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
-                      Get.to(Subscriptions());
+                      Get.to(PremiumScreen());
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -759,158 +759,6 @@ class _AnimatedLetterState extends State<AnimatedLetter>
   }
 }
 
-
-class AnimatedPlayGameButton extends StatelessWidget {
-  const AnimatedPlayGameButton({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical:5),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => GameLevels()));
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical:25),
-          decoration: roundedDecoration.copyWith(
-            color: Colors.green,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              AnimatedMedalIcon(),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Boost Your Learning!',
-                      style: context.textTheme.labelMedium?.copyWith(
-                        color: kWhite,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "Learn Grammar by Game",
-                      style: context.textTheme.labelSmall?.copyWith(
-                        color: kWhite,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(width: 5),
-
-              /// ▶️ Play Game Button
-              Container(
-                height: 36,
-                width: 88,
-                decoration: roundedDecoration.copyWith(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: Text(
-                    "Play Game",
-                    style: context.textTheme.labelSmall?.copyWith(
-                      color: kBlack,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
-
-// this is use
-class AnimatedMedalIcon extends StatefulWidget {
-  const AnimatedMedalIcon({Key? key}) : super(key: key);
-
-  @override
-  State<AnimatedMedalIcon> createState() => _AnimatedMedalIconState();
-}
-
-class _AnimatedMedalIconState extends State<AnimatedMedalIcon>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scale;
-  bool _showMedal = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1600),
-      vsync: this,
-    )..repeat(reverse: true);
-
-    _scale = Tween<double>(begin: 0.9, end: 1.2).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-
-    _startToggleLoop();
-  }
-
-  void _startToggleLoop() async {
-    while (mounted) {
-      setState(() => _showMedal = true);
-      await Future.delayed(const Duration(seconds: 8));
-
-      setState(() => _showMedal = false);
-      await Future.delayed(const Duration(seconds: 2));
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 400),
-      transitionBuilder: (child, animation) =>
-          ScaleTransition(scale: animation, child: child),
-      child: _showMedal
-          ? ScaleTransition(
-        scale: _scale,
-        child: Image.asset(
-          'assets/medal.png',
-          key: const ValueKey('medal'),
-          width: 35,
-          height: 35,
-        ),
-      )
-          : Container(
-        key: const ValueKey('circle'),
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          color: Colors.orange.shade100,
-          border: Border.all(
-              color: Colors.orange.withOpacity(0.7), width: 3),
-          shape: BoxShape.circle,
-        ),
-        alignment: Alignment.center,
-        child: Icon(Icons.star, color: Colors.orange, size: 15),
-      ),
-    );
-  }
-}
-
-// this is use
 class AnimatedForwardArrow2 extends StatefulWidget {
   final Color color;
   final double size;

@@ -1,39 +1,23 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import '../presentations/remove_ads_contrl/remove_ads_contrl.dart';
 import 'appOpen_ads.dart';
-/*
-Bundle Identifier:  com.aat.aigrammar
-
-Apple Id: 6748681683
-
-Remove Ad Product id:  com.aigrammar.removeads
-
-OneSignal Key:  0a861af3-75dc-41f2-896e-cf8220fdd94a
-
-Admob App Id:   ca-app-pub-5405847310750111~9421338603
-
-Banner Ad id:  ca-app-pub-5405847310750111/4925853534
-
-Native Adv Ad id:   ca-app-pub-5405847310750111/9743065943
-
-AppOpen Ad id:  ca-app-pub-5405847310750111/6686707517
-
-Interstitial Ad id:   ca-app-pub-5405847310750111/5482093593
-
-Splash Interstitial Ad id: ca-app-pub-5405847310750111/5720060451
-*/
 class SplashInterstitialAdController extends GetxController {
   InterstitialAd? _interstitialAd;
   bool isAdReady = false;
   bool showSplashAd = true;
+  final RemoveAds removeAdsController = Get.put(RemoveAds());
+
 
   @override
   void onInit() {
     super.onInit();
     initializeRemoteConfig();
     loadInterstitialAd();
+    showInterstitialAdUser();
   }
 
   Future<void> initializeRemoteConfig() async {
@@ -55,9 +39,6 @@ class SplashInterstitialAdController extends GetxController {
       }
       await remoteConfig.fetchAndActivate();
       showSplashAd = remoteConfig.getBool(interstitialKey);
-      print(
-        "#################### Remote Config: Show Splash Ad = $showSplashAd",
-      );
       update();
     } catch (e) {
       print('Error fetching Remote Config: $e');
@@ -94,8 +75,10 @@ class SplashInterstitialAdController extends GetxController {
   }
 
   Future<void> showInterstitialAd() async {
+    if (Platform.isIOS && removeAdsController.isSubscribedGet.value) {
+      return;
+    }
     if (!showSplashAd) {
-      print("### Splash Ad Disabled via Remote Config");
       return;
     }
     if (_interstitialAd != null) {
@@ -121,6 +104,33 @@ class SplashInterstitialAdController extends GetxController {
       print("### Interstitial Ad not ready.");
     }
   }
+
+  Future<void> showInterstitialAdUser({VoidCallback? onAdComplete}) async {
+    if (!showSplashAd || _interstitialAd == null) {
+      return;
+    }
+    _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) async {
+        Get.find<AppOpenAdController>().setInterstitialAdDismissed();
+        ad.dispose();
+        isAdReady = false;
+        loadInterstitialAd();
+        onAdComplete?.call();
+        update();
+        // await Future.delayed(Duration(milliseconds: 500));
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        ad.dispose();
+        isAdReady = false;
+        loadInterstitialAd();
+        onAdComplete?.call();
+        update();
+      },
+    );
+    _interstitialAd!.show();
+    _interstitialAd = null;
+  }
+
 
   @override
   void onClose() {

@@ -149,8 +149,7 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                         Obx(
                           () => Text.rich(
                             TextSpan(
-                              text:
-                                  "Daily Limits Remaining = ${controller.generateCount.value} ",
+                              text: "Daily Limits Remaining = ${controller.maxFreeInteractions - controller.interactionCount.value} ",
                               style: const TextStyle(fontSize: 12),
                               children: [
                                 TextSpan(
@@ -173,7 +172,7 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                               onPressed: () async {
                                 FocusScope.of(context).unfocus();
                                 controller.flutterTts.stop();
-                                await controller.generate();
+                                await controller.generate(context);
                                 FocusScope.of(context).unfocus();
                               },
                               style: AppTheme.elevatedButtonStyle.copyWith(

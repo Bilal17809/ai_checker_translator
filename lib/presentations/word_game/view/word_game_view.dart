@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import '../../../ads_manager/appOpen_ads.dart';
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
+import '../../../ads_manager/native_ads.dart';
 import '../../../ads_manager/splash_interstitial.dart';
 import '../../../core/animation/animation_games.dart';
+import '../../../core/common_widgets/icon_buttons.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_styles.dart';
+import '../../remove_ads_contrl/remove_ads_contrl.dart';
 import '../contrl/contrl.dart';
 
 
@@ -28,14 +35,14 @@ class _PuzzlePageState extends State<PuzzlePage> {
   }
 
   final List<Color> customColors = [
-    kMediumGreen2.withAlpha((255 * 0.5).toInt()), // 50% opacity
+    kMediumGreen2.withAlpha((255 * 0.5).toInt()),
     kCoral.withAlpha((255 * 0.5).toInt()),
     kMediumGreen1,
     kGold.withAlpha((255 * 0.5).toInt()),
     kViolet.withAlpha((255 * 0.5).toInt()),
-    kOrange.withAlpha((255 * 0.05).toInt()),  // 5% opacity
-    kBlue.withAlpha((255 * 0.03).toInt()),   // 3% opacity
-    kIndigo.withAlpha((255 * 0.3).toInt()),  // 30% opacity
+    kOrange.withAlpha((255 * 0.05).toInt()),
+    kBlue.withAlpha((255 * 0.03).toInt()),
+    kIndigo.withAlpha((255 * 0.3).toInt()),
     kYellow.withAlpha((255 * 0.3).toInt()),
     kViolet.withAlpha((255 * 0.3).toInt()),
     kViolet.withAlpha((255 * 0.3).toInt()),
@@ -45,18 +52,20 @@ class _PuzzlePageState extends State<PuzzlePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   leading: Padding(
-      //     padding: const EdgeInsets.all(12.0),
-      //     child: BackIconButton(),
-      //   ),
-      //   backgroundColor: kSkyBlueColor,
-      //     title:  Text("Rewarded Quiz",
-      //       style: context.textTheme.titleLarge?.copyWith(
-      //         color: kWhiteFA
-      //       ),
-      //     )),
+      appBar: AppBar(
+        centerTitle: true,
+        leading: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: BackIconButton(onTap: () {
+            Navigator.of(context).pop();
+          },),
+        ),
+        backgroundColor:kMintGreen,
+          title:  Text("Rewarded Quiz",
+            style: context.textTheme.titleLarge?.copyWith(
+              color: kWhiteFA
+            ),
+          )),
       body: Obx((){
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -191,7 +200,7 @@ class _PuzzlePageState extends State<PuzzlePage> {
                                 minimumSize: const Size(160, 50),
                                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                                 textStyle: const TextStyle(fontSize: 16),
-                                backgroundColor: isEnabled ? Colors.blue : Colors.grey,
+                                backgroundColor: isEnabled ? kMintGreen: Colors.grey,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
                                 ),
@@ -215,15 +224,15 @@ class _PuzzlePageState extends State<PuzzlePage> {
                                       curve: Curves.easeInOut,
                                     );
                                   } else {
-                                    // Navigator.of(context).pushReplacement(
-                                    //   MaterialPageRoute(
-                                    //     builder: (_) => PuzzleCompletePage(
-                                    //       words: controller.words,
-                                    //       correctCount: controller.correctAnswers.length,
-                                    //       totalCount: controller.words.length,
-                                    //     ),
-                                    //   ),
-                                    // );
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (_) => PuzzleCompletePage(
+                                          words: controller.words,
+                                          correctCount: controller.correctAnswers.length,
+                                          totalCount: controller.words.length,
+                                        ),
+                                      ),
+                                    );
                                   }
                                 });
                               }
@@ -280,128 +289,113 @@ class _PuzzlePageState extends State<PuzzlePage> {
   }
 }
 
+class PuzzleCompletePage extends StatelessWidget {
+  final List<String> words;
+  final int correctCount;
+  final int totalCount;
 
+  const PuzzleCompletePage({
+    Key? key,
+    required this.words,
+    required this.correctCount,
+    required this.totalCount
 
-// class PuzzleCompletePage extends StatelessWidget {
-//   final List<String> words;
-//   final int correctCount;
-//   final int totalCount;
-//
-//   const PuzzleCompletePage({
-//     Key? key,
-//     required this.words,
-//     required this.correctCount,
-//     required this.totalCount
-//
-//   }) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final nativeAdController = Get.put(NativeAdController());
-//     final RemoveAds removeAds=Get.put(RemoveAds());
-//     final AppOpenAdController appOpenAdController=Get.put(AppOpenAdController());
-//     return Scaffold(
-//       body: Stack(
-//         children: [
-//           const BackgroundCircles(),
-//           Positioned(
-//             top: 40,
-//             left: 16,
-//             right: 16,
-//             child: SizedBox(
-//               width: double.infinity,
-//               child: Stack(
-//                 alignment: Alignment.center,
-//                 children: [
-//                   Align(
-//                     alignment: Alignment.centerLeft,
-//                     child: BackIconButton(),
-//                   ),
-//                   Center(
-//                     child: Text(
-//                       "Game Result",
-//                       style: TextStyle(
-//                         fontSize: 22,
-//                         fontWeight: FontWeight.w600,
-//                         color: Colors.white,
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//           Padding(
-//             padding: const EdgeInsets.only(top:90.0),
-//             child: Container(
-//               decoration: roundedDecoration,
-//               child: Padding(
-//                 padding: const EdgeInsets.all(16.0),
-//                 child: SingleChildScrollView(
-//                   child: Column(
-//                     children: [
-//                       SizedBox(
-//                         height:260,
-//                         child: Lottie.asset(
-//                           'assets/won.json',
-//                           // repeat: false,
-//                         ),
-//                       ),
-//                       const SizedBox(height: 12),
-//                       Container(
-//                         padding: EdgeInsets.all(16),
-//                         decoration: roundedDecoration,
-//                         child: Column(
-//                           children: [
-//                             Text(
-//                               "Score: $correctCount / $totalCount",
-//                               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-//                             ),
-//                             const SizedBox(height: 6),
-//                             Text(
-//                               "Points Earned: ${correctCount * 10}",
-//                               style: const TextStyle(fontSize: 18, color: Colors.green),
-//                             ),
-//                             const SizedBox(height:25),
-//                             Padding(
-//                               padding: const EdgeInsets.symmetric(horizontal:18.0),
-//                               child: ElevatedButton(
-//                                 style: ElevatedButton.styleFrom(
-//                                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-//                                   textStyle: const TextStyle(fontSize: 16),
-//                                   backgroundColor: Colors.blue,
-//                                   shape: RoundedRectangleBorder(
-//                                     borderRadius: BorderRadius.circular(30),
-//                                   ),
-//                                 ),
-//                                 onPressed:() {
-//                                   Navigator.of(context).pop();
-//                                 }, child:Row(
-//                                 mainAxisSize: MainAxisSize.min,
-//                                 children: [
-//                                   const Text("Try Again"),
-//                                   const SizedBox(width:12),
-//                                   AnimatedForwardArrow(isEnabled:true,),
-//                                 ],
-//                               ),
-//                               ),
-//                             ),
-//                             SizedBox(height:MediaQuery.of(context).size.height*0.02),
-//                             if (!(appOpenAdController.isShowingOpenAd.value
-//                                 || removeAds.isSubscribedGet.value))
-//                               nativeAdController.nativeAdWidget('key3'),
-//                           ],
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//
-//     );
-//   }
-// }
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final nativeAdController = Get.put(NativeAdController());
+    final RemoveAds removeAds=Get.put(RemoveAds());
+    final AppOpenAdController appOpenAdController=Get.put(AppOpenAdController());
+    return Scaffold(
+      appBar: AppBar(
+          centerTitle: true,
+          leading: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: BackIconButton(onTap: () {
+              Navigator.of(context).pop();
+            },),
+          ),
+          backgroundColor:kMintGreen,
+          title:  Text("Result screen",
+            style: context.textTheme.titleLarge?.copyWith(
+                color: kWhiteFA
+            ),
+          )),
+      body: Padding(
+        padding: const EdgeInsets.only(top:90.0),
+        child: Container(
+          decoration: roundedDecoration,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height:260,
+                    child: Lottie.asset(
+                      'assets/icons/won.json',
+                      // repeat: false,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: roundedDecoration,
+                    child: Column(
+                      children: [
+                        Text(
+                          "Score: $correctCount / $totalCount",
+                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          "Points Earned: ${correctCount * 10}",
+                          style: const TextStyle(fontSize: 18, color: Colors.green),
+                        ),
+                        const SizedBox(height:25),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal:18.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              textStyle: const TextStyle(fontSize: 16),
+                              backgroundColor: Colors.blue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            onPressed:() {
+                              Navigator.of(context).pop();
+                            }, child:Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text("Try Again"),
+                              const SizedBox(width:12),
+                              AnimatedForwardArrow(isEnabled:true,),
+                            ],
+                          ),
+                          ),
+                        ),
+                        // SizedBox(height:MediaQuery.of(context).size.height*0.02),
+                        // if (!(appOpenAdController.isShowingOpenAd.value
+                        //     || removeAds.isSubscribedGet.value))
+                        //   nativeAdController.nativeAdWidget('key3'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar:
+      Get.find<InterstitialAdController>().isAdReady
+          ? SizedBox()
+          : Obx(() {
+        return Get.find<BannerAdController>().getBannerAdWidget('ad11');
+      }),
+    );
+  }
+}

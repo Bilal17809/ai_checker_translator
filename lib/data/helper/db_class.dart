@@ -19,7 +19,7 @@ class QuizDatabaseService {
       try {
         await Directory(dirname(path)).create(recursive: true);
       } catch (_) {}
-      ByteData data = await rootBundle.load("assets/db/wordsnew_db.db");
+      ByteData data = await rootBundle.load("assets/wordsnew_db.db");
       List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       await File(path).writeAsBytes(bytes, flush: true);
     } else {

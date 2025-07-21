@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shimmer/shimmer.dart';
 import '../core/theme/app_colors.dart';
+import '../presentations/remove_ads_contrl/remove_ads_contrl.dart';
 import 'appOpen_ads.dart';
 
 class BannerAdController extends GetxController {
@@ -12,6 +13,8 @@ class BannerAdController extends GetxController {
   final Map<String, RxBool> _adLoaded = {};
   RxBool isAdEnabled = true.obs;
   final AppOpenAdController openAdController = Get.put(AppOpenAdController());
+  final RemoveAds removeAdsController = Get.put(RemoveAds());
+
 
   @override
   void onInit() {
@@ -29,7 +32,6 @@ class BannerAdController extends GetxController {
           minimumFetchInterval: const Duration(minutes: 1),
         ),
       );
-
       await remoteConfig.fetchAndActivate();
       String bannerKey;
       if (Platform.isAndroid) {
@@ -39,12 +41,10 @@ class BannerAdController extends GetxController {
       } else {
         throw UnsupportedError('Unsupported platform');
       }
-
       bool bannerAdsEnabled = remoteConfig.getBool(bannerKey);
       isAdEnabled.value = bannerAdsEnabled;
-
       if (bannerAdsEnabled) {
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 15; i++) {
           loadBannerAd('ad$i');
         }
       }
@@ -76,11 +76,9 @@ class BannerAdController extends GetxController {
       listener: BannerAdListener(
         onAdLoaded: (ad) {
           _adLoaded[key] = true.obs;
-          print("Banner Ad Loaded for key: $key");
         },
         onAdFailedToLoad: (ad, error) {
           _adLoaded[key] = false.obs;
-          print("Ad failed to load for key $key: ${error.message}");
         },
       ),
     );
@@ -98,6 +96,9 @@ class BannerAdController extends GetxController {
   }
 
   Widget getBannerAdWidget(String key) {
+    if (Platform.isIOS && removeAdsController.isSubscribedGet.value) {
+      return SizedBox();
+    }
     if (openAdController.isShowingOpenAd.value) {
       return const SizedBox();
     }
@@ -149,6 +150,8 @@ class LargeBannerAdController extends GetxController {
   final Map<String, BannerAd> _ads = {};
   final Map<String, RxBool> _adLoaded = {};
   RxBool isAdEnabled = true.obs;
+  final RemoveAds removeAdsController = Get.put(RemoveAds());
+
   @override
   void onInit() {
     super.onInit();
@@ -165,7 +168,6 @@ class LargeBannerAdController extends GetxController {
       await remoteConfig.fetchAndActivate();
       bool bannerAdsEnabled = remoteConfig.getBool('BannerAd');
       isAdEnabled.value = bannerAdsEnabled;
-
       if (bannerAdsEnabled) {
         loadBannerAd('ad14');
       }
@@ -186,11 +188,9 @@ class LargeBannerAdController extends GetxController {
       listener: BannerAdListener(
         onAdLoaded: (ad) {
           _adLoaded[key] = true.obs;
-          print("Banner Ad Loaded for key: $key");
         },
         onAdFailedToLoad: (ad, error) {
           _adLoaded[key] = false.obs;
-          print("Ad failed to load for key $key: ${error.message}");
         },
       ),
     );
@@ -207,8 +207,11 @@ class LargeBannerAdController extends GetxController {
     super.onClose();
   }
   Widget getBannerAdWidget(String key) {
+    if (Platform.isIOS && removeAdsController.isSubscribedGet.value) {
+      return SizedBox();
+    }
     final screenWidth = MediaQuery.of(Get.context!).size.width;
-    final shimmerAspectRatio = 60 / 8; // adjust if needed
+    final shimmerAspectRatio = 60 / 8;
     final shimmerHeight = screenWidth / shimmerAspectRatio;
 
     if (isAdEnabled.value &&
