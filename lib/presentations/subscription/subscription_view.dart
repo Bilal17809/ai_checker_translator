@@ -19,7 +19,7 @@ import '../remove_ads_contrl/remove_ads_contrl.dart';
 final bool _kAutoConsume = Platform.isIOS || true;
 const String _kConsumableId = 'consumable';
 const String _kUpgradeId = 'upgrade';
-const String _kSilverSubscriptionId = 'com.advanceenglishdictionary.Ads';
+const String _kSilverSubscriptionId = 'com.aigrammar.removeads';
 const List<String> _kProductIds = <String>[
   _kConsumableId,
   _kUpgradeId,
@@ -51,7 +51,7 @@ class _SubscriptionsState extends State<Subscriptions> {
     if (!connectivityResult.contains(ConnectivityResult.mobile) &&
         !connectivityResult.contains(ConnectivityResult.wifi)) {
       if (!context.mounted) return;
-       NoInternetDialog();
+       // NoInternetDialog();
     }
   }
 
