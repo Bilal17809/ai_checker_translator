@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../presentations/remove_ads_contrl/remove_ads_contrl.dart';
 import 'appOpen_ads.dart';
 import 'interstitial_ads.dart';
 
@@ -17,6 +18,8 @@ class NativeAdController extends GetxController {
   final Rx<Widget> adWidget = Rx<Widget>(SizedBox.shrink());
   final AppOpenAdController openAdController = Get.put(AppOpenAdController());
   final InterstitialAdController interAds = Get.put(InterstitialAdController());
+  final RemoveAds removeAdsController = Get.put(RemoveAds());
+
   final SplashInterstitialAdController spAds = Get.put(
     SplashInterstitialAdController(),
   );
@@ -146,6 +149,9 @@ class NativeAdController extends GetxController {
   }
 
   Widget nativeAdWidget() {
+    if (Platform.isIOS && removeAdsController.isSubscribedGet.value) {
+      return SizedBox();
+    }
     if (openAdController.isShowingOpenAd.value) {
       return const SizedBox();
     } else {
@@ -167,6 +173,8 @@ class NativeAdMeduimController extends GetxController {
   final Rx<Widget> adWidget = Rx<Widget>(SizedBox.shrink());
   final AppOpenAdController openAdController = Get.put(AppOpenAdController());
   final InterstitialAdController interAds = Get.put(InterstitialAdController());
+  final RemoveAds removeAdsController = Get.put(RemoveAds());
+
   final SplashInterstitialAdController spAds = Get.put(
     SplashInterstitialAdController(),
   );
@@ -291,6 +299,9 @@ class NativeAdMeduimController extends GetxController {
   }
 
   Widget nativeAdWidget() {
+    if (Platform.isIOS && removeAdsController.isSubscribedGet.value) {
+      return SizedBox();
+    }
     if (openAdController.isShowingOpenAd.value) {
       return const SizedBox();
     } else {

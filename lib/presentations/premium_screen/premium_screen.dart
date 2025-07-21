@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import '../remove_ads_contrl/remove_ads_contrl.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../term_of_use_screen/term_of_use_screen.dart';
 
 final bool _kAutoConsume = Platform.isIOS || true;
 const String _kConsumableId = 'consumable';
@@ -353,17 +352,20 @@ Widget build(BuildContext context) {
                             const SizedBox(height: 16),
                             _buildProductList(width,height),
                             Column(
-                              children: const [
-                                Text(
+                              children: [
+                                const Text(
                                   '>> Cancel anytime at least 24 hours before renewal',
                                   style:TextStyle(color: Colors.black,fontSize:14)
                                 ),
-                                SizedBox(height: 12,),
+                                const SizedBox(height: 12,),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Privacy | Terms"),
-                                    Text("Cancel Anytime"),
+                                      InkWell(
+                                          child: const Text("Privacy | Terms"),
+                                        onTap: ()=>TermOfUseScreen(),
+                                      ),
+                                    const Text("Cancel Anytime"),
                                   ],
                                 )
                               ],
@@ -525,8 +527,8 @@ Widget build(BuildContext context) {
         if (Navigator.of(context).canPop()) {
           Navigator.of(context).pop();
         }final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('SubscribedAED', true);
-        await prefs.setString('subscriptionId', details.productID);
+        await prefs.setBool('SubscribeAiGrammar', true);
+        await prefs.setString('subscriptionAiId', details.productID);
         removeAdsController.isSubscribedGet(true);
 
         ScaffoldMessenger.of(context).showSnackBar(

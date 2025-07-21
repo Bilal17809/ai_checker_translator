@@ -55,16 +55,6 @@ const Color suffixIconColor = Color(0xff8E8E8E);
 const Color greyBorderColor = Color(0xffADADAD);
 const Color dividerColor = Color(0xffEDEDED);
 
-
-// use below
-// const kLightGreen1 = Color(0xFFE8F5E9);
-// const kMediumGreen1 = Color(0xFF81C784);
-// const kMediumGreen2 = Color.fromARGB(255, 93, 194, 96);
-// const kDarkGreen1 = Color(0xFF388E3C);
-// const kDarkGreen2 = Color(0xFF1B5E20);
-// const kTealGreen1 = Color(0xFF26A69A);
-// const kLightGreen2 = Color(0xFFC8E6C9);
-
 // Light Theme Colors
 const kLightGreen1 = Color(0xFFE8F5E9);
 const kMediumGreen1 = Color.fromARGB(

@@ -16,7 +16,7 @@
 import Flutter
 import UIKit
 import Firebase
-// import OneSignalFramework
+import OneSignalFramework
 
 
 
@@ -28,7 +28,7 @@ import Firebase
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
 
-//     OneSignal.initialize("54df0907-3214-46d8-ba21-82405aea910a")
+    OneSignal.initialize("0a861af3-75dc-41f2-896e-cf8220fdd94a")
     // Initialize Firebase
      FirebaseApp.configure()
     // Register plugins

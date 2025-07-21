@@ -153,22 +153,23 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
                         ),
 
                         const SizedBox(height: 10),
-                        Text.rich(
+                        Obx(() => Text.rich(
                           TextSpan(
                             text:
-                                "Daily Limits Remaining = ${controller.generateCount.value} ",
+                            "Daily Limits Remaining = ${controller.maxFreeInteractions - controller.interactionCount.value} ",
                             style: const TextStyle(fontSize: 12),
                             children: [
-                              TextSpan(
+                              const TextSpan(
                                 text: "Go Premium",
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.red,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
-                        ),
+                        )),
+
                         const SizedBox(height: 10),
 
                         Obx(
@@ -177,7 +178,7 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
                             // width: 100,
                             child: ElevatedButton(
                               onPressed: () {
-                                controller.generate();
+                                controller.generate(context);
                                 FocusScope.of(context).unfocus();
                               },
                               style: AppTheme.elevatedButtonStyle.copyWith(

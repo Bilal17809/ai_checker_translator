@@ -103,7 +103,7 @@ class CustomInfoDialog extends StatelessWidget {
                       child: PlainTextButton(
                         label: "Cancel",
                         color: Colors.black,
-                        onPressed: onSecondaryPressed ?? () => Get.back(),
+                        onPressed: () => Get.back(),
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -111,7 +111,7 @@ class CustomInfoDialog extends StatelessWidget {
                       child: PlainTextButton(
                         label: "Watch Ads",
                         color: Colors.blue,
-                        onPressed: () => Get.back(),
+                        onPressed: onSecondaryPressed??() => Get.back(),
                       ),
                     ),
                   ],

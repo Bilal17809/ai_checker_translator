@@ -71,6 +71,7 @@ dependencies:
   html: ^0.15.6
   smooth_page_indicator: ^1.2.1
   share_plus: ^11.0.0
+  lottie: ^3.3.1
 
 dev_dependencies:
   flutter_test:
@@ -102,6 +103,7 @@ flutter:
     - assets/db_prahse.db
     - assets/sounds/correctanswer.mp3
     - assets/sounds/wronganswer.mp3
+    - assets/wordsnew_db.db
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
