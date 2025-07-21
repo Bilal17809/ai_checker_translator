@@ -5,12 +5,14 @@ import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/controller/quizzeslevel_controller.dart';
 import 'package:ai_checker_translator/presentations/Quiz_levels/view/quiz_level_screen.dart';
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/controller/Categories_controller.dart';
-// import 'package:ai_checker_translator/presentations/quizzes_category_screen/model/grammarcategory_model.dart';
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/widget/quizzess_grammar_widget.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
 
 class QuizessCategoryScreen extends StatefulWidget {
   const QuizessCategoryScreen({super.key});
@@ -100,6 +102,12 @@ class _QuizessCategoryScreenState extends State<QuizessCategoryScreen> {
               );
             }),
           ),
+          bottomNavigationBar:
+          Get.find<InterstitialAdController>().isAdReady
+              ? SizedBox()
+              : Obx(() {
+            return Get.find<BannerAdController>().getBannerAdWidget('ad8');
+          }),
         ),
       )
     );

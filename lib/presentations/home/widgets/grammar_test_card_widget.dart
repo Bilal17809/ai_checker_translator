@@ -33,7 +33,7 @@ class GrammarTestCardWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: height * 0.18,
+        height: height * 0.16,
         padding: padding ?? const EdgeInsets.all(16),
         decoration: roundedDecorationHomevie,
         child: Column(
@@ -86,7 +86,7 @@ class GrammarTestCardWidget extends StatelessWidget {
               ),
             ),
             if (showActionButton && actionButtonText != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height:5),
               Align(
                 alignment: Alignment.bottomRight,
                 child: SizedBox(

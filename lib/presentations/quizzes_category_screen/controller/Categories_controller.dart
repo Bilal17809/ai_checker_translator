@@ -7,6 +7,7 @@ import 'package:ai_checker_translator/presentations/learn_grammaer/view/rules_de
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/model/grammarcategory_model.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../ads_manager/interstitial_ads.dart';
 import '../../../data/models/categories_model.dart';
 
 class CategoriesController extends GetxController {
@@ -90,6 +91,7 @@ class CategoriesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    Get.find<InterstitialAdController>().checkAndShowAd();
     _initPrefs();
     fetchCategoriesData(1);
   }

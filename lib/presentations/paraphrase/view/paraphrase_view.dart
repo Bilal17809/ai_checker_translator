@@ -4,6 +4,8 @@ import 'package:ai_checker_translator/core/theme/app_styles.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/controller/paraphrase_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
 import '../../../core/theme/app_colors.dart';
 import 'topic_phrase_screen.dart';
 
@@ -164,6 +166,12 @@ class ParaphraseView extends StatelessWidget {
               ),
             ],
           ),
+          bottomNavigationBar:
+          Get.find<InterstitialAdController>().isAdReady
+              ? SizedBox()
+              : Obx(() {
+            return Get.find<BannerAdController>().getBannerAdWidget('ad5');
+          }),
         ),
       )
     );

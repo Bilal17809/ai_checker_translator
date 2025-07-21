@@ -4,7 +4,8 @@
 //
 //class MainActivity : FlutterActivity()
 
-package com.example.getx_practice_app
+//package com.example.getx_practice_app
+package com.modernschool.aigrammar.learnenglish
 
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.OnInitListener
@@ -19,7 +20,7 @@ import io.flutter.plugin.common.MethodChannel
 import java.util.Locale
 
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "com.example.getx_practice_app/speech_Text"
+    private val CHANNEL = "com.modernschool.aigrammar.learnenglish/speech_Text"
     private val SPEECH_REQUEST_CODE = 1001
     private var pendingResult: MethodChannel.Result? = null
     private lateinit var tts: TextToSpeech

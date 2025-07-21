@@ -1,3 +1,6 @@
+import 'package:ai_checker_translator/ads_manager/appOpen_ads.dart';
+import 'package:ai_checker_translator/ads_manager/banner_ads.dart';
+import 'package:ai_checker_translator/ads_manager/native_ads.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/ai_dictioanay_contrl.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
@@ -26,6 +29,8 @@ class _HomeViewState extends State<HomeView> {
   final FocusScopeNode _focusScopeNode = FocusScopeNode();
   GeminiAiCorrectionController geminiAiCorrectionController =
       Get.find<GeminiAiCorrectionController>();
+  bool isDrawerOpen=false;
+  final GlobalKey<ScaffoldState> _globalKey=GlobalKey<ScaffoldState>();
 
   @override
   void dispose() {
@@ -48,6 +53,12 @@ class _HomeViewState extends State<HomeView> {
         onTap: () => _focusScopeNode.unfocus(),
         child: SafeArea(
           child: Scaffold(
+            key: _globalKey,
+            onDrawerChanged: (isOpen) {
+              setState(() {
+                isDrawerOpen = isOpen;
+              });
+            },
             appBar: CommonAppbarWidget(),
             drawer: CustomDrawer(),
             body: LayoutBuilder(
@@ -55,7 +66,7 @@ class _HomeViewState extends State<HomeView> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
-                    vertical: 20,
+                    vertical:14,
                   ),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
@@ -72,8 +83,11 @@ class _HomeViewState extends State<HomeView> {
                             subtitle: "Learn Grammar by playing Games",
                             showActionButton: false,
                           ),
-                          const SizedBox(height: 16),
-
+                          const SizedBox(height:8),
+                          if (!(Get.find<AppOpenAdController>().isShowingOpenAd.value
+                              || isDrawerOpen))
+                            Get.find<LargeBannerAdController>().getBannerAdWidget('ad14'),
+                          SizedBox(height:12),
                           /// Row 1
                           Expanded(
                             child: Row(

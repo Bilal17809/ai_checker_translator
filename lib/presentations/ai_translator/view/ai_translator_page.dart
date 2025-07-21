@@ -11,6 +11,9 @@ import 'package:ai_checker_translator/presentations/ai_translator/widgets/transl
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_widgets.dart';
 
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
+
 class AiTranslatorPage extends StatefulWidget {
   AiTranslatorPage({super.key});
 
@@ -22,6 +25,11 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
     with AppLifecycleMixin {
   final TranslationController controller = Get.put(TranslationController());
 
+  @override
+  void initState() {
+    Get.find<InterstitialAdController>().checkAndShowAd();
+    super.initState();
+  }
   @override
   void onAppPause() {
     controller.audioPlayer.stop();
@@ -144,6 +152,12 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
             ],
           ),
         ),
+        bottomNavigationBar:
+        Get.find<InterstitialAdController>().isAdReady
+            ? SizedBox()
+            : Obx(() {
+          return Get.find<BannerAdController>().getBannerAdWidget('ad2');
+        }),
       ),
     );
   }

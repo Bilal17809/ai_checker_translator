@@ -6,6 +6,9 @@ import 'package:get/get.dart';
 import 'package:ai_checker_translator/presentations/quizdetail/controller/quiz_detail_controller.dart';
 import 'package:ai_checker_translator/presentations/quizzes/widgets/quizzes_card.dart';
 
+import '../../ads_manager/banner_ads.dart';
+import '../../ads_manager/interstitial_ads.dart';
+import '../../ads_manager/splash_interstitial.dart';
 import '../quizzes_result/quizzes_result_screen.dart';
 
 class QuizzesScreen extends StatefulWidget {
@@ -19,6 +22,12 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
   final QuizDetailController controller = Get.find<QuizDetailController>();
 
   final PageController _pageController = PageController();
+
+  @override
+  void initState() {
+    Get.find<InterstitialAdController>().showInterstitialAd();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,11 +138,6 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                               final total = controller.quizzesList.length;
                               final current = controller.currentPage.value;
 
-                              print("total $total");
-                              
-                              print("Current $current");
-                              
-
                               if (current < total - 1) {
                                 // Move to next question
                                 _pageController.nextPage(
@@ -177,6 +181,13 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
             ],
           );
 
+        }),
+        bottomNavigationBar:
+        Get.find<InterstitialAdController>().isAdReady ||
+            Get.find<SplashInterstitialAdController>().isAdReady
+            ? SizedBox()
+            : Obx(() {
+          return Get.find<BannerAdController>().getBannerAdWidget('ad7');
         }),
       ),
     );

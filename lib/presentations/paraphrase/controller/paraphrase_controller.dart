@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 
+import '../../../ads_manager/interstitial_ads.dart';
+
 class ParaphraseController extends GetxController {
   final ParaphraseRepo paraphraseRepo;
   ParaphraseController(this.paraphraseRepo);
@@ -33,6 +35,7 @@ class ParaphraseController extends GetxController {
 
   @override
   void onInit() {
+    Get.find<InterstitialAdController>().checkAndShowAd();
     super.onInit();
     fetchTopics();
   }

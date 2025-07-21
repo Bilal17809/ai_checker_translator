@@ -6,6 +6,9 @@ import 'package:ai_checker_translator/presentations/learn_grammaer/view/rules_sc
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/controller/Categories_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
 // import 'package:get/get_core/get_core.dart';
 // import 'package:get/get_state_manager/get_state_manager.dart';
 
@@ -17,6 +20,12 @@ class LearnGrammarScreen extends StatefulWidget {
 }
 
 class _LernGrammarScreenState extends State<LearnGrammarScreen> {
+
+  @override
+  void initState() {
+    Get.find<InterstitialAdController>().checkAndShowAd();
+    super.initState();
+  }
   final categoriesController = Get.find<CategoriesController>();
   @override
   Widget build(BuildContext context) {
@@ -146,8 +155,14 @@ class _LernGrammarScreenState extends State<LearnGrammarScreen> {
             },
           );
         }),
+        bottomNavigationBar:
+        Get.find<InterstitialAdController>().isAdReady
+            ? SizedBox()
+            : Obx(() {
+          return Get.find<BannerAdController>().getBannerAdWidget('ad4');
+        }),
       ),
     );
-    
+
   }
 }

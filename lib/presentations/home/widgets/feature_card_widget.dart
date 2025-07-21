@@ -26,7 +26,7 @@ class FeatureCardWidget extends StatelessWidget {
       child: Container(
         width: width * 0.45,
         padding: const EdgeInsets.all(12),
-        height: height * 0.18,
+        height: height * 0.16,
         decoration: rounBorderDecoration,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
