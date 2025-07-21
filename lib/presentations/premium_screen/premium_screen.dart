@@ -1,12 +1,26 @@
-import 'package:ai_checker_translator/core/routes/routes_name.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
-import 'package:ai_checker_translator/core/theme/app_styles.dart';
-import 'package:ai_checker_translator/core/theme/app_theme.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:get/get.dart';
-import 'package:get/get_utils/get_utils.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+import '../remove_ads_contrl/remove_ads_contrl.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+
+final bool _kAutoConsume = Platform.isIOS || true;
+const String _kConsumableId = 'consumable';
+const String _kUpgradeId = 'upgrade';
+const String _kSilverSubscriptionId = 'com.aigrammar.removeads';
+const List<String> _kProductIds = <String>[
+  _kConsumableId,
+  _kUpgradeId,
+  _kSilverSubscriptionId,
+];
 class PremiumScreen extends StatefulWidget {
   const PremiumScreen({super.key});
 
@@ -16,6 +30,93 @@ class PremiumScreen extends StatefulWidget {
 
 class _PremiumScreenState extends State<PremiumScreen> {
   bool isSwitch = false;
+  final InAppPurchase _inAppPurchase = InAppPurchase.instance;
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
+  List<String> _notFoundIds = <String>[];
+  List<ProductDetails> _products = <ProductDetails>[];
+  List<PurchaseDetails> _purchases = <PurchaseDetails>[];
+  List<String> _consumables = <String>[];
+  bool _isAvailable = false;
+  bool _purchasePending = false;
+  bool _loading = true;
+  String? _queryProductError;
+  final RemoveAds removeAdsController = Get.put(RemoveAds());
+
+  Future<void> _checkInternetConnection() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (!connectivityResult.contains(ConnectivityResult.mobile) &&
+        !connectivityResult.contains(ConnectivityResult.wifi)) {
+      if (!context.mounted) return;
+      // NoInternetDialog();
+    }
+  }
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _checkInternetConnection();
+    final Stream<List<PurchaseDetails>> purchaseUpdated =
+        _inAppPurchase.purchaseStream;
+    _subscription = purchaseUpdated.listen(
+      _listenToPurchaseUpdated,
+      onDone: () => _subscription.cancel(),
+      onError: (Object error) {
+        print('Error in purchase stream: $error');
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
+        setState(() {
+          _purchasePending = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Purchase stream error: ${error.toString()}')),
+        );
+      },
+    );
+    initStoreInfo();
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+
+  Future<void> initStoreInfo() async {
+    final bool isAvailable = await _inAppPurchase.isAvailable();
+    if (!isAvailable) {
+      setState(() {
+        _isAvailable = isAvailable;
+        _products = [];
+        _purchases = [];
+        _notFoundIds = [];
+        _consumables = [];
+        _purchasePending = false;
+        _loading = false;
+      });
+      return;
+    }
+
+    final ProductDetailsResponse productDetailResponse =
+    await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
+    if (productDetailResponse.error != null) {
+      setState(() {
+        _queryProductError = productDetailResponse.error!.message;
+        _isAvailable = isAvailable;
+        _loading = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _isAvailable = isAvailable;
+      _products = productDetailResponse.productDetails;
+      _notFoundIds = productDetailResponse.notFoundIDs;
+      _loading = false;
+    });
+  }
 
  @override
 Widget build(BuildContext context) {
@@ -24,149 +125,247 @@ Widget build(BuildContext context) {
 
   return SafeArea(
     child: Scaffold(
+      body: _buildBody(),
+    ),
+  );
+}
+
+
+  Column _buildProductList(double screenWidth, double screenHeight) {
+    double horizontalPadding = screenWidth * 0.02;
+    double verticalPadding = screenHeight * 0.01;
+    bool isSmallScreen = screenWidth < 600;
+
+    final Map<String, PurchaseDetails> purchases = {
+      for (var purchase in _purchases) purchase.productID: purchase
+    };
+    bool isSubscribed = removeAdsController.isSubscribedGet.value;
+    return Column(
+      children: _products.map((product) {
+        final purchase = purchases[product.id];
+        return isSubscribed
+            ? Padding(
+          padding:  EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+          child: const Text(
+            "You are on the ads-free version!",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 17,
+              color: Colors.white,
+            ),
+          ),
+        )
+            : Card(
+              color:kMintGreen,
+              elevation: 1.0,
+              margin: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
+              child: ListTile(
+                title: Text(
+                  'Life Time Subscription',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize:isSmallScreen? 16:screenHeight*0.02,
+                    color: Colors.white,
+                  ),
+                ),
+                subtitle: Text(
+                  product.description,
+                  style: TextStyle(
+                      fontSize:isSmallScreen? 14:screenHeight*0.02,
+                      color:  Colors.white),
+                ),
+                trailing: Text(
+                  product.price,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color:  Colors.white,
+                    fontSize: isSmallScreen?16:screenHeight*0.02,
+                  ),
+                ),
+                onTap: () {
+                  if (mounted) {
+                    _showPurchaseDialog(context, product, purchase);
+                  }
+                },
+              ),
+            );
+      }).toList(),
+    );
+  }
+
+  Future<void> _showPurchaseDialog(
+      BuildContext context, ProductDetails product, PurchaseDetails? purchase) async {
+    final bool? confirmPurchase = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return PopScope(
+          canPop: false,
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            child: Container(
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15.0),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  const Text(
+                    'Confirm Purchase',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 15),
+                  const Text(
+                    'Are you sure you want to buy:',
+                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    product.title,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.blue),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Price: ${product.price}',
+                    style: const TextStyle(fontSize: 16, color: Colors.black54),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 25),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop(false); // User cancels
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Colors.blue),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          child: const Text('Cancel', style: TextStyle(color: Colors.blue, fontSize: 16)),
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop(true);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            elevation: 3,
+                          ),
+                          child: const Text('Confirm', style: TextStyle(color: Colors.white, fontSize: 16)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+    if (confirmPurchase == true) {
+      await _buyProduct(product, purchase);
+    }
+  }
+
+  Widget _buildBody() {
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_queryProductError != null) {
+      return Center(child: Text(_queryProductError!));
+    }
+    return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
+          final width = constraints.maxWidth;
+          final height = constraints.maxHeight;
+
           return SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
             child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              constraints: BoxConstraints(minHeight: height),
               child: Stack(
                 children: [
                   Column(
                     children: [
+                      // Top green area
                       Container(
-                        height: height * 0.30,
+                        height: height * 0.32,
                         decoration: BoxDecoration(
                           color: kMintGreen.withOpacity(0.6),
                         ),
                       ),
+                      // White curved area
                       Container(
-                        height: height * 0.20,
+                        height: height * 0.19,
                         decoration: const BoxDecoration(
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.white,
                               offset: Offset(0, -120),
-                              blurRadius: 100,
-                              spreadRadius: 70,
+                              blurRadius: 110,
+                              spreadRadius: 90,
                             ),
                           ],
                         ),
                       ),
+
+                      // Main content
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _screenbaners(
-                              hieht: null,
-                              widget: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 18, vertical: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Learna pro",
-                                      style: context.textTheme.bodyLarge!
-                                          .copyWith(color: kBlue),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      "Unlimited interactive practice, personalized study plane, Real-time AI Feedback, Control & Track Your progress.",
-                                      style: context.textTheme.bodyMedium,
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      "Free for 3 Days, then 1400.00/week.",
-                                      style: context.textTheme.bodyMedium,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
                             const SizedBox(height: 16),
-                              // _screenbaners(
-                              //   hieht: null,
-                              //   widget: Padding(
-                              //     padding:
-                              //         const EdgeInsets.symmetric(horizontal: 10),
-                              //     child: Row(
-                              //       mainAxisAlignment:
-                              //           MainAxisAlignment.spaceBetween,
-                              //       children: [
-                              //         Flexible(
-                              //           child: Text(
-                              //             "Free Trial Enabled",
-                              //             style: context.textTheme.bodyLarge!
-                              //                 .copyWith(
-                              //               color: kMintGreen,
-                              //               fontWeight: FontWeight.bold,
-                              //             ),
-                              //           ),
-                              //         ),
-                              //         Switch(
-                              //           value: isSwitch,
-                              //           onChanged: (value) {
-                              //             setState(() {
-                              //               isSwitch = value;
-                              //             });
-                              //           },
-                              //           thumbColor:
-                              //               MaterialStateProperty.resolveWith<
-                              //                   Color>((states) {
-                              //             return kMintGreen;
-                              //           }),
-                              //           trackColor:
-                              //               MaterialStateProperty.resolveWith<
-                              //                   Color>((states) {
-                              //             return states.contains(
-                              //                     MaterialState.selected)
-                              //                 ? kMintGreen.withOpacity(0.5)
-                              //                 : kMintGreen.withOpacity(0.3);
-                              //           }),
-                              //           focusColor: kMintGreen.withOpacity(0.3),
-                              //           splashRadius: 20,
-                              //         ),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
-                            const SizedBox(height: 14),
-                            const _DatesWidget(),
-                            const SizedBox(height: 14),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: AppTheme.elevatedButtonStyle.copyWith(
-                                backgroundColor:
-                                    MaterialStateProperty.all(kMintGreen),
-                                shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
+                            _buildProductList(width,height),
+                            Column(
+                              children: const [
+                                Text(
+                                  '>> Cancel anytime at least 24 hours before renewal',
+                                  style:TextStyle(color: Colors.black,fontSize:14)
                                 ),
-                                elevation: MaterialStateProperty.all(6),
-                                shadowColor: MaterialStateProperty.all(
-                                    Colors.green.withOpacity(0.4)),
-                              ),
-                              child: const Text("Free Trial"),
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      Get.toNamed(RoutesName.termofusescreen);
-                                    },
-                                    child: Text(
-                                      "Privacy | Terms",
-                                      style: TextStyle(color: kBlue),
-                                    ),
-                                  ),
-                                Text("Cancel Anytime"),
+                                SizedBox(height: 12,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Privacy | Terms"),
+                                    Text("Cancel Anytime"),
+                                  ],
+                                )
                               ],
                             ),
                             const SizedBox(height: 28),
@@ -184,17 +383,21 @@ Widget build(BuildContext context) {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _glassButton(icon: Icons.clear),
-                        _glassButton(text: "Restore", width: 70),
+                        _glassButton(icon: Icons.clear, onTap: () => Navigator.of(context).pop()),
+                        _glassButton(
+                          text: "Restore",
+                          width: 70,
+                          onTap: _restorePurchases,
+                        ),
                       ],
                     ),
                   ),
 
                   // Headings
                   Positioned(
-                    top: height * 0.31,
+                    top: height * 0.34,
                     left: width * 0.35,
-                    child: Text(
+                    child: const Text(
                       "Learna pro",
                       style: TextStyle(
                         color: Colors.blue,
@@ -206,8 +409,8 @@ Widget build(BuildContext context) {
                   Positioned(
                     left: width * 0.08,
                     right: width * 0.08,
-                    top: height * 0.35,
-                    child: Text(
+                    top: height * 0.38,
+                    child: const Text(
                       "Get Unlimited Access",
                       style: TextStyle(
                         color: kMintGreen,
@@ -220,8 +423,8 @@ Widget build(BuildContext context) {
                   Positioned(
                     left: width * 0.08,
                     right: width * 0.08,
-                    top: height * 0.41,
-                    child: Text(
+                    top: height * 0.44,
+                    child: const Text(
                       "Accessible anytime, anywhere for flexible learning.",
                       style: TextStyle(color: kMintGreen, fontSize: 16),
                       textAlign: TextAlign.center,
@@ -239,127 +442,194 @@ Widget build(BuildContext context) {
                       fit: BoxFit.contain,
                     ),
                   ),
+
+                  if (_purchasePending)
+                    const Opacity(
+                      opacity: 0.3,
+                      child: ModalBarrier(dismissible: false, color: Colors.grey),
+                    ),
                 ],
               ),
             ),
           );
         },
       ),
-    ),
-  );
-}
-
-
-  Widget _glassButton({IconData? icon, String? text, double width = 30}) {
-    return Container(
-      height: 34,
-      width: width,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.white.withOpacity(0.6),
-      ),
-      child: Center(
-        child: icon != null
-            ? Icon(icon, size: 18)
-            : Text(text ?? "", style: const TextStyle(fontSize: 12)),
-      ),
     );
   }
-}
 
-
-class _screenbaners extends StatelessWidget {
-  final double? hieht;
-  final double width;
-  final Widget widget;
-  const _screenbaners({
-    super.key,
-    this.hieht,
-    this.width = double.infinity,
-    required this.widget,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      constraints: hieht != null
-          ? BoxConstraints(minHeight: hieht!)
-          : const BoxConstraints(),
-      decoration: premiumscreenroundecoration,
-      child: widget,
-    );
-  }
-}
-
-
-
-
-class _DatesWidget extends StatelessWidget {
-  const _DatesWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    final height = MediaQuery.sizeOf(context).height;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          children: [
-            const SizedBox(height: 6),
-            CircleAvatar(radius: width * 0.01, backgroundColor: kMintGreen),
-            Container(
-              width: 2,
-              height: height * 0.03,
-              color: kMintGreen,
+  Future<void> _buyProduct(ProductDetails product, PurchaseDetails? purchase) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return PopScope(
+          canPop: false,
+          child: AlertDialog(
+            content: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                CircularProgressIndicator(),
+                SizedBox(width: 20),
+                Text('Connecting to store...'),
+              ],
             ),
-            CircleAvatar(radius: width * 0.01, backgroundColor: kMintGreen),
-          ],
+          ),
+        );
+      },
+    );
+
+    try {
+      final purchaseParam = GooglePlayPurchaseParam(
+        productDetails: product,
+        changeSubscriptionParam: purchase != null && purchase is GooglePlayPurchaseDetails
+            ? ChangeSubscriptionParam(
+          oldPurchaseDetails: purchase,
+        )
+            : null,
+      );
+      if (product.id == _kConsumableId) {
+        await _inAppPurchase.buyConsumable(
+          purchaseParam: purchaseParam,
+          autoConsume: _kAutoConsume,
+        );
+      } else {
+        await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+      }
+
+    } catch (e) {
+      print('Immediate purchase initiation error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to initiate purchase: ${e.toString()}')),
+      );
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+    }
+  }
+
+  Future<void> _listenToPurchaseUpdated(List<PurchaseDetails> detailsList) async {
+    for (var details in detailsList) {
+      if (details.status == PurchaseStatus.pending) {
+        setState(() => _purchasePending = true);
+      } else if (details.status == PurchaseStatus.error) {
+        setState(() => _purchasePending = false);
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Purchase failed: ${details.error?.message ?? "Unknown error"}')),
+        );
+      } else if (details.status == PurchaseStatus.purchased ||
+          details.status == PurchaseStatus.restored) {
+        setState(() => _purchasePending = false);
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('SubscribedAED', true);
+        await prefs.setString('subscriptionId', details.productID);
+        removeAdsController.isSubscribedGet(true);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Subscription purchased successfully!')),
+        );
+
+        if (details.pendingCompletePurchase) {
+          await _inAppPurchase.completePurchase(details);
+        }
+      }
+      if (details.pendingCompletePurchase) {
+        await _inAppPurchase.completePurchase(details);
+      }
+    }
+  }
+
+  Future<void> _restorePurchases() async {
+    final bool isAvailable = await _inAppPurchase.isAvailable();
+    if (!isAvailable) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Store is not available!')),
+      );
+      return;
+    }
+
+    setState(() {
+      _purchasePending = true;
+    });
+
+    // Show a restoring loader similar to _buyProduct
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return PopScope(
+          canPop: false,
+          child: AlertDialog(
+            content: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                CircularProgressIndicator(),
+                SizedBox(width: 20),
+                Text('Restoring purchases...'),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    try {
+      await _inAppPurchase.restorePurchases();
+      Timer(const Duration(seconds: 20), () {
+        if (_purchasePending) {
+          setState(() {
+            _purchasePending = false;
+          });
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Restore timed out or no purchases found.')),
+          );
+        }
+      });
+
+    } catch (e) {
+      setState(() {
+        _purchasePending = false;
+      });
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred during restore: ${e.toString()}')),
+      );
+    }
+  }
+  Widget _glassButton({
+    IconData? icon,
+    String? text,
+    double width = 30,
+    VoidCallback? onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        height: 34,
+        width: width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.white.withOpacity(0.6),
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Due Today", style: context.textTheme.bodyMedium),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "3 days free  ",
-                          style: context.textTheme.bodyMedium!
-                              .copyWith(color: kMintGreen),
-                        ),
-                        TextSpan(
-                          text: "0.00",
-                          style: context.textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Due July 20, 2025",
-                      style: context.textTheme.bodyMedium),
-                  Text("1400.00",
-                      style: context.textTheme.bodyMedium!.copyWith(
-                        color: kBlue,
-                      )),
-                ],
-              ),
-            ],
+        child: Center(
+          child: icon != null
+              ? Icon(icon, size: 18)
+              : Text(
+            text ?? "",
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
           ),
         ),
-      ],
+      ),
     );
   }
 }
