@@ -5,18 +5,14 @@ import 'package:ai_checker_translator/core/common_widgets/back_to_home_wrapper.d
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/keyboard_dismiss_wrapper.dart';
 import 'package:ai_checker_translator/core/common_widgets/life_cycle_mixin.dart';
-import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
 import 'package:ai_checker_translator/core/common_widgets/voicedialog_for_ios.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/core/theme/app_theme.dart';
-import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/animation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:share_plus/share_plus.dart';
-
 import '../controller/gemini_controller.dart';
 import '../widgets/text_generated_widget.dart';
 
@@ -164,9 +160,9 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                             height: 48,
                             child: ElevatedButton(
                               onPressed: () async {
+                                FocusScope.of(context).unfocus();
                                 controller.flutterTts.stop();
                                 await controller.generate();
-                                FocusScope.of(context).unfocus();
                               },
                               style: AppTheme.elevatedButtonStyle.copyWith(
                                 backgroundColor: MaterialStateProperty.all(

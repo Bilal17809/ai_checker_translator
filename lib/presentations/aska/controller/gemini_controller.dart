@@ -19,6 +19,7 @@ class GeminiController extends GetxController {
   final isTypingStarted = false.obs;
   final isResponseReady = false.obs;
   final RxInt generateCount = 3.obs;
+  final detectedText = ''.obs;
 
   late final GenerativeModel model;
   final MistralUseCase useCase;
