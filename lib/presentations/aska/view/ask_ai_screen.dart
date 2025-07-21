@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/back_to_home_wrapper.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
@@ -17,6 +16,8 @@ import 'package:get/get.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
 import '../controller/gemini_controller.dart';
 import '../widgets/text_generated_widget.dart';
 
