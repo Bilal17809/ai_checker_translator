@@ -1,6 +1,6 @@
 import 'package:ai_checker_translator/ads_manager/appOpen_ads.dart';
 import 'package:ai_checker_translator/ads_manager/banner_ads.dart';
-import 'package:ai_checker_translator/core/constant/constant.dart';
+import 'package:ai_checker_translator/ads_manager/native_ads.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/ai_dictioanay_contrl.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
@@ -53,6 +53,7 @@ class _HomeViewState extends State<HomeView> {
         onTap: () => _focusScopeNode.unfocus(),
         child: SafeArea(
           child: Scaffold(
+            backgroundColor: kWhiteF7,
             key: _globalKey,
             onDrawerChanged: (isOpen) {
               setState(() {
@@ -66,188 +67,104 @@ class _HomeViewState extends State<HomeView> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
-                    vertical:14,
+                    vertical: 20,
                   ),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       minHeight: constraints.maxHeight,
                     ),
                     child: IntrinsicHeight(
-                  child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (!showAllFeatures) ...[
-                        // 🔝 Show top banner only in default view
-                        GrammarTestCardWidget(
-                          icon: Assets.topbannericon.path,
-                          title: "Boost your learning",
-                          subtitle: "Learn Grammar by playing Games",
-                          showActionButton: false,
-                          onTap: () => Get.to(GameLevels()),
-                        ),
-                        const SizedBox(height: 8),
-                        if (!(Get.find<AppOpenAdController>().isShowingOpenAd.value || isDrawerOpen))
-                          Get.find<LargeBannerAdController>().getBannerAdWidget('ad14'),
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Features",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// Top Grammar Test Card
+                          GrammarTestCardWidget(
+                            icon: Assets.topbannericon.path,
+                            title: "Boost your learning",
+                            subtitle: "Learn Grammar by playing Games",
+                            showActionButton: false,
+                          ),
+                          const SizedBox(height:8),
+                          if (!(Get.find<AppOpenAdController>().isShowingOpenAd.value
+                              || isDrawerOpen))
+                            Get.find<LargeBannerAdController>().getBannerAdWidget('ad14'),
+                          SizedBox(height:12),
+                          /// Row 1
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: FeatureCardWidget(
+                                    OnTap: () {
+                                      geminiAiCorrectionController
+                                          .resetController();
+                                      Get.to(() => AiDictionaryPage());
+                                    },
+                                    image: Assets.aicorrectionicon.path,
+                                    title: "Ai corrector",
+                                    subtitle: "Grammar Checker",
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: FeatureCardWidget(
+                                    OnTap: () => Get.to(() => ParaphraseView()),
+                                    image: Assets.paraphrasericon.path,
+                                    title: "Paraphraser",
+                                  ),
+                                ),
+                              ],
                             ),
-                            GestureDetector(
-                              onTap:(){
-                                setState(() {
-                                  showAllFeatures = true;
-                                });
-                              },
-                              child:  Text("See all..",style: context.textTheme.labelMedium!.copyWith(
-                                  color: Colors.blue
-                              ),),
+                          ),
+                          const SizedBox(height: 16),
 
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        FeaturePageView(),
-                      ],
+                          /// Row 2
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: FeatureCardWidget(
+                                    OnTap:
+                                        () => Get.toNamed(
+                                          RoutesName.learngrammarscreen,
+                                        ),
+                                    image: Assets.learngrammaricon.path,
+                                    title: "Learn Grammar",
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: FeatureCardWidget(
+                                    OnTap: () {
+                                      geminicontroller.resetData();
+                                      Get.to(() => AskAiScreen());
+                                    },
+                                    image: Assets.askaiicon.path,
+                                    title: "Ask Ai",
+                                    subtitle: "Assistant",
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
 
-                      if (showAllFeatures) ...[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "All Features",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            GestureDetector(
-                              onTap:(){
-                                setState(() {
-                                  showAllFeatures = false;
-                                });
-                              },
-                              child:  Text("Back >>",style: context.textTheme.labelMedium!.copyWith(
-                                  color: Colors.blue
-                              ),),
-
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        GridView.count(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 12,
-                          crossAxisSpacing: 12,
-                          childAspectRatio: 1.2,
-                          children: [
-                            FeatureCardWidget(
-                              OnTap: () {
-                                geminiAiCorrectionController.resetController();
-                                Get.to(() => AiDictionaryPage());
-                              },
-                              image: Assets.aicorrectionicon.path,
-                              title: "Ai corrector",
-                              subtitle: "Grammar Checker",
-                            ),
-                            FeatureCardWidget(
-                              OnTap: () => Get.to(() => ParaphraseView()),
-                              image: Assets.paraphrasericon.path,
-                              title: "Paraphraser",
-                            ),
-                            FeatureCardWidget(
-                              OnTap: () => Get.toNamed(RoutesName.learngrammarscreen),
-                              image: Assets.learngrammaricon.path,
-                              title: "Learn Grammar",
-                            ),
-                            FeatureCardWidget(
-                              OnTap: () {
-                                geminicontroller.resetData();
-                                Get.to(() => AskAiScreen());
-                              },
-                              image: Assets.askaiicon.path,
-                              title: "Ask Ai",
-                              subtitle: "Assistant",
-                            ),
-                          ],
-                        ),
-                      ],
-
-                      const SizedBox(height: 12),
-                      GrammarTestCardWidget(
-                        icon: Assets.bottombannericon.path,
-                        title: "English Grammar Test",
-                        subtitle: "Begins the English Grammar Test to improve your grammar skills.",
-                        showActionButton: true,
-                        actionButtonText: "Let’s Go",
-                        onActionPressed: () {
-                          FocusScope.of(context).unfocus();
-                          Get.toNamed(RoutesName.quizzesCategoryScreen);
-                        },
+                          /// Bottom Grammar Test
+                          GrammarTestCardWidget(
+                            icon: Assets.bottombannericon.path,
+                            title: "English Grammar Test",
+                            subtitle:
+                                "Begins the English Grammar Test to improve your grammar skills.",
+                            showActionButton: true,
+                            actionButtonText: "Let’s Go",
+                            onActionPressed: () {
+                              FocusScope.of(context).unfocus();
+                              Get.toNamed(RoutesName.quizzesCategoryScreen);
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                    // child: IntrinsicHeight(
-                    //   child: Column(
-                    //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     children: [
-                    //       /// Top Grammar Test Card
-                    //       GrammarTestCardWidget(
-                    //         icon: Assets.topbannericon.path,
-                    //         title: "Boost your learning",
-                    //         subtitle: "Learn Grammar by playing Games",
-                    //         showActionButton: false,
-                    //         onTap:()=>Get.to(GameLevels()),
-                    //       ),
-                    //       const SizedBox(height:8),
-                    //       if (!(Get.find<AppOpenAdController>().isShowingOpenAd.value
-                    //           || isDrawerOpen))
-                    //         Get.find<LargeBannerAdController>().getBannerAdWidget('ad14'),
-                    //       SizedBox(height:12),
-                    //       Row(
-                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //         children: [
-                    //           Text(
-                    //             "Features",
-                    //             style: TextStyle(
-                    //               fontSize: 16,
-                    //               fontWeight: FontWeight.bold,
-                    //             ),
-                    //           ),
-                    //           Expanded(
-                    //             child: TextButton(
-                    //
-                    //                 onPressed: () {
-                    //                   Get.to(() => AllFeaturesScreen());
-                    //               },
-                    //               child: Text("See All"),
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //       const SizedBox(height: 8),
-                    //       FeaturePageView(),
-                    //
-                    //       const SizedBox(height: 12),
-                    //       /// Bottom Grammar Test
-                    //       GrammarTestCardWidget(
-                    //         icon: Assets.bottombannericon.path,
-                    //         title: "English Grammar Test",
-                    //         subtitle:
-                    //             "Begins the English Grammar Test to improve your grammar skills.",
-                    //         showActionButton: true,
-                    //         actionButtonText: "Let’s Go",
-                    //         onActionPressed: () {
-                    //           FocusScope.of(context).unfocus();
-                    //           Get.toNamed(RoutesName.quizzesCategoryScreen);
-                    //         },
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
+                    ),
                   ),
                 );
               },

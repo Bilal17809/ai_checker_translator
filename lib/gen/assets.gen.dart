@@ -102,6 +102,11 @@ class Assets {
   );
 
 
+  static const AssetGenImage trasnlationIcon = AssetGenImage(
+    'assets/icons/translationicon.png',
+  );
+
+
   //nav_bar_images
   static const AssetGenImage askai = AssetGenImage(
     'assets/icons/ask ai (2).png',
