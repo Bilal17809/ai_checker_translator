@@ -102,17 +102,6 @@ static Future<bool> checkAndShowNoInternetDialogIfOffline() async {
     return online;
   }
 
-
-  // static Future<void> playCorrectSound() async {
-  //   await _player.stop();
-  //   await _player.play(AssetSource('sounds/correctanswer.mp3'));
-  // }
-  //
-  // static Future<void> playWrongSound() async {
-  //   await _player.stop();
-  //   await _player.play(AssetSource('sounds/wronganswer.mp3'));
-  // }
-
   // It's good practice to ensure resources are disposed when no longer needed.
   // You might call this in a dispose method of your stateful widget or similar.
   static Future<void> playCorrectSound() async {
@@ -135,4 +124,83 @@ static Future<bool> checkAndShowNoInternetDialogIfOffline() async {
     await _player.play();
   }
 
+  static String buildTTSUrl({
+    required String text,
+    required String langCode,
+    required double speed,
+    required double pitch,
+  }) {
+    final encoded = Uri.encodeComponent(text);
+    return 'https://translate.google.com/translate_tts?ie=UTF-8'
+        '&client=tw-ob'
+        '&q=$encoded'
+        '&tl=$langCode'
+        '&ttsspeed=$speed'
+        '&pitch=$pitch';
+  }
+
+  static List<String> splitText(String text, int maxLength) {
+    final words = text.split(' ');
+    final chunks = <String>[];
+    var buffer = StringBuffer();
+
+    for (final word in words) {
+      if ((buffer.length + word.length + 1) < maxLength) {
+        buffer.write('$word ');
+      } else {
+        chunks.add(buffer.toString().trim());
+        buffer.clear();
+        buffer.write('$word ');
+      }
+    }
+
+    if (buffer.isNotEmpty) {
+      chunks.add(buffer.toString().trim());
+    }
+
+    return chunks;
+  }
+
+  static String getFlagEmoji(String countryCode) {
+    return countryCode.toUpperCase().codeUnits.map((char) {
+      return String.fromCharCode(char + 127397);
+    }).join();
+  }
+
+  static const MethodChannel _methodChannel = MethodChannel(
+    'com.example.getx_practice_app/speech_Text',
+  );
+
+  static Future<String?> startListening({
+    required String languageISO,
+    required RxBool isListening,
+  }) async {
+    try {
+      isListening.value = true;
+
+      final result = await _methodChannel.invokeMethod('getTextFromSpeech', {
+        'languageISO': languageISO,
+      });
+
+      return result;
+    } on PlatformException catch (e) {
+      print("Error in Speech-to-Text: ${e.message}");
+      return null;
+    } finally {
+      isListening.value = false;
+    }
+  }
+
+  static String limitLines(String text, int maxLines) {
+    final lines = text.split('\n');
+    if (lines.length <= maxLines) return text;
+    return lines.take(maxLines).join('\n');
+  }
+
+  static String limitCharacters(String text, int maxChars) {
+    if (text.length <= maxChars) return text;
+    return text.substring(0, maxChars).trim() + '...';
+  }
 }
+
+

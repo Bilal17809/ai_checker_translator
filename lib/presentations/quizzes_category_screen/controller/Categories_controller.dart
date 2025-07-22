@@ -1,4 +1,5 @@
-import 'dart:ui';
+
+
 
 import 'package:ai_checker_translator/data/models/rules_model.dart';
 import 'package:ai_checker_translator/data/services/quizzes_repo.dart';
@@ -6,8 +7,9 @@ import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:ai_checker_translator/presentations/learn_grammaer/view/rules_detail_screen.dart';
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/model/grammarcategory_model.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../ads_manager/interstitial_ads.dart';
+import '../../../data/helper/storage_helper.dart';
+import '../../../data/helper/storage_keys.dart';
 import '../../../data/models/categories_model.dart';
 
 class CategoriesController extends GetxController {
@@ -23,31 +25,21 @@ class CategoriesController extends GetxController {
   var contentLearned = <int>{}.obs;
   var learnedCategories = <int>{}.obs;
 
-  // SharedPreferences keys
-  late SharedPreferences _prefs;
-  final String _learnedRulesKey = "learned_rules_map";
-  final String _contentLearnedKey = "content_learned_set";
-
   void markCategoryContentAsLearned(int catId) {
     contentLearned.add(catId);
     contentLearned.refresh();
-    _saveProgressToPrefs(); // Save to local storage
+    _saveProgressToPrefs();
   }
 
   void unmarkCategoryContentAsLearned(int catId) {
     contentLearned.remove(catId);
     contentLearned.refresh();
-    _saveProgressToPrefs(); // Save to local storage
+    _saveProgressToPrefs(); 
   }
 
   bool isCategoryWithoutRulesLearned(int catId) {
     return rulesCountMap[catId] == null && contentLearned.contains(catId);
   }
-
-  // void updateProgress() {
-  //   learnedMap.refresh();
-  //   contentLearned.refresh();
-  // }
 
   var grammarCategories =
       <GrammarCategoryModel>[
@@ -92,17 +84,17 @@ class CategoriesController extends GetxController {
   void onInit() {
     super.onInit();
     Get.find<InterstitialAdController>().checkAndShowAd();
-    _initPrefs();
+    _loadSavedData();
     fetchCategoriesData(1);
   }
 
-  Future<void> _initPrefs() async {
-    _prefs = await SharedPreferences.getInstance();
-    _loadSavedData();
-  }
+ 
 
-  void _loadSavedData() {
-    final rulesData = _prefs.getStringList(_learnedRulesKey) ?? [];
+  void _loadSavedData() async {
+    final rulesData = await StorageHelper.loadList(
+      LearnGrammarKeys.learnedRules,
+    );
+    ;
     for (final entry in rulesData) {
       final parts = entry.split(":");
       if (parts.length == 2) {
@@ -115,8 +107,11 @@ class CategoriesController extends GetxController {
       }
     }
 
-    final contentData = _prefs.getStringList(_contentLearnedKey) ?? [];
+    final contentData = await StorageHelper.loadList(
+      LearnGrammarKeys.contentLearned,
+    );
     contentLearned.addAll(contentData.map(int.parse));
+
   }
 
   Future<void> _saveProgressToPrefs() async {
@@ -127,9 +122,9 @@ class CategoriesController extends GetxController {
       }
     });
 
-    await _prefs.setStringList(_learnedRulesKey, learnedRules);
-    await _prefs.setStringList(
-      _contentLearnedKey,
+    await StorageHelper.saveList(LearnGrammarKeys.learnedRules, learnedRules);
+    await StorageHelper.saveList(
+      LearnGrammarKeys.contentLearned,
       contentLearned.map((e) => e.toString()).toList(),
     );
   }
@@ -176,7 +171,6 @@ class CategoriesController extends GetxController {
     }
   }
 
-  // ✅ Learn/Unlearn a rule
   void toggleLearnedRule(int catId, int ruleId) {
     if (!learnedMap.containsKey(catId)) {
       learnedMap[catId] = <int>{};
@@ -189,18 +183,18 @@ class CategoriesController extends GetxController {
     }
 
     learnedMap.refresh();
-    _saveProgressToPrefs(); // Save to local storage
+    _saveProgressToPrefs(); 
   }
 
-  // ✅ Learn/Unlearn a category content (no rules)
+
   void toggleCategoryContentLearned(int catId) {
     if (contentLearned.contains(catId)) {
-      contentLearned.remove(catId); // Unlearn
+      contentLearned.remove(catId); 
     } else {
-      contentLearned.add(catId); // Learn
+      contentLearned.add(catId); 
     }
     contentLearned.refresh();
-    _saveProgressToPrefs(); // Save to local storage
+    _saveProgressToPrefs();
   }
 
   double getProgressForCategory(int catId) {

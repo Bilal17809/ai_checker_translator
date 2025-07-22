@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
@@ -11,6 +12,8 @@ import 'package:ai_checker_translator/presentations/ai_translator/view/ai_transl
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../data/models/language_model.dart';
 
 class AiTranslatorBottomNav extends StatefulWidget {
   const AiTranslatorBottomNav({super.key});
@@ -86,8 +89,20 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
                 controller.clearData();
                 // controller.audioPlayer.stop();
 
-                final selectedLanguageCode =
-                    '${controller.languageCodes[controller.selectedLanguage1.value]}-US';
+                // final selectedLanguageCode =
+                //     '${controller.languageCodes[controller.selectedLanguage1.value]}-US';
+
+                final lang = controller.languages.firstWhere(
+                  (lang) => lang.name == controller.selectedLanguage1.value,
+                  orElse:
+                      () => LanguageModel(
+                        name: 'English',
+                        code: 'en',
+                        countryCode: 'US',
+                      ),
+                );
+
+                final selectedLanguageCode = '${lang.code}-${lang.countryCode}';
 
                 // controller.startSpeechToTex('en_US');
 

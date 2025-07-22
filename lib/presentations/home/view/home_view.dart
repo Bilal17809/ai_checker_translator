@@ -1,6 +1,7 @@
 import 'package:ai_checker_translator/ads_manager/appOpen_ads.dart';
 import 'package:ai_checker_translator/ads_manager/banner_ads.dart';
 import 'package:ai_checker_translator/ads_manager/native_ads.dart';
+import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/ai_dictioanay_contrl.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/view/ai_dictionary_page.dart';
 import 'package:ai_checker_translator/presentations/aska/view/ask_ai_screen.dart';
