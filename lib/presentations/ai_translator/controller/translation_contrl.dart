@@ -175,7 +175,7 @@ class TranslationController extends GetxController {
   }
 
   static const MethodChannel _methodChannel =
-  MethodChannel('com.example.getx_practice_app/speech_Text');
+  MethodChannel('com.modernschool.aigrammar.learnenglish/speech_Text');
 
 
 

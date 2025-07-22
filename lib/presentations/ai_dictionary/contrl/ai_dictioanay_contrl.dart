@@ -217,7 +217,7 @@ class GeminiAiCorrectionController extends GetxController {
   GeminiAiCorrectionController(this.useCase);
 
   static const MethodChannel _speechChannel = MethodChannel(
-    'com.example.getx_practice_app/speech_Text',
+    'com.modernschool.aigrammar.learnenglish/speech_Text',
   );
 
   late final GenerativeModel model;
