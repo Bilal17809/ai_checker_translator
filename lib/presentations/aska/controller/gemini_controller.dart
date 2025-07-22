@@ -1,6 +1,8 @@
 // import 'dart:convert';
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
+import 'package:ai_checker_translator/data/helper/storage_helper.dart';
+import 'package:ai_checker_translator/data/helper/storage_keys.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -212,11 +214,6 @@ import '../../../../domain/use_cases/get_mistral.dart';
 //     flutterTts.stop();
 //   }
 // }
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_tts/flutter_tts.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../ads_manager/splash_interstitial.dart';
@@ -259,21 +256,24 @@ class GeminiController extends GetxController {
   }
 
   Future<void> loadInteractionCount() async {
-    final prefs = await SharedPreferences.getInstance();
-    interactionCount.value = prefs.getInt('gemini2InteractionCount') ?? 0;
+    interactionCount.value = await StorageHelper.loadInt(
+      StorageKeys.geminiInteractionCount,
+    );
   }
 
-  Future<void> incrementInteractionCount() async {
-    final prefs = await SharedPreferences.getInstance();
+Future<void> incrementInteractionCount() async {
     interactionCount.value++;
-    await prefs.setInt('gemini2InteractionCount', interactionCount.value);
+    await StorageHelper.saveInt(
+      StorageKeys.geminiInteractionCount,
+      interactionCount.value,
+    );
   }
 
-  Future<void> resetInteractionCount() async {
-    final prefs = await SharedPreferences.getInstance();
+Future<void> resetInteractionCount() async {
     interactionCount.value = 0;
-    await prefs.setInt('gemini2InteractionCount', 0);
+    await StorageHelper.saveInt(StorageKeys.geminiInteractionCount, 0);
   }
+
 
   Future<void> generate(BuildContext context) async {
     if (interactionCount.value >= maxFreeInteractions && !isPostAdAllowed.value) {
@@ -325,8 +325,8 @@ class GeminiController extends GetxController {
       final limitedPrompt = _generatePromptWithLimit(prompt);
       final result = await useCase(limitedPrompt, maxTokens: 200);
 
-      final lineLimited = _limitResponseLines(result, 20);
-      final finalLimited = _limitResponseCharacters(lineLimited, 800);
+      final lineLimited = Utils.limitLines(result, 20);
+      final finalLimited = Utils.limitCharacters(lineLimited, 800);
 
       responseText.value = finalLimited;
       isResponseReady.value = true;
@@ -337,7 +337,7 @@ class GeminiController extends GetxController {
       isLoading.value = false;
     }
   }
-
+  
   String _generatePromptWithLimit(String prompt) {
     final lines = prompt.split('\n').length;
     final words = prompt.split(RegExp(r'\s+')).length;
@@ -354,17 +354,6 @@ class GeminiController extends GetxController {
     } else {
       return "$prompt\n\nSummarize and answer clearly in max 15-20 lines only.";
     }
-  }
-
-  String _limitResponseLines(String text, int maxLines) {
-    final lines = text.split('\n');
-    if (lines.length <= maxLines) return text;
-    return lines.take(maxLines).join('\n');
-  }
-
-  String _limitResponseCharacters(String text, int maxChars) {
-    if (text.length <= maxChars) return text;
-    return text.substring(0, maxChars).trim() + '...';
   }
 
   void startAnimation() {

@@ -1,6 +1,7 @@
 
 
-
+import 'package:ai_checker_translator/data/helper/storage_helper.dart';
+import 'package:ai_checker_translator/data/helper/storage_keys.dart';
 import 'package:ai_checker_translator/data/models/rules_model.dart';
 import 'package:ai_checker_translator/data/services/quizzes_repo.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
@@ -8,8 +9,6 @@ import 'package:ai_checker_translator/presentations/learn_grammaer/view/rules_de
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/model/grammarcategory_model.dart';
 import 'package:get/get.dart';
 import '../../../ads_manager/interstitial_ads.dart';
-import '../../../data/helper/storage_helper.dart';
-import '../../../data/helper/storage_keys.dart';
 import '../../../data/models/categories_model.dart';
 
 class CategoriesController extends GetxController {

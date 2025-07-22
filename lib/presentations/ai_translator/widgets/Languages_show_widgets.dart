@@ -1,11 +1,10 @@
 
 import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
+import 'package:ai_checker_translator/data/models/language_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
-
-import '../../../data/models/language_model.dart';
 
 class LanguageWidget extends StatelessWidget {
   const LanguageWidget({super.key});

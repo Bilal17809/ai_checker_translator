@@ -1,24 +1,21 @@
-import 'dart:convert';
 
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
-
+import 'package:ai_checker_translator/data/helper/storage_helper.dart';
+import 'package:ai_checker_translator/data/helper/storage_keys.dart';
+import 'package:ai_checker_translator/data/models/language_model.dart';
+import 'package:ai_checker_translator/data/services/languages_services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
-// import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:translator/translator.dart';
-import '../../../data/helper/storage_helper.dart';
-import '../../../data/helper/storage_keys.dart';
-import '../../../data/models/language_model.dart';
 
 class TranslationController extends GetxController {
   final SpeechToText _speech = SpeechToText();
 
   late final AudioPlayer audioPlayer;
+  final LanguageService _languageService = LanguageService();
 
   // final RxString recognizedText = ''.obs;
 
@@ -54,17 +51,13 @@ class TranslationController extends GetxController {
   final translator = GoogleTranslator();
   FlutterTts flutterTts = FlutterTts();
 
-  Future<void> loadLanguagesFromJson() async {
-    try {
-      final String jsonString = await rootBundle.loadString(
-        'assets/languages.json',
-      );
-      final List<dynamic> jsonList = json.decode(jsonString);
-      languages.value = jsonList.map((e) => LanguageModel.fromJson(e)).toList();
-    } catch (e) {
-      print('Error loading languages: $e');
-    }
+
+
+Future<void> loadLanguagesFromJson() async {
+    final langList = await _languageService.loadLanguages();
+    languages.value = langList;
   }
+
 
   final List<String> _rtlLanguages = ['ar', 'he', 'ur', 'fa'];
   bool isRTLLanguage(String languageName) {
@@ -85,10 +78,6 @@ class TranslationController extends GetxController {
       await handleUserActionTranslate(result);
     }
 }
-
-  void stopTTS() {
-    audioPlayer.stop();
-  }
 
   Future<void> speakText({String? langCodeOverride}) async {
     final text = translatedText.value.trim();
@@ -169,6 +158,7 @@ class TranslationController extends GetxController {
               .firstWhereOrNull((lang) => lang.name == selectedLanguage1.value)
               ?.code ??
           'en';
+
       final targetLang =
           languages
               .firstWhereOrNull((lang) => lang.name == selectedLanguage2.value)

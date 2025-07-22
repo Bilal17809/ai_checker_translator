@@ -1,5 +1,7 @@
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
+import 'package:ai_checker_translator/data/helper/storage_helper.dart';
+import 'package:ai_checker_translator/data/helper/storage_keys.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -241,20 +243,22 @@ class GeminiAiCorrectionController extends GetxController {
   }
 
   Future<void> loadInteractionCount() async {
-    final prefs = await SharedPreferences.getInstance();
-    interactionCount.value = prefs.getInt('geminiInteractionCount') ?? 0;
+    interactionCount.value = await StorageHelper.loadInt(
+      StorageKeys.interactionCount,
+    );
   }
 
-  Future<void> incrementInteractionCount() async {
-    final prefs = await SharedPreferences.getInstance();
+Future<void> incrementInteractionCount() async {
     interactionCount.value++;
-    await prefs.setInt('geminiInteractionCount', interactionCount.value);
+    await StorageHelper.saveInt(
+      StorageKeys.interactionCount,
+      interactionCount.value,
+    );
   }
 
-  Future<void> resetInteractionCount() async {
-    final prefs = await SharedPreferences.getInstance();
+Future<void> resetInteractionCount() async {
     interactionCount.value = 0;
-    await prefs.setInt('geminiInteractionCount', 0);
+    await StorageHelper.saveInt(StorageKeys.interactionCount, 0);
   }
 
   // 🎤 Start mic input
@@ -353,8 +357,8 @@ class GeminiAiCorrectionController extends GetxController {
       final correctedPrompt = _buildCorrectionPromptWithLimit(inputText);
 
       final result = await useCase(correctedPrompt, maxTokens: 150);
-      final lineLimited = _limitResponseLines(result, 10);
-      final charLimited = _limitResponseCharacters(lineLimited, 500);
+      final lineLimited = Utils.limitLines(result, 10);
+      final charLimited = Utils.limitCharacters(lineLimited, 500);
 
       grammarResponseText.value = charLimited;
       isTypingStarted.value = true;
@@ -365,7 +369,6 @@ class GeminiAiCorrectionController extends GetxController {
     }
   }
 
-  // 📋 Prompt building helpers
   String _buildCorrectionPromptWithLimit(String input) {
     final words = input.split(RegExp(r'\s+')).length;
     final lines = input.split('\n').length;
@@ -392,18 +395,6 @@ Return only the corrected version without any explanation in max 5–10 lines.
     }
   }
 
-  String _limitResponseLines(String text, int maxLines) {
-    final lines = text.split('\n');
-    if (lines.length <= maxLines) return text;
-    return lines.take(maxLines).join('\n');
-  }
-
-  String _limitResponseCharacters(String text, int maxChars) {
-    if (text.length <= maxChars) return text;
-    return text.substring(0, maxChars).trim() + '...';
-  }
-
-  // 📋 Copy to clipboard
   void copyResponseText() {
     Utils.copyTextFrom(text: grammarResponseText.value);
   }
@@ -411,8 +402,7 @@ Return only the corrected version without any explanation in max 5–10 lines.
   void copyPromptText() {
     Utils.copyTextFrom(text: textCheckPromptController.text);
   }
-
-  // 🔄 Reset state
+  
   void resetController() {
     grammarResponseText.value = '';
     isTypingStarted.value = false;
