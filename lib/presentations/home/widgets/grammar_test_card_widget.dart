@@ -24,6 +24,7 @@ class GrammarTestCardWidget extends StatelessWidget {
     this.padding,
     this.icon,
     this.onTap,
+
   });
 
   @override
@@ -35,12 +36,11 @@ class GrammarTestCardWidget extends StatelessWidget {
       onTap: onTap,
       child: IntrinsicHeight(
         child: Container(
-          // height: height * 0.16,
           padding: padding ?? const EdgeInsets.all(10),
           decoration: roundedDecorationHomevie,
           child: Column(
             // mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -51,7 +51,6 @@ class GrammarTestCardWidget extends StatelessWidget {
                       icon!,
                       height: height * 0.08,
                       fit: BoxFit.contain,
-                    
                     ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -65,7 +64,7 @@ class GrammarTestCardWidget extends StatelessWidget {
                           style: context.textTheme.bodyMedium!.copyWith(
                             color: kWhite,
                             fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                            fontSize:height*0.02,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -84,20 +83,21 @@ class GrammarTestCardWidget extends StatelessWidget {
                 ],
               ),
               if (showActionButton && actionButtonText != null) ...[
-               
                 Align(
                   alignment: Alignment.bottomRight,
                   child: SizedBox(
-                    height: 32,
+                    height: height*0.035,
                     width: width * 0.3,
-                    child: ElevatedButton(
-                      onPressed: onActionPressed,
-                      style: AppTheme.elevatedButtonStyle,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          actionButtonText!,
-                          style: const TextStyle(fontSize: 13, color: kBlack),
+                    child: Expanded(
+                      child: ElevatedButton(
+                        onPressed: onActionPressed,
+                        style: AppTheme.elevatedButtonStyle,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            actionButtonText!,
+                            style: const TextStyle(fontSize: 13, color: kBlack),
+                          ),
                         ),
                       ),
                     ),
