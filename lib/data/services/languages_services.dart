@@ -3,6 +3,7 @@ import 'package:ai_checker_translator/data/models/language_model.dart';
 import 'package:flutter/services.dart';
 
 class LanguageService {
+  
   Future<List<LanguageModel>> loadLanguages() async {
     try {
       final String jsonString = await rootBundle.loadString(

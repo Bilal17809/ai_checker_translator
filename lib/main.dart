@@ -2,6 +2,7 @@ import 'package:ai_checker_translator/ads_manager/banner_ads.dart';
 import 'package:ai_checker_translator/ads_manager/native_ads.dart';
 import 'package:ai_checker_translator/ads_manager/splash_interstitial.dart';
 import 'package:ai_checker_translator/core/bindings/bindings.dart';
+import 'package:ai_checker_translator/data/helper/storage_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,7 @@ import 'core/routes/routes_name.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await SharedPrefService().init();
   await Firebase.initializeApp();
   MobileAds.instance.initialize();
   Get.put(AppOpenAdController());

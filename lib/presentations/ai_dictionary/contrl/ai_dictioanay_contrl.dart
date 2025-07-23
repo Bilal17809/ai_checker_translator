@@ -11,7 +11,6 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import '../../../ads_manager/splash_interstitial.dart';
 import '../../../core/animation/animation_games.dart';
 import '../../../domain/use_cases/get_mistral.dart';
-
 // class GeminiAiCorrectionController extends GetxController {
 //   final textCheckPromptController = TextEditingController();
 //
@@ -208,9 +207,10 @@ import '../../../domain/use_cases/get_mistral.dart';
 // }
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class GeminiAiCorrectionController extends GetxController {
+  
   final textCheckPromptController = TextEditingController();
   final splashAd = Get.find<SplashInterstitialAdController>();
   final FlutterTts flutterTts = FlutterTts();
@@ -235,6 +235,8 @@ class GeminiAiCorrectionController extends GetxController {
   final int maxFreeInteractions = 2;
   RxBool isPostAdAllowed = false.obs;
 
+  final prefs = SharedPrefService();
+
   @override
   void onInit() {
     splashAd.loadInterstitialAd();
@@ -243,25 +245,19 @@ class GeminiAiCorrectionController extends GetxController {
   }
 
   Future<void> loadInteractionCount() async {
-    interactionCount.value = await StorageHelper.loadInt(
-      StorageKeys.interactionCount,
-    );
+    interactionCount.value = prefs.interactionCount;
   }
 
 Future<void> incrementInteractionCount() async {
     interactionCount.value++;
-    await StorageHelper.saveInt(
-      StorageKeys.interactionCount,
-      interactionCount.value,
-    );
+    prefs.interactionCount = interactionCount.value;
   }
 
 Future<void> resetInteractionCount() async {
     interactionCount.value = 0;
-    await StorageHelper.saveInt(StorageKeys.interactionCount, 0);
+    prefs.removeInteractionCount();
   }
 
-  // 🎤 Start mic input
   Future<void> startMicInput({String languageISO = 'en-US'}) async {
     final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
     if (!hasInternet) return;
@@ -278,7 +274,6 @@ Future<void> resetInteractionCount() async {
     }
   }
 
-  // 🗣️ Speak generated text
   Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
     try {
       if (isSpeaking.value) {
@@ -307,8 +302,14 @@ Future<void> resetInteractionCount() async {
     }
   }
 
-  // ✨ Generate response with ad limit logic
   Future<void> generate(BuildContext context) async {
+
+    final inputText = textCheckPromptController.text.trim();
+    if (inputText.isEmpty) {
+      Utils().toastMessage("Enter text to generate");
+      return;
+    }
+    
     if (interactionCount.value >= maxFreeInteractions && !isPostAdAllowed.value) {
       Get.dialog(
         CustomInfoDialog(
@@ -340,11 +341,7 @@ Future<void> resetInteractionCount() async {
       await incrementInteractionCount();
     }
 
-    final inputText = textCheckPromptController.text.trim();
-    if (inputText.isEmpty) {
-      Utils().toastMessage("Enter text to generate");
-      return;
-    }
+   
 
     final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
     if (!hasInternet) return;

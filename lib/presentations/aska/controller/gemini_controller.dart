@@ -227,6 +227,8 @@ class GeminiController extends GetxController {
   final isTypingStarted = false.obs;
   final isResponseReady = false.obs;
 
+  final pref = SharedPrefService();
+
   final detectedText = ''.obs;
   final pitch = 0.5.obs;
   final speed = 0.5.obs;
@@ -256,26 +258,28 @@ class GeminiController extends GetxController {
   }
 
   Future<void> loadInteractionCount() async {
-    interactionCount.value = await StorageHelper.loadInt(
-      StorageKeys.geminiInteractionCount,
-    );
+    interactionCount.value = pref.geminiInteractionCount;
   }
 
 Future<void> incrementInteractionCount() async {
     interactionCount.value++;
-    await StorageHelper.saveInt(
-      StorageKeys.geminiInteractionCount,
-      interactionCount.value,
-    );
+    pref.geminiInteractionCount = interactionCount.value;
   }
 
 Future<void> resetInteractionCount() async {
     interactionCount.value = 0;
-    await StorageHelper.saveInt(StorageKeys.geminiInteractionCount, 0);
+    pref.resetGeminiInteractionCount();
   }
 
 
   Future<void> generate(BuildContext context) async {
+
+    final prompt = promptController.text.trim();
+    if (prompt.isEmpty) {
+      Utils().toastMessage("Enter text to generate");
+      return;
+    }
+    
     if (interactionCount.value >= maxFreeInteractions && !isPostAdAllowed.value) {
       Get.dialog(
         CustomInfoDialog(
@@ -307,11 +311,7 @@ Future<void> resetInteractionCount() async {
       await incrementInteractionCount();
     }
 
-    final prompt = promptController.text.trim();
-    if (prompt.isEmpty) {
-      Utils().toastMessage("Enter text to generate");
-      return;
-    }
+    
 
     final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
     if (!hasInternet) return;

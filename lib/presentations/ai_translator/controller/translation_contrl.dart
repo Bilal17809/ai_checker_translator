@@ -28,6 +28,7 @@ class TranslationController extends GetxController {
   final speed = 1.0.obs;
   final isSpeechPlaying = false.obs;
   RxBool hasInternet = true.obs;
+
   var languages = <LanguageModel>[].obs;
 
   final RxList<Map<String, dynamic>> favouriteTranslations =
@@ -36,6 +37,7 @@ class TranslationController extends GetxController {
   final RxList<Map<String, dynamic>> translationHistory =
       <Map<String, dynamic>>[].obs;
 
+  final prefs = SharedPrefService();
   @override
   void onInit() {
     super.onInit();
@@ -57,7 +59,6 @@ Future<void> loadLanguagesFromJson() async {
     final langList = await _languageService.loadLanguages();
     languages.value = langList;
   }
-
 
   final List<String> _rtlLanguages = ['ar', 'he', 'ur', 'fa'];
   bool isRTLLanguage(String languageName) {
@@ -219,24 +220,19 @@ Future<void> loadLanguagesFromJson() async {
     clearData();
   }
 
-  Future<void> saveToPrefs() async {
-    await StorageHelper.saveText(StorageKeys.inputText, controller.text);
-    await StorageHelper.saveText(
-      StorageKeys.translatedText,
-      translatedText.value,
-    );
+Future<void> saveToPrefs() async {
+    prefs.text = controller.text;
+    prefs.translatedText = translatedText.value;
   }
 
   Future<void> loadFromPrefs() async {
-    controller.text = await StorageHelper.loadText(StorageKeys.inputText);
-    translatedText.value = await StorageHelper.loadText(
-      StorageKeys.translatedText,
-    );
+    controller.text = prefs.text;
+    translatedText.value = prefs.translatedText;
   }
 
   Future<void> clearPrefs() async {
-    await StorageHelper.removeKey(StorageKeys.inputText);
-    await StorageHelper.removeKey(StorageKeys.translatedText);
+    prefs.removeText();
+    prefs.removeTranslatedText();
   }
 
   void addToHistory(String original, String translated) async {
@@ -269,13 +265,12 @@ Future<void> loadLanguagesFromJson() async {
         translationHistory
             .map((e) => "${e['id']}|${e['source']}||${e['target']}")
             .toList();
-    await StorageHelper.saveList(StorageKeys.translationHistory, historyList);
+    final prefs = SharedPrefService();
+    prefs.translationHistory = historyList;
   }
 
   Future<void> loadHistory() async {
-    final historyList = await StorageHelper.loadList(
-      StorageKeys.translationHistory,
-    );
+    final historyList = prefs.translationHistory;
     translationHistory.value =
         historyList.map((entry) {
           final parts = entry.split('|');
@@ -293,7 +288,7 @@ Future<void> loadLanguagesFromJson() async {
 
   void clearHistory() async {
     translationHistory.clear();
-    await StorageHelper.removeKey(StorageKeys.translationHistory);
+    prefs.removeFavourites();
   }
 
   void deleteHistoryItem(int index) async {
@@ -329,14 +324,13 @@ Future<void> loadLanguagesFromJson() async {
         favouriteTranslations
             .map((e) => "${e['id']}|${e['source']}||${e['target']}")
             .toList();
-    await StorageHelper.saveList(StorageKeys.favouriteTranslations, favList);
+    prefs.favourites = favList;
   }
 
   // Load from SharedPreferences
   Future<void> loadFavourites() async {
-    final favList = await StorageHelper.loadList(
-      StorageKeys.favouriteTranslations,
-    );
+    final prefs = SharedPrefService();
+    final favList = prefs.favourites;
     favouriteTranslations.value =
         favList.map((entry) {
           final parts = entry.split('|');

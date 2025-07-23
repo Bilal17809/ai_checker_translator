@@ -24,6 +24,8 @@ class CategoriesController extends GetxController {
   var contentLearned = <int>{}.obs;
   var learnedCategories = <int>{}.obs;
 
+  final prefs = SharedPrefService();
+
   void markCategoryContentAsLearned(int catId) {
     contentLearned.add(catId);
     contentLearned.refresh();
@@ -90,10 +92,8 @@ class CategoriesController extends GetxController {
  
 
   void _loadSavedData() async {
-    final rulesData = await StorageHelper.loadList(
-      LearnGrammarKeys.learnedRules,
-    );
-    ;
+    final rulesData = prefs.learnedRules;
+    
     for (final entry in rulesData) {
       final parts = entry.split(":");
       if (parts.length == 2) {
@@ -106,10 +106,10 @@ class CategoriesController extends GetxController {
       }
     }
 
-    final contentData = await StorageHelper.loadList(
-      LearnGrammarKeys.contentLearned,
-    );
-    contentLearned.addAll(contentData.map(int.parse));
+    // final contentData = await StorageHelper.loadList(
+    //   LearnGrammarKeys.contentLearned,
+    // );
+    contentLearned.addAll(prefs.contentLearned.map(int.parse));
 
   }
 
@@ -121,11 +121,8 @@ class CategoriesController extends GetxController {
       }
     });
 
-    await StorageHelper.saveList(LearnGrammarKeys.learnedRules, learnedRules);
-    await StorageHelper.saveList(
-      LearnGrammarKeys.contentLearned,
-      contentLearned.map((e) => e.toString()).toList(),
-    );
+    prefs.learnedRules = learnedRules;
+    prefs.contentLearned = contentLearned.map((e) => e.toString()).toList();
   }
 
   Future<void> fetchCategoriesData(int menuId) async {
