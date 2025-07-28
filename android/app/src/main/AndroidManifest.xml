@@ -7,7 +7,7 @@
 
 
     <application
-        android:label="AI Grammar"
+        android:label="AI Grammar Helper"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

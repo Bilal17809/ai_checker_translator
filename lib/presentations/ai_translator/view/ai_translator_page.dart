@@ -10,8 +10,6 @@ import 'package:ai_checker_translator/presentations/ai_translator/widgets/Langua
 import 'package:ai_checker_translator/presentations/ai_translator/widgets/translation_history_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_widgets.dart';
-
-import '../../../ads_manager/banner_ads.dart';
 import '../../../ads_manager/interstitial_ads.dart';
 
 class AiTranslatorPage extends StatefulWidget {
@@ -152,12 +150,12 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
             ],
           ),
         ),
-        bottomNavigationBar:
-        Get.find<InterstitialAdController>().isAdReady
-            ? SizedBox()
-            : Obx(() {
-          return Get.find<BannerAdController>().getBannerAdWidget('ad2');
-        }),
+        // bottomNavigationBar:
+        // Get.find<InterstitialAdController>().isAdReady
+        //     ? SizedBox()
+        //     : Obx(() {
+        //   return Get.find<BannerAdController>().getBannerAdWidget('ad2');
+        // }),
       ),
     );
   }

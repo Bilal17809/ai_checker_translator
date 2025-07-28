@@ -88,16 +88,14 @@ class GrammarTestCardWidget extends StatelessWidget {
                   child: SizedBox(
                     height: height*0.035,
                     width: width * 0.3,
-                    child: Expanded(
-                      child: ElevatedButton(
-                        onPressed: onActionPressed,
-                        style: AppTheme.elevatedButtonStyle,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            actionButtonText!,
-                            style: const TextStyle(fontSize: 13, color: kBlack),
-                          ),
+                    child: ElevatedButton(
+                      onPressed: onActionPressed,
+                      style: AppTheme.elevatedButtonStyle,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          actionButtonText!,
+                          style: const TextStyle(fontSize: 13, color: kBlack),
                         ),
                       ),
                     ),

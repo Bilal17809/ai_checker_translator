@@ -30,7 +30,7 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
   @override
   void initState() {
     super.initState();
-    Get.find<InterstitialAdController>().showInterstitialAd();
+    Get.find<InterstitialAdController>().checkAndShowAd();
     category = Get.arguments as GrammarCategoryModel;
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -294,10 +294,10 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
     ],
         ),
         bottomNavigationBar:
-        Get.find<InterstitialAdController>().isAdReady
+        Get.find<InterstitialAdController>().interstitialAdShown.value
             ? SizedBox()
             : Obx(() {
-          return Get.find<BannerAdController>().getBannerAdWidget('ad6');
+          return Get.find<BannerAdController>().getBannerAdWidget('ad16');
         }),
       ),
     );

@@ -25,7 +25,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
 
   @override
   void initState() {
-    Get.find<InterstitialAdController>().showInterstitialAd();
+    Get.find<InterstitialAdController>().checkAndShowAd();
     super.initState();
   }
 
@@ -183,8 +183,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
 
         }),
         bottomNavigationBar:
-        Get.find<InterstitialAdController>().isAdReady ||
-            Get.find<SplashInterstitialAdController>().isAdReady
+        Get.find<InterstitialAdController>().interstitialAdShown.value
             ? SizedBox()
             : Obx(() {
           return Get.find<BannerAdController>().getBannerAdWidget('ad7');

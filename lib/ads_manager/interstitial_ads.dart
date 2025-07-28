@@ -11,7 +11,8 @@ class InterstitialAdController extends GetxController {
   bool isAdReady = false;
   int screenVisitCount = 0;
   int adTriggerCount = 3;
-  bool _interstitialAdShown = false;
+  var interstitialAdShown = false.obs;
+  // var isShowingInterstitialAd = false.obs;
   final RemoveAds removeAdsController = Get.put(RemoveAds());
 
 
@@ -86,11 +87,11 @@ class InterstitialAdController extends GetxController {
       return;
     }
     if (_interstitialAd != null) {
-      _interstitialAdShown = true;
+      interstitialAdShown.value = true;
       _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
           Get.find<AppOpenAdController>().setInterstitialAdDismissed();
-          _interstitialAdShown = false;
+          interstitialAdShown.value = false;
           ad.dispose();
           isAdReady = false;
           screenVisitCount = 0;
@@ -98,7 +99,7 @@ class InterstitialAdController extends GetxController {
           update();
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
-          _interstitialAdShown = false;
+          interstitialAdShown.value = false;
           screenVisitCount = 0;
           ad.dispose();
           isAdReady = false;

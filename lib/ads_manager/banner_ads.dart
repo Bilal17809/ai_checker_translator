@@ -44,7 +44,7 @@ class BannerAdController extends GetxController {
       bool bannerAdsEnabled = remoteConfig.getBool(bannerKey);
       isAdEnabled.value = bannerAdsEnabled;
       if (bannerAdsEnabled) {
-        for (int i = 1; i <= 15; i++) {
+        for (int i = 1; i <= 18; i++) {
           loadBannerAd('ad$i');
         }
       }

@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
+
 class QuizDetailScreen extends StatefulWidget {
   final int quizID;
   const QuizDetailScreen({super.key,required this.quizID});
@@ -56,6 +59,12 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
             );
           }
           );
+      }),
+      bottomNavigationBar:
+      Get.find<InterstitialAdController>().interstitialAdShown.value
+          ? SizedBox()
+          : Obx(() {
+        return Get.find<BannerAdController>().getBannerAdWidget('ad6');
       }),
     );
   }

@@ -103,7 +103,7 @@ class _QuizessCategoryScreenState extends State<QuizessCategoryScreen> {
             }),
           ),
           bottomNavigationBar:
-          Get.find<InterstitialAdController>().isAdReady
+          Get.find<InterstitialAdController>().interstitialAdShown.value
               ? SizedBox()
               : Obx(() {
             return Get.find<BannerAdController>().getBannerAdWidget('ad8');

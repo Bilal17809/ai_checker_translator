@@ -45,8 +45,7 @@ class GameLevels extends StatelessWidget {
               LevelCard(level: 3),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
 
-              if (!(appOpenAdController.isShowingOpenAd.value ||
-                  removeAds.isSubscribedGet.value))
+              if (!(appOpenAdController.isShowingOpenAd.value))
                 nativeAdController.nativeAdWidget(),
             ],
           ),

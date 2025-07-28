@@ -29,6 +29,7 @@ class _PuzzlePageState extends State<PuzzlePage> {
   @override
   void initState() {
     super.initState();
+    Get.find<InterstitialAdController>().checkAndShowAd();
     controller = Get.put(PuzzleController());
     controller.setLevel(widget.level);
     controller.loadPuzzles();
@@ -391,7 +392,7 @@ class PuzzleCompletePage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar:
-      Get.find<InterstitialAdController>().isAdReady
+      Get.find<InterstitialAdController>().interstitialAdShown.value
           ? SizedBox()
           : Obx(() {
         return Get.find<BannerAdController>().getBannerAdWidget('ad11');
