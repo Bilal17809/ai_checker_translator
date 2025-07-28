@@ -2,6 +2,7 @@ import 'package:ai_checker_translator/ads_manager/banner_ads.dart';
 import 'package:ai_checker_translator/ads_manager/native_ads.dart';
 import 'package:ai_checker_translator/ads_manager/splash_interstitial.dart';
 import 'package:ai_checker_translator/core/bindings/bindings.dart';
+import 'package:ai_checker_translator/data/helper/storage_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -24,8 +25,9 @@ void main() async{
   Get.put(InterstitialAdController());
   Get.put(SplashInterstitialAdController());
   Get.put(NativeAdController());
-  initializeOneSignal();
+initializeOneSignal();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await SharedPrefService().init();
   runApp(const MyApp());
 }
 

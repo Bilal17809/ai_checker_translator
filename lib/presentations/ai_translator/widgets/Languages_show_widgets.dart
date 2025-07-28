@@ -1,4 +1,6 @@
+
 import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
+import 'package:ai_checker_translator/data/models/language_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:country_flags/country_flags.dart';
@@ -12,27 +14,40 @@ class LanguageWidget extends StatelessWidget {
     final controller = Get.find<TranslationController>();
 
     return Obx(
-      () => Row(
+  () {
+      final selectedLang1 = controller.languages.firstWhere(
+        (lang) => lang.name == controller.selectedLanguage1.value,
+        orElse:
+            () => LanguageModel(name: 'English', code: 'en', countryCode: 'US'),
+      );
+      final selectedLang2 = controller.languages.firstWhere(
+        (lang) => lang.name == controller.selectedLanguage2.value,
+        orElse:
+            () => LanguageModel(name: 'Spanish', code: 'es', countryCode: 'ES'),
+      );
+
+      return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _languageDropdown(
             context: context,
-            selectedLang: controller.selectedLanguage1.value,
+            selectedLang: selectedLang1.name,
             onTap: () {
               controller.audioPlayer.stop();
               _showLanguagePicker(
                 context,
-                controller.languageCodes.keys.toList(),
-                controller.selectedLanguage1.value,
-                (lang) {
-                  controller.selectedLanguage1.value = lang;
+                controller.languages.map((lang) => lang.name).toList(),
+                selectedLang1.name,
+                (langName) {
+                  controller.selectedLanguage1.value = langName;
                 },
-                controller.languageFlags,
+                {
+                  for (var lang in controller.languages)
+                    lang.name: lang.countryCode,
+                },
               );
             },
-            countryCode:
-                controller.languageFlags[controller.selectedLanguage1.value] ??
-                'US',
+            countryCode: selectedLang1.countryCode,
           ),
           IconButton(
             onPressed: () {
@@ -43,26 +58,28 @@ class LanguageWidget extends StatelessWidget {
           ),
           _languageDropdown(
             context: context,
-            selectedLang: controller.selectedLanguage2.value,
+            selectedLang: selectedLang2.name,
             onTap: () {
               controller.audioPlayer.stop();
               _showLanguagePicker(
                 context,
-                controller.languageCodes.keys.toList(),
-                controller.selectedLanguage2.value,
-                (lang) {
-                  controller.selectedLanguage2.value = lang;
+                controller.languages.map((lang) => lang.name).toList(),
+                selectedLang2.name,
+                (langName) {
+                  controller.selectedLanguage2.value = langName;
                 },
-                controller.languageFlags,
+                {
+                  for (var lang in controller.languages)
+                    lang.name: lang.countryCode,
+                },
               );
             },
-            countryCode:
-                controller.languageFlags[controller.selectedLanguage2.value] ??
-                'ES',
+            countryCode: selectedLang2.countryCode,
           ),
         ],
-      ),
     );
+    });
+
   }
 
   Widget _languageDropdown({
@@ -95,8 +112,8 @@ class LanguageWidget extends StatelessWidget {
             Flexible(
               child: Text(
                 selectedLang,
-                maxLines: 1, // ✅ only one line
-                overflow: TextOverflow.ellipsis, // ✅ truncate with "..."
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis, 
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -144,3 +161,4 @@ class LanguageWidget extends StatelessWidget {
     );
   }
 }
+

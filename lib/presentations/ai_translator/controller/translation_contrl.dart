@@ -1,24 +1,20 @@
 
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
+import 'package:ai_checker_translator/data/helper/storage_helper.dart';
+import 'package:ai_checker_translator/data/helper/storage_keys.dart';
+import 'package:ai_checker_translator/data/models/language_model.dart';
+import 'package:ai_checker_translator/data/services/languages_services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
-// import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 import 'package:translator/translator.dart';
 
 class TranslationController extends GetxController {
 
 
-  final SpeechToText _speech = SpeechToText();
-
-
   late final AudioPlayer audioPlayer;
-
-  // final RxString recognizedText = ''.obs;
+  final LanguageService _languageService = LanguageService();
 
   RxString selectedLanguage1 = "English".obs;
   RxString selectedLanguage2 = "Spanish".obs;
@@ -26,21 +22,21 @@ class TranslationController extends GetxController {
   RxBool isListening = false.obs;
   RxBool isLoading = false.obs;
   final pitch = 1.0.obs;
-  final speed = 1.0.obs; 
+  final speed = 1.0.obs;
   final isSpeechPlaying = false.obs;
   RxBool hasInternet = true.obs;
 
-  final RxList<Map<String, dynamic>> favouriteTranslations =
-      <Map<String, dynamic>>[].obs;
-  static const _favouritesKey = 'favourite_translations';
+  var languages = <LanguageModel>[].obs;
 
-  final RxList<Map<String, dynamic>> translationHistory =
-      <Map<String, dynamic>>[].obs;
-  static const _historyKey = 'translation_history';
+  final RxList<Map<String, dynamic>> favouriteTranslations = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> translationHistory = <Map<String, dynamic>>[].obs;
 
+  final prefs = SharedPrefService();
+  
   @override
   void onInit() {
     super.onInit();
+    loadLanguagesFromJson();
     audioPlayer = AudioPlayer();
     Utils.monitorInternet();
     Utils.isConnectedToInternet();
@@ -52,187 +48,74 @@ class TranslationController extends GetxController {
   final translator = GoogleTranslator();
   FlutterTts flutterTts = FlutterTts();
 
-  final Map<String, String> languageCodes = {
-    'English': 'en',
-    'French': 'fr',
-    'Spanish': 'es',
-    'German': 'de',
-    'Italian': 'it',
-    'Portuguese': 'pt',
-    'Dutch': 'nl',
-    'Russian': 'ru',
-    'Chinese (Simplified)': 'zh-cn',
-    'Japanese': 'ja',
-    'Korean': 'ko',
-    'Arabic': 'ar',
-    'Hindi': 'hi',
-    'Urdu': 'ur',
-    'Bengali': 'bn',
-    'Punjabi': 'pa',
-    'Turkish': 'tr',
-    'Vietnamese': 'vi',
-    'Thai': 'th',
-    'Indonesian': 'id',
-    'Tagalog': 'tl',
-    'Swedish': 'sv',
-    'Norwegian': 'no',
-    'Danish': 'da',
-    'Finnish': 'fi',
-    'Polish': 'pl',
-    'Greek': 'el',
-    'Czech': 'cs',
-    'Hungarian': 'hu',
-    'Romanian': 'ro',
-    'Ukrainian': 'uk',
-    'Malay': 'ms',
-    'Tamil': 'ta',
-    'Telugu': 'te',
-    'Kannada': 'kn',
-    'Marathi': 'mr',
-    'Gujarati': 'gu',
-    'Swahili': 'sw',
-    'Zulu': 'zu',
-  };
-  final languageFlags = {
-    'Afrikaans': 'ZA',
-    'Albanian': 'AL',
-    'Amharic': 'ET',
-    'Arabic': 'AE',
-    'Armenian': 'AM',
-    'Azerbaijani': 'AZ',
-    'Basque': 'ES',
-    'Belarusian': 'BY',
-    'Bengali': 'BD',
-    'Bosnian': 'BA',
-    'Bulgarian': 'BG',
-    'Catalan': 'ES',
-    'Chinese (Simplified)': 'CN',
-    'Chinese (Traditional)': 'TW',
-    'Croatian': 'HR',
-    'Czech': 'CZ',
-    'Danish': 'DK',
-    'Dutch': 'NL',
-    'English': 'US',
-    'Estonian': 'EE',
-    'Filipino': 'PH',
-    'Finnish': 'FI',
-    'French': 'FR',
-    'Georgian': 'GE',
-    'German': 'DE',
-    'Greek': 'GR',
-    'Gujarati': 'IN',
-    'Haitian Creole': 'HT',
-    'Hindi': 'IN',
-    'Hungarian': 'HU',
-    'Icelandic': 'IS',
-    'Indonesian': 'ID',
-    'Irish': 'IE',
-    'Italian': 'IT',
-    'Japanese': 'JP',
-    'Kannada': 'IN',
-    'Kazakh': 'KZ',
-    'Khmer': 'KH',
-    'Korean': 'KR',
-    'Kurdish': 'IQ',
-    'Latvian': 'LV',
-    'Lithuanian': 'LT',
-    'Macedonian': 'MK',
-    'Malay': 'MY',
-    'Maltese': 'MT',
-    'Marathi': 'IN',
-    'Mongolian': 'MN',
-    'Nepali': 'NP',
-    'Norwegian': 'NO',
-    'Persian': 'IR',
-    'Polish': 'PL',
-    'Portuguese (Brazil)': 'BR',
-    'Portuguese (Portugal)': 'PT',
-    'Punjabi': 'PK',
-    'Romanian': 'RO',
-    'Russian': 'RU',
-    'Serbian': 'RS',
-    'Slovak': 'SK',
-    'Slovenian': 'SI',
-    'Spanish': 'ES',
-    'Swahili': 'KE',
-    'Swedish': 'SE',
-    'Tamil': 'LK',
-    'Telugu': 'IN',
-    'Thai': 'TH',
-    'Turkish': 'TR',
-    'Ukrainian': 'UA',
-    'Urdu': 'PK',
-    'Vietnamese': 'VN',
-    'Welsh': 'GB',
-    'Yiddish': 'IL',
-  
-  };
+
+
+Future<void> loadLanguagesFromJson() async {
+    final langList = await _languageService.loadLanguages();
+    languages.value = langList;
+  }
 
   final List<String> _rtlLanguages = ['ar', 'he', 'ur', 'fa'];
-  bool isRTLLanguage(String language) {
-    final languageCode = languageCodes[language] ?? 'en';
+  bool isRTLLanguage(String languageName) {
+    final matchedLanguage = languages.firstWhereOrNull(
+      (lang) => lang.name == languageName,
+    );
+    final languageCode = matchedLanguage?.code ?? 'en';
     return _rtlLanguages.contains(languageCode);
   }
 
-  static const MethodChannel _methodChannel =
-  MethodChannel('com.modernschool.aigrammar.learnenglish/speech_Text');
-
-
-
   Future<void> startSpeechToText(String languageISO) async {
-    try {
-      isListening.value = true;
-      final result = await _methodChannel.invokeMethod('getTextFromSpeech', {'languageISO': languageISO});
-
-      if (result != null && result.isNotEmpty) {
-        controller.text = result;
-        await handleUserActionTranslate(result);
-      }
-    } on PlatformException catch (e) {
-      print("Error in Speech-to-Text: ${e.message}");
-    } finally {
-      isListening.value = false;
+    final result = await Utils.startListening(
+      languageISO: languageISO,
+      isListening: isListening,
+    );
+    if (result != null && result.isNotEmpty) {
+      controller.text = result;
+      await handleUserActionTranslate(result);
     }
-  }
+}
 
-  void stopTTS() {
-    audioPlayer.stop();
-  }
-
-
-Future<void> speakText({String? langCodeOverride}) async {
+  Future<void> speakText({String? langCodeOverride}) async {
     final text = translatedText.value.trim();
     if (text.isEmpty) return;
 
     final langCode =
-        langCodeOverride ?? languageCodes[selectedLanguage2.value] ?? 'en';
+        langCodeOverride ??
+        languages
+            .firstWhereOrNull((lang) => lang.name == selectedLanguage2.value)
+            ?.code ??
+        'en';
+
     const maxLength = 200;
 
     try {
       if (audioPlayer.playing) {
-      await audioPlayer.stop();
-        await Future.delayed(
-          const Duration(milliseconds: 100),
-        ); 
+        await audioPlayer.stop();
+        await Future.delayed(const Duration(milliseconds: 100));
       }
       final chunks =
-          text.length <= maxLength ? [text] : _splitText(text, maxLength);
+          text.length <= maxLength ? [text] : Utils.splitText(text, maxLength);
 
       for (final chunk in chunks) {
-        final url = _buildTTSUrl(chunk, langCode);
+        final url = Utils.buildTTSUrl(
+          text: chunk,
+          langCode: langCode,
+          speed: speed.value,
+          pitch: pitch.value,
+        );
 
         try {
           await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(url)));
           await audioPlayer.play();
 
-        await audioPlayer.playerStateStream.firstWhere(
-          (state) => state.processingState == ProcessingState.completed,
+          await audioPlayer.playerStateStream.firstWhere(
+            (state) => state.processingState == ProcessingState.completed,
           );
           await Future.delayed(const Duration(milliseconds: 200));
         } catch (e) {
           print('❌ Error while playing chunk: $e');
           break;
-      }
+        }
       }
       await audioPlayer.stop();
     } catch (e) {
@@ -240,58 +123,14 @@ Future<void> speakText({String? langCodeOverride}) async {
     }
   }
 
-
-String _buildTTSUrl(String text, String langCode) {
-    final encoded = Uri.encodeComponent(text);
-    return 'https://translate.google.com/translate_tts?ie=UTF-8'
-        '&client=tw-ob'
-        '&q=$encoded'
-        '&tl=$langCode'
-        '&ttsspeed=${speed.value}'
-        '&pitch=${pitch.value}';
-  }
-
-List<String> _splitText(String text, int maxLength) {
-    final words = text.split(' ');
-    final chunks = <String>[];
-    var buffer = StringBuffer();
-
-    for (final word in words) {
-      if ((buffer.length + word.length + 1) < maxLength) {
-        buffer.write('$word ');
-      } else {
-        chunks.add(buffer.toString().trim());
-        buffer.clear();
-        buffer.write('$word ');
-    }
-  }
-
-    if (buffer.isNotEmpty) {
-      chunks.add(buffer.toString().trim());
-    }
-
-    return chunks;
-  }
-
   Future<void> handleUserActionTranslate(String text) async {
-
     final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
     if (!hasInternet) return;
-      await translate(text);
-      await speakText();
+    await translate(text);
+    await speakText();
   }
 
-  void onTranslateButtonPressed() async {
-    final textToTranslate = controller.text;
-    if (textToTranslate.isEmpty) {
-      Utils().toastMessage("Please enter text to translate.");
-      return;
-    }
-  }
-
-
-  
-Future<void> translate(String text) async {
+  Future<void> translate(String text) async {
     if (text.isEmpty) {
       translatedText.value = "Please enter text to translate.";
       return;
@@ -302,8 +141,17 @@ Future<void> translate(String text) async {
 
     isLoading.value = true;
     try {
-      final sourceLang = languageCodes[selectedLanguage1.value] ?? 'en';
-      final targetLang = languageCodes[selectedLanguage2.value] ?? 'es';
+      final sourceLang =
+          languages
+              .firstWhereOrNull((lang) => lang.name == selectedLanguage1.value)
+              ?.code ??
+          'en';
+
+      final targetLang =
+          languages
+              .firstWhereOrNull((lang) => lang.name == selectedLanguage2.value)
+              ?.code ??
+          'es';
 
       final result = await translator.translate(
         text,
@@ -314,18 +162,15 @@ Future<void> translate(String text) async {
       translatedText.value = result.text;
       addToHistory(text, result.text);
 
-
       Future.delayed(const Duration(milliseconds: 20), () {
         speakText();
       });
-
     } catch (e) {
       translatedText.value = "Translation failed: ${e.toString()}";
     } finally {
       isLoading.value = false;
     }
   }
-
 
   void clearData() {
     audioPlayer.stop();
@@ -350,12 +195,6 @@ Future<void> translate(String text) async {
     clearPrefs();
   }
 
-  String getFlagEmoji(String countryCode) {
-    return countryCode.toUpperCase().codeUnits.map((char) {
-      return String.fromCharCode(char + 127397);
-    }).join();
-  }
-
   void swapLanguages() {
     final tempLang = selectedLanguage1.value;
     selectedLanguage1.value = selectedLanguage2.value;
@@ -368,35 +207,40 @@ Future<void> translate(String text) async {
     clearData();
   }
 
-  Future<void> saveToPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('inputText', controller.text);
-    await prefs.setString('translatedText', translatedText.value);
+Future<void> saveToPrefs() async {
+    prefs.text = controller.text;
+    prefs.translatedText = translatedText.value;
   }
 
   Future<void> loadFromPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    controller.text = prefs.getString('inputText') ?? '';
-    translatedText.value = prefs.getString('translatedText') ?? '';
+    controller.text = prefs.text;
+    translatedText.value = prefs.translatedText;
   }
 
   Future<void> clearPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('inputText');
-    await prefs.remove('translatedText');
+    prefs.removeText();
+    prefs.removeTranslatedText();
   }
 
   void addToHistory(String original, String translated) async {
-    final sourceLang = selectedLanguage1.value;
-    final targetLang = selectedLanguage2.value;
-    final sourceFlag = getFlagEmoji(languageFlags[sourceLang] ?? 'US');
-    final targetFlag = getFlagEmoji(languageFlags[targetLang] ?? 'ES');
+    final sourceLangName = selectedLanguage1.value;
+    final targetLangName = selectedLanguage2.value;
+
+    final sourceLang = languages.firstWhereOrNull(
+      (lang) => lang.name == sourceLangName,
+    );
+    final targetLang = languages.firstWhereOrNull(
+      (lang) => lang.name == targetLangName,
+    );
+
+    final sourceFlag = Utils.getFlagEmoji(sourceLang?.countryCode ?? 'US');
+    final targetFlag = Utils.getFlagEmoji(targetLang?.countryCode ?? 'ES');
 
     final entry = {
       'id': DateTime.now().millisecondsSinceEpoch.toString(),
-      'source': "$sourceFlag $sourceLang\n$original",
-      'target': "$targetFlag $targetLang\n$translated",
-      'targetLang': targetLang, 
+      'source': "$sourceFlag $sourceLangName\n$original",
+      'target': "$targetFlag $targetLangName\n$translated",
+      'targetLang': targetLangName,
     };
 
     translationHistory.insert(0, entry);
@@ -404,18 +248,16 @@ Future<void> translate(String text) async {
   }
 
   Future<void> saveHistory() async {
-    final prefs = await SharedPreferences.getInstance();
     final historyList =
         translationHistory
             .map((e) => "${e['id']}|${e['source']}||${e['target']}")
             .toList();
-    await prefs.setStringList(_historyKey, historyList);
+    final prefs = SharedPrefService();
+    prefs.translationHistory = historyList;
   }
 
   Future<void> loadHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final historyList = prefs.getStringList(_historyKey) ?? [];
-
+    final historyList = prefs.translationHistory;
     translationHistory.value =
         historyList.map((entry) {
           final parts = entry.split('|');
@@ -433,32 +275,15 @@ Future<void> translate(String text) async {
 
   void clearHistory() async {
     translationHistory.clear();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_historyKey);
+    prefs.removeFavourites();
   }
 
-void deleteHistoryItem(int index) async {
+  void deleteHistoryItem(int index) async {
     if (index >= 0 && index < translationHistory.length) {
-    translationHistory.removeAt(index);
-    saveHistory();
+      translationHistory.removeAt(index);
+      saveHistory();
     }
     flutterTts.stop();
-  }
-
-  Future<void> speakTranslatedTextOnly(String text) async {
-    try {
-      await flutterTts.stop();
-      await flutterTts.setPitch(pitch.value);
-      await flutterTts.setSpeechRate(speed.value);
-      final langCode = languageCodes[selectedLanguage2.value] ?? 'en-US';
-      await flutterTts.setLanguage(langCode);
-
-      if (text.trim().isNotEmpty) {
-        await flutterTts.speak(text.trim());
-      }
-    } catch (e) {
-      Utils().toastMessage("Error: ${e.toString()}");
-    }
   }
 
   // Save Favourite
@@ -482,19 +307,17 @@ void deleteHistoryItem(int index) async {
 
   // Save to SharedPreferences
   Future<void> saveFavourites() async {
-    final prefs = await SharedPreferences.getInstance();
     final favList =
         favouriteTranslations
             .map((e) => "${e['id']}|${e['source']}||${e['target']}")
             .toList();
-    await prefs.setStringList(_favouritesKey, favList);
+    prefs.favourites = favList;
   }
 
   // Load from SharedPreferences
   Future<void> loadFavourites() async {
-    final prefs = await SharedPreferences.getInstance();
-    final favList = prefs.getStringList(_favouritesKey) ?? [];
-
+    final prefs = SharedPrefService();
+    final favList = prefs.favourites;
     favouriteTranslations.value =
         favList.map((entry) {
           final parts = entry.split('|');
@@ -528,14 +351,26 @@ void deleteHistoryItem(int index) async {
     super.dispose();
   }
 
-void speakFromHistoryCard(String targetText) {
+  void speakFromHistoryCard(String targetText) {
     final lines = targetText.split('\n');
     final langLine = lines.isNotEmpty ? lines.first : '';
     final actualText =
         lines.length > 1 ? lines.sublist(1).join('\n').trim() : targetText;
     final languageName =
         langLine.replaceAll(RegExp(r'[^\u0600-\u06FF\w\s]'), '').trim();
-    final langCode = languageCodes[languageName];
+
+    final langCode =
+        languages
+            .firstWhere(
+              (lang) => lang.name == languageName,
+              orElse:
+                  () => LanguageModel(
+                    name: 'English',
+                    code: 'en',
+                    countryCode: 'US',
+                  ),
+            )
+            .code;
 
     translatedText.value = actualText;
 
@@ -543,7 +378,4 @@ void speakFromHistoryCard(String targetText) {
       speakText(langCodeOverride: langCode);
     }
   }
-
-
-
 }

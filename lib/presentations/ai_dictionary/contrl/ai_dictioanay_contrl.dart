@@ -1,5 +1,7 @@
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
+import 'package:ai_checker_translator/data/helper/storage_helper.dart';
+// import 'package:ai_checker_translator/data/helper/storage_keys.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +11,6 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import '../../../ads_manager/splash_interstitial.dart';
 import '../../../core/animation/animation_games.dart';
 import '../../../domain/use_cases/get_mistral.dart';
-
 // class GeminiAiCorrectionController extends GetxController {
 //   final textCheckPromptController = TextEditingController();
 //
@@ -206,9 +207,10 @@ import '../../../domain/use_cases/get_mistral.dart';
 // }
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class GeminiAiCorrectionController extends GetxController {
+  
   final textCheckPromptController = TextEditingController();
   final splashAd = Get.find<SplashInterstitialAdController>();
   final FlutterTts flutterTts = FlutterTts();
@@ -216,9 +218,9 @@ class GeminiAiCorrectionController extends GetxController {
 
   GeminiAiCorrectionController(this.useCase);
 
-  static const MethodChannel _speechChannel = MethodChannel(
-    'com.modernschool.aigrammar.learnenglish/speech_Text',
-  );
+  // static const MethodChannel _speechChannel = MethodChannel(
+  //   'com.modernschool.aigrammar.learnenglish/speech_Text',
+  // );
 
   late final GenerativeModel model;
 
@@ -228,10 +230,13 @@ class GeminiAiCorrectionController extends GetxController {
   final isLoading = false.obs;
   final isSpeaking = false.obs;
   final isTypingStarted = false.obs;
+  final isListening = false.obs;
 
   final RxInt interactionCount = 0.obs;
   final int maxFreeInteractions = 2;
   RxBool isPostAdAllowed = false.obs;
+
+  final prefs = SharedPrefService();
 
   @override
   void onInit() {
@@ -241,40 +246,33 @@ class GeminiAiCorrectionController extends GetxController {
   }
 
   Future<void> loadInteractionCount() async {
-    final prefs = await SharedPreferences.getInstance();
-    interactionCount.value = prefs.getInt('geminiInteractionCount') ?? 0;
+    interactionCount.value = prefs.interactionCount;
   }
 
-  Future<void> incrementInteractionCount() async {
-    final prefs = await SharedPreferences.getInstance();
+Future<void> incrementInteractionCount() async {
     interactionCount.value++;
-    await prefs.setInt('geminiInteractionCount', interactionCount.value);
+    prefs.interactionCount = interactionCount.value;
   }
 
-  Future<void> resetInteractionCount() async {
-    final prefs = await SharedPreferences.getInstance();
+Future<void> resetInteractionCount() async {
     interactionCount.value = 0;
-    await prefs.setInt('geminiInteractionCount', 0);
+    prefs.removeInteractionCount();
   }
 
-  // 🎤 Start mic input
-  Future<void> startMicInput({String languageISO = 'en-US'}) async {
+  Future<void> startSpeechToText(String languageISO) async {
+
     final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
     if (!hasInternet) return;
-    try {
-      final result = await _speechChannel.invokeMethod('getTextFromSpeech', {
-        'languageISO': languageISO,
-      });
-
-      if (result != null && result.isNotEmpty) {
-        textCheckPromptController.text = result;
-      }
-    } on PlatformException catch (e) {
-      print("Mic Error: ${e.message}");
+    
+    final result = await Utils.startListening(
+      languageISO: languageISO,
+      isListening: isListening,
+    );
+    if (result != null && result.isNotEmpty) {
+      textCheckPromptController.text = result;
     }
-  }
+}
 
-  // 🗣️ Speak generated text
   Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
     try {
       if (isSpeaking.value) {
@@ -303,8 +301,14 @@ class GeminiAiCorrectionController extends GetxController {
     }
   }
 
-  // ✨ Generate response with ad limit logic
   Future<void> generate(BuildContext context) async {
+
+    final inputText = textCheckPromptController.text.trim();
+    if (inputText.isEmpty) {
+      Utils().toastMessage("Enter text to generate");
+      return;
+    }
+    
     if (interactionCount.value >= maxFreeInteractions && !isPostAdAllowed.value) {
       Get.dialog(
         CustomInfoDialog(
@@ -336,12 +340,6 @@ class GeminiAiCorrectionController extends GetxController {
       await incrementInteractionCount();
     }
 
-    final inputText = textCheckPromptController.text.trim();
-    if (inputText.isEmpty) {
-      Utils().toastMessage("Enter text to generate");
-      return;
-    }
-
     final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
     if (!hasInternet) return;
 
@@ -353,8 +351,8 @@ class GeminiAiCorrectionController extends GetxController {
       final correctedPrompt = _buildCorrectionPromptWithLimit(inputText);
 
       final result = await useCase(correctedPrompt, maxTokens: 150);
-      final lineLimited = _limitResponseLines(result, 10);
-      final charLimited = _limitResponseCharacters(lineLimited, 500);
+      final lineLimited = Utils.limitLines(result, 10);
+      final charLimited = Utils.limitCharacters(lineLimited, 500);
 
       grammarResponseText.value = charLimited;
       isTypingStarted.value = true;
@@ -365,7 +363,6 @@ class GeminiAiCorrectionController extends GetxController {
     }
   }
 
-  // 📋 Prompt building helpers
   String _buildCorrectionPromptWithLimit(String input) {
     final words = input.split(RegExp(r'\s+')).length;
     final lines = input.split('\n').length;
@@ -392,18 +389,6 @@ Return only the corrected version without any explanation in max 5–10 lines.
     }
   }
 
-  String _limitResponseLines(String text, int maxLines) {
-    final lines = text.split('\n');
-    if (lines.length <= maxLines) return text;
-    return lines.take(maxLines).join('\n');
-  }
-
-  String _limitResponseCharacters(String text, int maxChars) {
-    if (text.length <= maxChars) return text;
-    return text.substring(0, maxChars).trim() + '...';
-  }
-
-  // 📋 Copy to clipboard
   void copyResponseText() {
     Utils.copyTextFrom(text: grammarResponseText.value);
   }
@@ -411,8 +396,7 @@ Return only the corrected version without any explanation in max 5–10 lines.
   void copyPromptText() {
     Utils.copyTextFrom(text: textCheckPromptController.text);
   }
-
-  // 🔄 Reset state
+  
   void resetController() {
     grammarResponseText.value = '';
     isTypingStarted.value = false;
