@@ -8,16 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 import 'package:translator/translator.dart';
 
 class TranslationController extends GetxController {
-  final SpeechToText _speech = SpeechToText();
+
 
   late final AudioPlayer audioPlayer;
   final LanguageService _languageService = LanguageService();
-
-  // final RxString recognizedText = ''.obs;
 
   RxString selectedLanguage1 = "English".obs;
   RxString selectedLanguage2 = "Spanish".obs;
@@ -31,13 +28,11 @@ class TranslationController extends GetxController {
 
   var languages = <LanguageModel>[].obs;
 
-  final RxList<Map<String, dynamic>> favouriteTranslations =
-      <Map<String, dynamic>>[].obs;
-
-  final RxList<Map<String, dynamic>> translationHistory =
-      <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> favouriteTranslations = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> translationHistory = <Map<String, dynamic>>[].obs;
 
   final prefs = SharedPrefService();
+  
   @override
   void onInit() {
     super.onInit();
@@ -133,14 +128,6 @@ Future<void> loadLanguagesFromJson() async {
     if (!hasInternet) return;
     await translate(text);
     await speakText();
-  }
-
-  void onTranslateButtonPressed() async {
-    final textToTranslate = controller.text;
-    if (textToTranslate.isEmpty) {
-      Utils().toastMessage("Please enter text to translate.");
-      return;
-    }
   }
 
   Future<void> translate(String text) async {

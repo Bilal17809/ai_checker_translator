@@ -237,15 +237,17 @@ class GeminiController extends GetxController {
   final MistralUseCase useCase;
   final FlutterTts flutterTts = FlutterTts();
 
-  static const MethodChannel _speechChannel = MethodChannel(
-    'com.example.getx_practice_app/speech_Text',
-  );
+  // static const MethodChannel _speechChannel = MethodChannel(
+  //   'com.example.getx_practice_app/speech_Text',
+  // );
 
   final splashAd = Get.find<SplashInterstitialAdController>();
 
   final RxInt interactionCount = 0.obs;
   final int maxFreeInteractions = 2;
   RxBool isPostAdAllowed = false.obs;
+
+  RxBool isListening = false.obs;
 
   GeminiController(this.useCase);
 
@@ -279,7 +281,7 @@ Future<void> resetInteractionCount() async {
       Utils().toastMessage("Enter text to generate");
       return;
     }
-    
+
     if (interactionCount.value >= maxFreeInteractions && !isPostAdAllowed.value) {
       Get.dialog(
         CustomInfoDialog(
@@ -368,22 +370,21 @@ Future<void> resetInteractionCount() async {
     Utils.copyTextFrom(text: responseText.value);
   }
 
-  Future<void> startMicInput({String languageISO = 'en-US'}) async {
+
+  Future<void> startSpeechToText(String languageISO) async {
+
     final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
     if (!hasInternet) return;
-
-    try {
-      final result = await _speechChannel.invokeMethod('getTextFromSpeech', {
-        'languageISO': languageISO,
-      });
-
-      if (result != null && result.isNotEmpty) {
-        promptController.text = result;
-      }
-    } on PlatformException catch (e) {
-      print("Mic Error: ${e.message}");
+    
+    final result = await Utils.startListening(
+      languageISO: languageISO,
+      isListening: isListening,
+    );
+    if (result != null && result.isNotEmpty) {
+      promptController.text = result;
     }
-  }
+}
+
 
   Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
     try {

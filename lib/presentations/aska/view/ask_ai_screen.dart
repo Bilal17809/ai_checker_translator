@@ -108,9 +108,7 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                                   onPressed:
                                       () {
                                     if (Platform.isAndroid) {
-                                      controller.startMicInput(
-                                        languageISO: 'en-US',
-                                      );
+                                      controller.startSpeechToText('en-US');
                                     } else {
                                       VoiceDialogHelper().showVoiceInputDialog(
                                         context: context,

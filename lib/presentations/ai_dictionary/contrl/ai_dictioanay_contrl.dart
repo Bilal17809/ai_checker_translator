@@ -1,7 +1,7 @@
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
 import 'package:ai_checker_translator/data/helper/storage_helper.dart';
-import 'package:ai_checker_translator/data/helper/storage_keys.dart';
+// import 'package:ai_checker_translator/data/helper/storage_keys.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -218,9 +218,9 @@ class GeminiAiCorrectionController extends GetxController {
 
   GeminiAiCorrectionController(this.useCase);
 
-  static const MethodChannel _speechChannel = MethodChannel(
-    'com.example.getx_practice_app/speech_Text',
-  );
+  // static const MethodChannel _speechChannel = MethodChannel(
+  //   'com.modernschool.aigrammar.learnenglish/speech_Text',
+  // );
 
   late final GenerativeModel model;
 
@@ -230,6 +230,7 @@ class GeminiAiCorrectionController extends GetxController {
   final isLoading = false.obs;
   final isSpeaking = false.obs;
   final isTypingStarted = false.obs;
+  final isListening = false.obs;
 
   final RxInt interactionCount = 0.obs;
   final int maxFreeInteractions = 2;
@@ -258,21 +259,19 @@ Future<void> resetInteractionCount() async {
     prefs.removeInteractionCount();
   }
 
-  Future<void> startMicInput({String languageISO = 'en-US'}) async {
+  Future<void> startSpeechToText(String languageISO) async {
+
     final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
     if (!hasInternet) return;
-    try {
-      final result = await _speechChannel.invokeMethod('getTextFromSpeech', {
-        'languageISO': languageISO,
-      });
-
-      if (result != null && result.isNotEmpty) {
-        textCheckPromptController.text = result;
-      }
-    } on PlatformException catch (e) {
-      print("Mic Error: ${e.message}");
+    
+    final result = await Utils.startListening(
+      languageISO: languageISO,
+      isListening: isListening,
+    );
+    if (result != null && result.isNotEmpty) {
+      textCheckPromptController.text = result;
     }
-  }
+}
 
   Future<void> speakGeneratedText({String languageCode = 'en-US'}) async {
     try {
@@ -340,8 +339,6 @@ Future<void> resetInteractionCount() async {
     } else {
       await incrementInteractionCount();
     }
-
-   
 
     final hasInternet = await Utils.checkAndShowNoInternetDialogIfOffline();
     if (!hasInternet) return;

@@ -17,7 +17,6 @@ import 'core/routes/routes_name.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await SharedPrefService().init();
   await Firebase.initializeApp();
   MobileAds.instance.initialize();
   Get.put(AppOpenAdController());
@@ -26,8 +25,9 @@ void main() async{
   Get.put(InterstitialAdController());
   Get.put(SplashInterstitialAdController());
   Get.put(NativeAdController());
-  initializeOneSignal();
+initializeOneSignal();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await SharedPrefService().init();
   runApp(const MyApp());
 }
 

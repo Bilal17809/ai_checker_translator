@@ -168,7 +168,7 @@ static Future<bool> checkAndShowNoInternetDialogIfOffline() async {
   }
 
   static const MethodChannel _methodChannel = MethodChannel(
-    'com.example.getx_practice_app/speech_Text',
+    'com.modernschool.aigrammar.learnenglish/speech_Text',
   );
 
   static Future<String?> startListening({
