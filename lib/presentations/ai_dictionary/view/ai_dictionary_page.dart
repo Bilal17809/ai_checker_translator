@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:ai_checker_translator/core/common_widgets/assistent_input_box_widget.dart';
 import 'package:ai_checker_translator/core/common_widgets/back_to_home_wrapper.dart';
 import 'package:ai_checker_translator/core/common_widgets/common_appbar_widget.dart';
@@ -13,10 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
+
 import '../../../ads_manager/banner_ads.dart';
 import '../../../ads_manager/interstitial_ads.dart';
 import '../../aska/widgets/text_generated_widget.dart';
-
 
 class AiDictionaryPage extends StatefulWidget {
   const AiDictionaryPage({super.key});
@@ -114,7 +115,9 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
                                 IconButton(
                                   onPressed: () {
                                     if (Platform.isAndroid) {
-                                      controller.startSpeechToText('en-US');
+                                      controller.startMicInput(
+                                        languageISO: 'en-US',
+                                      );
                                     } else {
                                       VoiceDialogHelper().showVoiceInputDialog(
                                         context: context,
@@ -234,12 +237,12 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
                 ),
               ],
             ),
-            bottomNavigationBar:
-            Get.find<InterstitialAdController>().interstitialAdShown.value
-                ? SizedBox()
-                : Obx(() {
-              return Get.find<BannerAdController>().getBannerAdWidget('ad1');
-            }),
+            // bottomNavigationBar:
+            // Get.find<InterstitialAdController>().interstitialAdShown.value
+            //     ? SizedBox()
+            //     : Obx(() {
+            //   return Get.find<BannerAdController>().getBannerAdWidget('ad1');
+            // }),
           ),
         ),
       ),

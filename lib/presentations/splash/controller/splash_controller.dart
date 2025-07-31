@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:get/get.dart';
-
-import '../../../ads_manager/splash_interstitial.dart';
+import '/ads_manager/banner_ads.dart';
+import '/ads_manager/splash_interstitial.dart';
 
 class SplashController extends GetxController {
   final SplashInterstitialAdController splashAd = Get.put(SplashInterstitialAdController());
@@ -16,6 +16,7 @@ class SplashController extends GetxController {
   @override
   void onInit() {
     splashAd.loadInterstitialAd();
+    Get.find<LargeBannerAdController>().loadBannerAd('ad14');
     super.onInit();
     startAnimations();
   }
@@ -43,9 +44,18 @@ class SplashController extends GetxController {
 
   void navigateToHome() async{
     if (splashAd.isAdReady) {
-      await splashAd.showInterstitialAd();
+      splashAd.showInterstitialAdUser(
+        onAdComplete: () {
+          Get.offAllNamed(RoutesName.bottomNevBar);
+        },
+      );
+    } else {
+      Get.offAllNamed(RoutesName.bottomNevBar);
     }
-    Get.offNamed(RoutesName.bottomNevBar);
+    // if (splashAd.isAdReady) {
+    //   await splashAd.showInterstitialAd();
+    // }
+    // Get.offNamed(RoutesName.bottomNevBar);
   }
 
   @override

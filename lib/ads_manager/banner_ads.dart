@@ -175,6 +175,17 @@ class LargeBannerAdController extends GetxController {
       print('Error fetching Remote Config: $e');
     }
   }
+
+  String get bannerAdUnitId {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-8331781061822056/3971864516';
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-5405847310750111/4925853534';
+    } else {
+      throw UnsupportedError('Unsupported platform');
+    }
+  }
+
   void loadBannerAd(String key) {
     if (_ads.containsKey(key)) {
       _ads[key]!.dispose();
@@ -182,8 +193,8 @@ class LargeBannerAdController extends GetxController {
     final screenWidth = Get.context!.mediaQuerySize.width.toInt();
 
     final bannerAd = BannerAd(
-      adUnitId:'ca-app-pub-5405847310750111/4925853534',
-      size:AdSize(height:70,width:screenWidth),
+      adUnitId:bannerAdUnitId,
+      size:AdSize(height:100,width:screenWidth),
       request: AdRequest(),
       listener: BannerAdListener(
         onAdLoaded: (ad) {

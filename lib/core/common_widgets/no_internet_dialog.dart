@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ai_checker_translator/core/routes/routes_name.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -67,6 +69,7 @@ class CustomInfoDialog extends StatelessWidget {
                 onPressed: onPrimaryPressed ?? () => Get.back(),
               )
             else ...[
+              if(Platform.isIOS)
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kMintGreen,
@@ -87,8 +90,8 @@ class CustomInfoDialog extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed:
-                    onPrimaryPressed ??
-                    () => Get.offNamed(RoutesName.premiumscreen),
+                onPrimaryPressed ??
+                        () => Get.offNamed(RoutesName.premiumscreen),
               ),
 
               Padding(

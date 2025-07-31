@@ -33,6 +33,7 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
   @override
   void initState() {
     super.initState();
+    Get.find<InterstitialAdController>().checkAndShowAd();
     args = ResultArguments.fromMap(Get.arguments ?? {});
   }
 

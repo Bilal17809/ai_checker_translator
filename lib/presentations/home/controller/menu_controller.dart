@@ -1,38 +1,32 @@
-// import 'package:get/get.dart';
-// import '../../../data/models/menu_model.dart';
-// import '../../../data/services/database_helper.dart';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+import 'package:get/get.dart';
+import 'dart:io';
 
-// class DbController extends GetxController {
+class TrackingController extends GetxController {
+  Future<void> requestTrackingPermission() async {
+    if (!Platform.isIOS) {
+      return;
+    }
+    final trackingStatus =
+    await AppTrackingTransparency.requestTrackingAuthorization();
 
-//  var menuList = <MenuModel>[].obs;
-//   RxBool isLoading = true.obs;
+    switch (trackingStatus) {
+      case TrackingStatus.notDetermined:
+        print('User has not yet decided');
+        break;
+      case TrackingStatus.denied:
+        print('User denied tracking');
+        break;
+      case TrackingStatus.authorized:
+        print('User granted tracking permission');
+        break;
+      case TrackingStatus.restricted:
+        print('Tracking restricted');
+        break;
+      default:
+        print('Unknown tracking status');
+    }
+  }
+}
 
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     // print("Data Fetct");
-//     fetchData();
-
-//   }
-
-// Future<void> fetchData() async {
-//   isLoading.value = true;
-//   final db = DatabaseHelper();
-//   await db.initDatabase();
-//   menuList.value = await db.fetchMenu();
-
-//   // // 👇 Add this line to print loaded data
-//   // print("Fetched Menu List:");
-//   // for (var item in menuList) {
-//   //   print("Grammar: ${item.grammarrules}");
-//   //   print("Punctuation: ${item.punctuationRules}");
-//   //   print("Spelling: ${item.spellingVocabularyCommonlyConfusedWords}");
-//   //   print("Other: ${item.otherRules}");
-//   //   print("Quiz: ${item.quizzesGrammarPretest}");
-//   // }
-
-//   isLoading.value = false;
-// }
-
-// }
 

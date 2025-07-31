@@ -8,16 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-import '../../../ads_manager/splash_interstitial.dart';
-
-
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
 }
-
 class _SplashPageState extends State<SplashPage> {
 
   final SplashController controller = Get.put(SplashController());
@@ -120,6 +116,5 @@ class _SplashPageState extends State<SplashPage> {
         ),
       ),
     );
-
   }
 }

@@ -81,7 +81,7 @@ class PuzzleController extends GetxController {
     filtered.shuffle();
 
     // Take only 15 items
-    final limited = filtered.take(20).toList();
+    final limited = filtered.take(15).toList();
 
     // Extract words and hints
     words = limited.map((e) => e.word.toUpperCase()).toList();

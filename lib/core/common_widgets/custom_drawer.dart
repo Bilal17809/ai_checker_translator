@@ -8,6 +8,7 @@ import 'package:get/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../presentations/premium_screen/premium_screen.dart';
+import '../../presentations/report_issue/view/report_issue_view.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -47,15 +48,15 @@ class CustomDrawer extends StatelessWidget {
           DrawerTile(
             icon: Icons.privacy_tip,
             title: 'Privacy Policy',
-            onTap: privacy,
+            onTap:(){
+              privacy();
+            },
           ),
           DrawerTile(
             icon: Icons.star,
             title: 'Rate Us',
             onTap: () {
               rateUs();
-              Navigator.pop(context);
-
             },
           ),
 
@@ -69,6 +70,11 @@ class CustomDrawer extends StatelessWidget {
           DrawerTile(icon: Icons.more, title: "More App", onTap: () {
             moreApp();
           }),
+          if(Platform.isAndroid)
+          DrawerTile(icon: Icons.report, title: "Report an Issue", onTap: () {
+            Get.to(() => const ReportScreen());
+          }),
+          if(Platform.isIOS)
           DrawerTile(icon: Icons.workspace_premium, title: "Ads Free", onTap: () {
             Get.to(PremiumScreen());
           }),

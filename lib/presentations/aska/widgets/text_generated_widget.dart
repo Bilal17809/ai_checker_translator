@@ -1,5 +1,6 @@
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/ai_dictionary/contrl/animation_controller.dart';
+import 'package:ai_checker_translator/presentations/report_issue/view/report_issue_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controller/gemini_controller.dart';
@@ -83,6 +84,17 @@ class _GeneratedTextWidgetState extends State<GeneratedTextWidget> {
                 }),
                 Row(
                   children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.report,
+                        size: 23,
+                        color: kMintGreen,
+                      ),
+                      tooltip: "Report",
+                      onPressed:(){
+                        Get.to(ReportScreen());
+                      },
+                    ),
                     IconButton(
                       icon: const Icon(Icons.copy, size: 20, color: kMintGreen),
                       tooltip: "Copy",

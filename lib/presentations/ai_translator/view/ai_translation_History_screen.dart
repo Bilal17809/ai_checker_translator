@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
+
 class AiTranslationHistoryScreen extends StatefulWidget {
   const AiTranslationHistoryScreen({super.key});
 
@@ -40,6 +43,12 @@ class _AiTranslationHistoryScreenState extends State<AiTranslationHistoryScreen>
             ),
           ),
         ),
+        bottomNavigationBar:
+        Get.find<InterstitialAdController>().interstitialAdShown.value
+            ? SizedBox()
+            : Obx(() {
+          return Get.find<BannerAdController>().getBannerAdWidget('ad2');
+        }),
       ),
     );
   }

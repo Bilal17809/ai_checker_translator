@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import '../../../ads_manager/appOpen_ads.dart';
 import '../../../ads_manager/banner_ads.dart';
 import '../../../ads_manager/interstitial_ads.dart';
 import '../../../ads_manager/native_ads.dart';
@@ -30,6 +29,7 @@ class _PuzzlePageState extends State<PuzzlePage> {
   void initState() {
     super.initState();
     Get.find<InterstitialAdController>().checkAndShowAd();
+    splashAd.loadInterstitialAd();
     controller = Get.put(PuzzleController());
     controller.setLevel(widget.level);
     controller.loadPuzzles();
@@ -215,7 +215,7 @@ class _PuzzlePageState extends State<PuzzlePage> {
                                 );
                                 Future.delayed(const Duration(seconds: 2), () {
                                   Navigator.of(context).pop();
-                                  if (controller.currentIndex.value == 7) {
+                                  if (controller.currentIndex.value == 6) {
                                     splashAd.showInterstitialAd();
                                   }
                                   if (controller.currentIndex.value < controller.words.length - 1) {
@@ -305,9 +305,6 @@ class PuzzleCompletePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nativeAdController = Get.put(NativeAdController());
-    final RemoveAds removeAds=Get.put(RemoveAds());
-    final AppOpenAdController appOpenAdController=Get.put(AppOpenAdController());
     return Scaffold(
       appBar: AppBar(
           centerTitle: true,
@@ -324,70 +321,60 @@ class PuzzleCompletePage extends StatelessWidget {
             ),
           )),
       body: Padding(
-        padding: const EdgeInsets.only(top:90.0),
-        child: Container(
-          decoration: roundedDecoration,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height:260,
-                    child: Lottie.asset(
-                      'assets/icons/won.json',
-                      // repeat: false,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: roundedDecoration,
-                    child: Column(
-                      children: [
-                        Text(
-                          "Score: $correctCount / $totalCount",
-                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          "Points Earned: ${correctCount * 10}",
-                          style: const TextStyle(fontSize: 18, color: Colors.green),
-                        ),
-                        const SizedBox(height:25),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal:18.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                              textStyle: const TextStyle(fontSize: 16),
-                              backgroundColor: Colors.blue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                            onPressed:() {
-                              Navigator.of(context).pop();
-                            }, child:Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text("Try Again"),
-                              const SizedBox(width:12),
-                              AnimatedForwardArrow(isEnabled:true,),
-                            ],
-                          ),
-                          ),
-                        ),
-                        // SizedBox(height:MediaQuery.of(context).size.height*0.02),
-                        // if (!(appOpenAdController.isShowingOpenAd.value
-                        //     || removeAds.isSubscribedGet.value))
-                        //   nativeAdController.nativeAdWidget('key3'),
-                      ],
-                    ),
-                  ),
-                ],
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height:260,
+                child: Lottie.asset(
+                  'assets/icons/won.json',
+                  // repeat: false,
+                ),
               ),
-            ),
+              const SizedBox(height: 12),
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: roundedDecoration,
+                child: Column(
+                  children: [
+                    Text(
+                      "Score: $correctCount / $totalCount",
+                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      "Points Earned: ${correctCount * 10}",
+                      style: const TextStyle(fontSize: 18, color: Colors.green),
+                    ),
+                    const SizedBox(height:25),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal:18.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          textStyle: const TextStyle(fontSize: 16),
+                          backgroundColor:kMintGreen,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        onPressed:() {
+                          Navigator.of(context).pop();
+                        }, child:Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text("Try Again"),
+                          const SizedBox(width:12),
+                          AnimatedForwardArrow(isEnabled:true,),
+                        ],
+                      ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

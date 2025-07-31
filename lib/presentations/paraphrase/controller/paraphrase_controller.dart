@@ -35,7 +35,6 @@ class ParaphraseController extends GetxController {
 
   @override
   void onInit() {
-    Get.find<InterstitialAdController>().checkAndShowAd();
     super.onInit();
     fetchTopics();
   }

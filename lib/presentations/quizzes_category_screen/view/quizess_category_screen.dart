@@ -27,6 +27,7 @@ class _QuizessCategoryScreenState extends State<QuizessCategoryScreen> {
   @override
   void initState() {
     super.initState();
+    Get.find<InterstitialAdController>().checkAndShowAd();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).unfocus();
     });

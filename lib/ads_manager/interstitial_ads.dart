@@ -56,8 +56,7 @@ class InterstitialAdController extends GetxController {
 
   String get interstitialAdUnitId {
     if (Platform.isAndroid) {
-      return
-      'ca-app-pub-8331781061822056/8952728454';
+      return 'ca-app-pub-8331781061822056/8952728454';
     } else if (Platform.isIOS) {
       return 'ca-app-pub-5405847310750111/5482093593';
     } else {

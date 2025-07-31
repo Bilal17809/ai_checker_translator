@@ -32,7 +32,6 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
     super.initState();
     Get.find<InterstitialAdController>().checkAndShowAd();
     category = Get.arguments as GrammarCategoryModel;
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (quizzeslevelController.selectedCategory.value !=
           category.title.trim()) {
@@ -297,7 +296,7 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
         Get.find<InterstitialAdController>().interstitialAdShown.value
             ? SizedBox()
             : Obx(() {
-          return Get.find<BannerAdController>().getBannerAdWidget('ad16');
+          return Get.find<BannerAdController>().getBannerAdWidget('ad6');
         }),
       ),
     );

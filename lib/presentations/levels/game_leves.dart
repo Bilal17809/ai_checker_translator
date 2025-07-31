@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../ads_manager/appOpen_ads.dart';
+import '../../ads_manager/interstitial_ads.dart';
 import '../../ads_manager/native_ads.dart';
 import '../../core/animation/animation_games.dart';
 import '../../core/common_widgets/icon_buttons.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_styles.dart';
-import '../remove_ads_contrl/remove_ads_contrl.dart';
 import '../word_game/view/word_game_view.dart';
 
-class GameLevels extends StatelessWidget {
+class GameLevels extends StatefulWidget {
   const GameLevels({super.key});
+
+  @override
+  State<GameLevels> createState() => _GameLevelsState();
+}
+
+class _GameLevelsState extends State<GameLevels> {
+
+  @override
+  void initState() {
+    Get.find<InterstitialAdController>().checkAndShowAd();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final nativeAdController = Get.put(NativeAdMeduimController());
-    final RemoveAds removeAds=Get.put(RemoveAds());
     final AppOpenAdController appOpenAdController=Get.put(AppOpenAdController());
     return Scaffold(
       appBar: AppBar(
@@ -32,10 +43,9 @@ class GameLevels extends StatelessWidget {
                 color: kWhiteFA
             ),
           )),
-      body: Container(
-        decoration: roundedDecoration,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               LevelCard(level: 1),
@@ -43,9 +53,9 @@ class GameLevels extends StatelessWidget {
               LevelCard(level: 2),
               const SizedBox(height: 16),
               LevelCard(level: 3),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-
-              if (!(appOpenAdController.isShowingOpenAd.value))
+              SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+              if (!(appOpenAdController.isShowingOpenAd.value ||
+                  Get.find<InterstitialAdController>().interstitialAdShown.value))
                 nativeAdController.nativeAdWidget(),
             ],
           ),

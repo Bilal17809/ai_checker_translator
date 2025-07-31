@@ -6,6 +6,9 @@ import 'package:ai_checker_translator/presentations/quizzes_category_screen/cont
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
+
 class RulesScreen extends StatefulWidget {
   final int? catId;
   final String? content;
@@ -24,6 +27,7 @@ class _RulesScreenState extends State<RulesScreen> with AppLifecycleMixin {
   @override
   void initState() {
     super.initState();
+    Get.find<InterstitialAdController>().checkAndShowAd();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       categoriesController.fetchRulesByCategoryId(widget.catId ?? 0);
     });
@@ -171,6 +175,12 @@ class _RulesScreenState extends State<RulesScreen> with AppLifecycleMixin {
                 ],
               ),
             );
+          }),
+          bottomNavigationBar:
+          Get.find<InterstitialAdController>().interstitialAdShown.value
+              ? SizedBox()
+              : Obx(() {
+            return Get.find<BannerAdController>().getBannerAdWidget('ad1');
           }),
         ),
       ),

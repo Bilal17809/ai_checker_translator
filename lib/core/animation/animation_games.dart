@@ -525,9 +525,9 @@ Future<void> showCustomDialog({
               ),
               const SizedBox(height: 12),
               Text(
-                message,
-                textAlign: TextAlign.center,
-                style:context.textTheme.labelMedium
+                  message,
+                  textAlign: TextAlign.center,
+                  style:context.textTheme.labelMedium
               ),
               const SizedBox(height:16),
               SizedBox(
@@ -819,5 +819,4 @@ class _AnimatedForwardArrow2State extends State<AnimatedForwardArrow2>
     );
   }
 }
-
 

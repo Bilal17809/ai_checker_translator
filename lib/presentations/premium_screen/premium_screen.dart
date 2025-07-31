@@ -117,17 +117,17 @@ class _PremiumScreenState extends State<PremiumScreen> {
     });
   }
 
- @override
-Widget build(BuildContext context) {
-  final height = MediaQuery.of(context).size.height;
-  final width = MediaQuery.of(context).size.width;
+  @override
+  Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
 
-  return SafeArea(
-    child: Scaffold(
-      body: _buildBody(),
-    ),
-  );
-}
+    return SafeArea(
+      child: Scaffold(
+        body: _buildBody(),
+      ),
+    );
+  }
 
 
   Column _buildProductList(double screenWidth, double screenHeight) {
@@ -155,39 +155,39 @@ Widget build(BuildContext context) {
           ),
         )
             : Card(
-              color:kMintGreen,
-              elevation: 1.0,
-              margin: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
-              child: ListTile(
-                title: Text(
-                  'Life Time Subscription',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize:isSmallScreen? 16:screenHeight*0.02,
-                    color: Colors.white,
-                  ),
-                ),
-                subtitle: Text(
-                  product.description,
-                  style: TextStyle(
-                      fontSize:isSmallScreen? 14:screenHeight*0.02,
-                      color:  Colors.white),
-                ),
-                trailing: Text(
-                  product.price,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color:  Colors.white,
-                    fontSize: isSmallScreen?16:screenHeight*0.02,
-                  ),
-                ),
-                onTap: () {
-                  if (mounted) {
-                    _showPurchaseDialog(context, product, purchase);
-                  }
-                },
+          color:kMintGreen,
+          elevation: 1.0,
+          margin: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
+          child: ListTile(
+            title: Text(
+              'Life Time Subscription',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize:isSmallScreen? 16:screenHeight*0.02,
+                color: Colors.white,
               ),
-            );
+            ),
+            subtitle: Text(
+              product.description,
+              style: TextStyle(
+                  fontSize:isSmallScreen? 14:screenHeight*0.02,
+                  color:  Colors.white),
+            ),
+            trailing: Text(
+              product.price,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color:  Colors.white,
+                fontSize: isSmallScreen?16:screenHeight*0.02,
+              ),
+            ),
+            onTap: () {
+              if (mounted) {
+                _showPurchaseDialog(context, product, purchase);
+              }
+            },
+          ),
+        );
       }).toList(),
     );
   }
@@ -354,17 +354,19 @@ Widget build(BuildContext context) {
                             Column(
                               children: [
                                 const Text(
-                                  '>> Cancel anytime at least 24 hours before renewal',
-                                  style:TextStyle(color: Colors.black,fontSize:14)
+                                    '>> Cancel anytime at least 24 hours before renewal',
+                                    style:TextStyle(color: Colors.black,fontSize:14)
                                 ),
                                 const SizedBox(height: 12,),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                      InkWell(
-                                          child: const Text("Privacy | Terms"),
-                                        onTap: ()=>TermOfUseScreen(),
-                                      ),
+                                    InkWell(
+                                      child: const Text("Privacy | Terms"),
+                                      onTap:(){
+                                        Get.to(TermOfUseScreen());
+                                      },
+                                    ),
                                     const Text("Cancel Anytime"),
                                   ],
                                 )
@@ -553,11 +555,9 @@ Widget build(BuildContext context) {
       );
       return;
     }
-
     setState(() {
       _purchasePending = true;
     });
-
     // Show a restoring loader similar to _buyProduct
     showDialog(
       context: context,
@@ -578,10 +578,9 @@ Widget build(BuildContext context) {
         );
       },
     );
-
     try {
       await _inAppPurchase.restorePurchases();
-      Timer(const Duration(seconds: 20), () {
+      Timer(const Duration(seconds:15), () {
         if (_purchasePending) {
           setState(() {
             _purchasePending = false;

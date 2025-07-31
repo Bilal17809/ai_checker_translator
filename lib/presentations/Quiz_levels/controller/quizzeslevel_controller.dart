@@ -15,12 +15,6 @@ class QuizzeslevelController extends GetxController {
   var totalQuizCount = 0.obs;
   var totalQuestionCount = 0.obs;
 
-  @override
-  void onInit() {
-    Get.find<InterstitialAdController>().checkAndShowAd();
-    super.onInit();
-    // fetchLevelsByCategory will be called after category selection
-  }
 
   Future<void> fetchLevelsByCategory(String categoryName) async {
     try {

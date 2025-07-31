@@ -34,7 +34,7 @@ class FeatureCardWidget extends StatelessWidget {
           children: [
          
             Expanded(
-              flex: 02,
+              flex: 01,
               child: Image.asset(image, height: 50, fit: BoxFit.contain),
             ),
             const SizedBox(height: 04),
@@ -42,6 +42,7 @@ class FeatureCardWidget extends StatelessWidget {
               title,
               style: context.textTheme.bodySmall!.copyWith(
                 fontWeight: FontWeight.bold,
+                fontSize: 14
               ),
               textAlign: TextAlign.center,
               maxLines: 1,

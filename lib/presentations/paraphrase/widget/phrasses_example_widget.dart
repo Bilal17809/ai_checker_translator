@@ -40,7 +40,7 @@ class PhrassesExampleWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Container(
-            height: hieght * 0.30,
+            // height: hieght * 0.30,
             // padding: const EdgeInsets.all(),
             decoration: BoxDecoration(
               color: Colors.grey[100],
@@ -48,19 +48,13 @@ class PhrassesExampleWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 14,vertical:12),
               child: Column(
                 children: [
-                
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        explanation,
-                        style: context.textTheme.bodyLarge,
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
+                  Text(
+                    explanation,
+                    style: context.textTheme.bodyLarge,
+                    textAlign: TextAlign.left,
                   ),
                   SizedBox(height: 10),
                   Row(

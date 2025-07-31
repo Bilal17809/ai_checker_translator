@@ -4,6 +4,7 @@ import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/presentations/paraphrase/widget/phrasses_example_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../ads_manager/interstitial_ads.dart';
 import '../../paraphrase/controller/paraphrase_controller.dart';
 
 class TopicPhrasesScreen extends StatefulWidget {
@@ -26,6 +27,7 @@ class _TopicPhrasesScreenState extends State<TopicPhrasesScreen>
 
   @override
   void initState() {
+    Get.find<InterstitialAdController>().checkAndShowAd();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchTopicPhrasebyTopicId(widget.topicId ?? 0);
@@ -93,8 +95,6 @@ class _TopicPhrasesScreenState extends State<TopicPhrasesScreen>
               bottom: 0,
               child: Obx(() {
                 final phraseList = controller.topicPharseList;
-                // final currentPage = controller.currentPageIndex.value;
-
                 if (controller.isLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }

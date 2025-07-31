@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ai_checker_translator/presentations/quizzes_category_screen/controller/Categories_controller.dart';
 
+import '../../../ads_manager/banner_ads.dart';
+import '../../../ads_manager/interstitial_ads.dart';
 
-class RuleDetailScreen extends StatelessWidget {
+
+class RuleDetailScreen extends StatefulWidget {
   final String? title;
   final String? definition;
 
@@ -13,12 +16,24 @@ class RuleDetailScreen extends StatelessWidget {
     : super(key: key);
 
   @override
+  State<RuleDetailScreen> createState() => _RuleDetailScreenState();
+}
+
+class _RuleDetailScreenState extends State<RuleDetailScreen> {
+
+  @override
+  void initState() {
+    Get.find<InterstitialAdController>().checkAndShowAd();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final categoriesController = Get.find<CategoriesController>();
     final isLearned = RxBool(false);
 
     final rule = categoriesController.rulesList.firstWhereOrNull(
-      (r) => r.titleOnly == title,
+      (r) => r.titleOnly == widget.title,
     );
     final ruleId = rule?.ruleId;
     final catId = rule?.catId;
@@ -38,7 +53,7 @@ class RuleDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title ?? '',
+                  widget.title ?? '',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -46,7 +61,7 @@ class RuleDetailScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 SelectableText(
-                  definition ?? '',
+                  widget.definition ?? '',
                   style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 20),
@@ -72,6 +87,12 @@ class RuleDetailScreen extends StatelessWidget {
             ),
           ),
         ),
+        bottomNavigationBar:
+        Get.find<InterstitialAdController>().interstitialAdShown.value
+            ? SizedBox()
+            : Obx(() {
+          return Get.find<BannerAdController>().getBannerAdWidget('ad3');
+        }),
       ),
     );
   }

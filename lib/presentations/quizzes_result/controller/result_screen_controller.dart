@@ -12,7 +12,6 @@ class ResultController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    Get.find<InterstitialAdController>().checkAndShowAd();
   }
   Future<void> retakeQuiz({
     required int catId,

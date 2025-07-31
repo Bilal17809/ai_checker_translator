@@ -1,12 +1,11 @@
-
 import 'dart:io';
+
 import 'package:ai_checker_translator/core/common_widgets/fluttertaost_message.dart';
 import 'package:ai_checker_translator/core/common_widgets/no_internet_dialog.dart';
 import 'package:ai_checker_translator/core/common_widgets/voicedialog_for_ios.dart';
 import 'package:ai_checker_translator/core/theme/app_colors.dart';
 import 'package:ai_checker_translator/gen/assets.gen.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/controller/translation_contrl.dart';
-import 'package:ai_checker_translator/data/models/language_model.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translation_History_screen.dart';
 import 'package:ai_checker_translator/presentations/ai_translator/view/ai_translator_page.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -87,20 +86,8 @@ class _AiTranslatorBottomNavState extends State<AiTranslatorBottomNav> {
                 controller.clearData();
                 // controller.audioPlayer.stop();
 
-                // final selectedLanguageCode =
-                //     '${controller.languageCodes[controller.selectedLanguage1.value]}-US';
-
-                final lang = controller.languages.firstWhere(
-                  (lang) => lang.name == controller.selectedLanguage1.value,
-                  orElse:
-                      () => LanguageModel(
-                        name: 'English',
-                        code: 'en',
-                        countryCode: 'US',
-                      ),
-                );
-
-                final selectedLanguageCode = '${lang.code}-${lang.countryCode}';
+                final selectedLanguageCode =
+                    '${controller.languageCodes[controller.selectedLanguage1.value]}-US';
 
                 // controller.startSpeechToTex('en_US');
 

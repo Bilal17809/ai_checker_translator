@@ -23,6 +23,7 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
   @override
   void initState() {
     super.initState();
+    Get.find<InterstitialAdController>().checkAndShowAd();
     quizID = Get.arguments as int;
     quizdetailcontroller.fetchDetails(quizID); 
   }
@@ -64,7 +65,7 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
       Get.find<InterstitialAdController>().interstitialAdShown.value
           ? SizedBox()
           : Obx(() {
-        return Get.find<BannerAdController>().getBannerAdWidget('ad6');
+        return Get.find<BannerAdController>().getBannerAdWidget('ad16');
       }),
     );
   }
