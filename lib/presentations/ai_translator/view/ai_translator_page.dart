@@ -144,6 +144,7 @@ class _AiTranslatorPageState extends State<AiTranslatorPage>
                     deleteFromFavouritesOnly: false,
                     overrideSpeakAndCopy: false,
                     showSourceText: false,
+                    isTranslationpage: true,
                   ),
                 ),
               ),

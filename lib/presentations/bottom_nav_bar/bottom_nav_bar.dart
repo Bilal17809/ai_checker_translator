@@ -39,7 +39,7 @@ class _BottomNavExampleState extends State<BottomNavExample> {
 
   final List<String> labels = [
     "Ask AI",
-    "Paraphraser",
+    "Learn Grammar",
     "Home",
     "AI Correction",
     "Translator",

@@ -30,11 +30,17 @@ class CustomDrawer extends StatelessWidget {
                       child: Image.asset(Assets.appIcon.path, height: 70),
                     ),
                     const SizedBox(width: 12),
-                    Text(
-                      "AI Checker Translator",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                    Flexible(
+                      child: Text(
+                        "AI Checker Translator",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        // textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16
+                        ),
                       ),
                     ),
                   ],

@@ -80,6 +80,9 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
+
+
+
                     Center(
                       child: Text(
                         categoryTitle,
@@ -90,6 +93,11 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                         ),
                       ),
                     ),
+                    Positioned.fill(
+                        child: IgnorePointer(
+                          ignoring: true,
+                          child: Container(color: Colors.transparent),
+                        ))
                   ],
                 ),
               ),
@@ -123,7 +131,7 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                       itemCount: quizzeslevelController.filteredCategoriesList.length,
                       itemBuilder: (context, index) {
                         final item =
-                            quizzeslevelController.filteredCategoriesList[index];
+                        quizzeslevelController.filteredCategoriesList[index];
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: kBodyHp,
@@ -290,7 +298,23 @@ class _QuizLevelScreenState extends State<QuizLevelScreen> {
                 ],
               );
             }),
-    ],
+            Positioned(
+              top: 02,
+              left: 10,
+              child: BackButton(
+                color: kWhite,
+                onPressed: (){
+                  Get.back();
+                },
+              )
+            ),
+        Positioned.fill(
+          child: IgnorePointer(
+            ignoring: true,
+            child: Container(color: Colors.transparent),
+          ))
+          ]
+
         ),
         bottomNavigationBar:
         Get.find<InterstitialAdController>().interstitialAdShown.value

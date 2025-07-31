@@ -153,22 +153,24 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
                         ),
 
                         const SizedBox(height: 10),
-                        Obx(() => Text.rich(
-                          TextSpan(
-                            text:
-                            "Daily Limits Remaining = ${controller.maxFreeInteractions - controller.interactionCount.value} ",
-                            style: const TextStyle(fontSize: 12),
-                            children: [
-                              const TextSpan(
-                                text: "Go Premium",
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )),
+                        Obx(
+                                () => Row(
+                              children: [
+                                Text(  "Daily Limits Remaining = ${controller.maxFreeInteractions - controller.interactionCount.value}",
+                                  style: const TextStyle(fontSize: 12),),
+                                GestureDetector(
+                                  onTap: (){
+
+                                  },
+                                  child: Text(" Watch Ads",
+                                    style: const TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),),
+                                )
+                              ],
+                            )
+                        ),
 
                         const SizedBox(height: 10),
 
@@ -207,7 +209,7 @@ class _AiDictionaryPageState extends State<AiDictionaryPage>
                   bottom: bottomInset,
                   left: 0,
                   right: 0,
-                  top: screenHeight * 0.48,
+                  top: screenHeight * 0.50,
                   child: Obx(
                     () =>
                         controller.grammarResponseText.isEmpty

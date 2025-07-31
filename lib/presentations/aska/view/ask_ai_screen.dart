@@ -141,21 +141,22 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
 
                         const SizedBox(height: 10),
                         Obx(
-                          () => Text.rich(
-                            TextSpan(
-                              text: "Daily Limits Remaining = ${controller.maxFreeInteractions - controller.interactionCount.value} ",
-                              style: const TextStyle(fontSize: 12),
-                              children: [
-                                TextSpan(
-                                  text: Platform.isIOS? "Go Premium":" Watch Ads",
-                                  style: const TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          () => Row(
+                            children: [
+                              Text(  "Daily Limits Remaining = ${controller.maxFreeInteractions - controller.interactionCount.value} ",
+                                style: const TextStyle(fontSize: 12),),
+                              GestureDetector(
+                                onTap: (){
+
+                                },
+                                child: Text("Watch Ads",
+                                    style: const TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                     ),),
+                              )
+                            ],
+                          )
 ),
                         const SizedBox(height: 10),
                         Obx(
@@ -196,7 +197,7 @@ class _AskAiScreenState extends State<AskAiScreen> with AppLifecycleMixin {
                   bottom: bottomInset,
                   left: 0,
                   right: 0,
-                  top: screenHeight * 0.46,
+                  top: screenHeight * 0.45,
                   child: Obx(
                     () =>
                         controller.responseText.isEmpty

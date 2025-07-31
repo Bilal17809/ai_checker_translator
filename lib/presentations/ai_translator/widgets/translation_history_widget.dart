@@ -14,7 +14,7 @@ class TranslationHistoryWidget extends StatelessWidget {
   final bool deleteFromFavouritesOnly;
   final bool overrideSpeakAndCopy;
   final bool showSourceText;
-
+  final bool isTranslationpage;
   TranslationHistoryWidget({
     super.key,
     this.showFavouriteIcon = true,
@@ -22,6 +22,7 @@ class TranslationHistoryWidget extends StatelessWidget {
     this.deleteFromFavouritesOnly = false,
     this.overrideSpeakAndCopy = false,
     this.showSourceText = true,
+    this.isTranslationpage = false,
   });
 
   final TranslationController controller = Get.find();
@@ -47,9 +48,9 @@ class TranslationHistoryWidget extends StatelessWidget {
                   color: Colors.grey,
                 ),
                 const SizedBox(height: 10),
-                const Center(
+                 Center(
                   child: Text(
-                    "No History Found!",
+                    isTranslationpage ? "No History Found!" : "No favourite!",
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 18,
